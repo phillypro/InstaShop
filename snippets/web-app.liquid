@@ -1,0 +1,12 @@
+<meta name="mobile-web-app-capable" content="yes" />  
+<meta name="apple-mobile-web-app-title" content="{% unless settings.app_short_name == nil %}{{ settings.app_short_name }}{% else %}{{ shop.name }}{% endunless %}">
+<meta name="application-name" content="{% unless settings.app_short_name == nil %}{{ settings.app_short_name }}{% else %}{{ shop.name }}{% endunless %}">
+<meta name="apple-mobile-web-app-capable" content="yes">  
+<meta name="apple-touch-fullscreen" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <link rel="manifest" href="{{'manifest.json' | asset_url }}">
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="{{ settings.app_image | img_url: 'medium' }}"
+    />

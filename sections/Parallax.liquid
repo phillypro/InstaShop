@@ -1,0 +1,458 @@
+{% style %}
+
+{% assign height = section.settings.height | times: 6 %}
+{% assign imgheight = height | times: 1.5 %}
+
+#shopify-section-{{ section.id }} {
+width:100%;
+margin:{{ section.settings.topposition }}px 0 {{ section.settings.bottomposition }}px 0;
+overflow:hidden;
+}
+#shopify-section-{{ section.id }} .rellax-element {
+height:{{ height }}px;
+}
+#shopify-section-{{ section.id }} .overlay {
+{% if section.settings.darkenbackground %}
+background-color: #0000004d;
+{% endif %}
+}
+#shopify-section-{{ section.id }} img {
+min-height:{{imgheight}}px;
+}
+
+{% assign loadedfonts = '' %}  
+{% for block in section.blocks %}
+  {% case block.type %}
+   {% when 'Text' %}
+
+{% assign familyandweight = block.settings.font.family | append: block.settings.font.weight %}
+{% if loadedfonts contains familyandweight %}
+{% else %}
+  {{ block.settings.font | font_face }}  
+{% endif %}   
+{% assign loadedfonts = loadedfonts | append: block.settings.font.family | append: block.settings.font.weight | append: block.settings.font.style | append: '|' %}
+
+
+
+      #shopify-section-{{ section.id }} #block-{{ block.id }} {
+        text-align:{{ block.settings.align }};
+        font-size:{{ block.settings.size }}px;
+    font-family: {{ block.settings.font.family }}; 
+    font-weight:{{ block.settings.font.weight }}; 
+    font-style:{{ block.settings.font.style }};  
+        color:{{ block.settings.color }};
+        margin:{{ block.settings.topposition }}px 0 {{ block.settings.bottomposition }}px 0;
+       {% unless block.settings.width == 'full' %}
+         width: 49.5%;
+        {% else %}
+          width: 100%;
+       {% endunless %}
+      }
+
+      #shopify-section-{{ section.id }} #block-{{ block.id }} .inner {
+        max-width:{{ block.settings.fontwidth }}%;
+        {% if block.settings.shadow %}text-shadow: 1px 1px 5px #000;{% endif %}
+      }
+#shopify-section-{{ section.id }} #block-{{ block.id }} .inner p {
+      {% if block.settings.underline %}
+       text-decoration:underline;
+       {% endif %}
+       {% if block.settings.shadow %}
+        text-shadow: 1px 1px 5px #000;
+       {% endif %}
+}
+ {% when 'Button' %}
+{% assign familyandweight = block.settings.font.family | append: block.settings.font.weight %}
+{% if loadedfonts contains familyandweight %}
+{% else %}
+  {{ block.settings.font | font_face }}  
+{% endif %}   
+{% assign loadedfonts = loadedfonts | append: block.settings.font.family | append: block.settings.font.weight | append: block.settings.font.style | append: '|' %}
+
+#shopify-section-{{ section.id  }} #block-{{ block.id }} a {
+   font-size:{{ block.settings.size }}px;
+    font-family: {{ block.settings.font.family }}; 
+    font-weight:{{ block.settings.font.weight }}; 
+    font-style:{{ block.settings.font.style }};  
+min-width:{{ block.settings.buttonWidth }}%;
+background:{{ block.settings.backgroundcolor }}; 
+color:{{ block.settings.color }};
+{% if block.settings.rounded == true %} 
+ border-radius:30px;
+{% endif %}
+}
+
+#shopify-section-{{ section.id }} #block-{{ block.id }} {
+        text-align:{{ block.settings.align }};
+     margin:{{ block.settings.topposition }}px 0 {{ block.settings.bottomposition }}px 0;
+ {% unless block.settings.width == 'full' %}
+        max-width: 49.5%;
+        {% else %}
+          width: 100%;
+       {% endunless %}
+}
+
+   {% endcase %}
+{% endfor %}
+{% endstyle %}
+
+
+
+<div class="parallax-section">
+  <div class="rellax-element" data-rellax-container>
+    
+    {% for block in section.blocks %}
+     {% case block.type %}
+      {% when 'Text' %}
+        <div id="block-{{ block.id }}" class="text parallax-element">
+           <div class="inner">{{ block.settings.text }}</div>
+        </div>
+      {% when 'Button' %}
+    
+    <div id="block-{{ block.id }}" class="button-wrap parallax-element">
+      <a href="{{ block.settings.url }}" {% if block.settings.url contains '#mailPopup' %}data-rel="popup" data-transition="slideupfade"{% endif %}>
+        {{ block.settings.text }}
+      </a>
+    </div>
+    
+    
+      {% endcase %}
+     {% endfor %} 
+    <div class="overlay"></div>
+    <img class="fill" data-rellax data-rellax-speed="1.5" data-rellax-percentage="0.1" data-rellax-zindex="0" src="{{ section.settings.image | img_url: 'large' }}">
+  </div>
+</div>
+<script>
+  
+ var callback{{ section.id }} = function(){
+   if(!window.Rellax) {
+    var script = document.createElement("script");
+    script.type = "text/javascript";   
+     script.src = 'https://cdnjs.cloudflare.com/ajax/libs/rellax/{{ settings.rellaxjsversion }}/rellax.min.js';
+    document.getElementsByTagName("head")[0].appendChild(script);
+   }  
+   
+
+  
+};
+
+if (
+    document.readyState === "complete" ||
+    (document.readyState !== "loading" && !document.documentElement.doScroll)
+) {
+  callback{{ section.id }}();
+} else {
+  document.addEventListener("DOMContentLoaded", callback{{ section.id }});
+}
+    
+  
+
+function defer{{ section.id }}(method{{ section.id }}) {
+ if (window.Rellax) {
+  method{{ section.id }}();
+ } else {
+  setTimeout(function() {
+   defer{{ section.id }}(method{{ section.id }})
+  }, 50);
+ }
+}
+defer{{ section.id }}(function() {
+ rellax{{ section.id }}();
+ 
+});  
+  
+  
+  
+ 
+  
+  function rellax{{ section.id }}() {
+   $('[data-rellax]').attr('data-rellax-percentage','0.08');
+   var rellax = new Rellax('[data-rellax]', {
+    wrapper: '#swiper_Frame',
+    round: true,
+    vertical: true,
+    horizontal: false
+  });   
+} 
+
+ 
+</script>
+
+{% schema %}
+  {
+    "name": "Parallax",
+    "settings": [{
+   "type":      "header",
+   "content":   "Background"
+},
+{
+       "id": "image",
+       "type": "image_picker",
+       "label": "Background Image"
+},
+{
+  "type": "checkbox",
+  "id": "darkenbackground",
+  "label": "Darken Background",
+  "default": false
+},
+{
+   "type":      "header",
+   "content":   "Sizing"
+},
+{
+    "type":   "range",
+    "id":     "height",
+    "min":       1,
+    "max":       100,
+    "step":     1,
+    "label":     "Height",
+    "default":   40
+     },
+{
+   "type": "header",
+   "content": "Spacing"
+},
+      {
+    "type":   "range",
+    "id":     "topposition",
+    "min":       0,
+    "max":       60,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Position from Top",
+    "default":   0
+     },
+     {
+    "type":   "range",
+    "id":     "bottomposition",
+    "min":       0,
+    "max":       60,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Position from Bottom",
+    "default":   15
+     }
+],
+"blocks": [
+ {
+"type": "Text",
+     "name": "Text",
+     "settings" : [
+{
+   "id": "text",
+   "type": "richtext",
+   "label": "Text"
+},
+      {
+        "id": "color",
+        "type": "color",
+        "label": "Font Color",
+        "default": "#000"
+      },
+{
+  "type": "checkbox",
+  "id": "shadow",
+  "label": "Add Text Shadow",
+  "default": false
+},
+ {
+     "type": "font_picker",
+     "id": "font",
+     "label": "Font",
+     "default": "work_sans_n6"
+   },
+{
+  "type": "checkbox",
+  "id": "underline",
+  "label": "Underline",
+  "default": false
+},
+      {
+    "type":   "range",
+    "id":     "size",
+    "min":       12,
+    "max":       60,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Font Size",
+    "default":   20
+     },
+{
+   "type":      "radio",
+   "id":        "align",
+   "label":     "Text Alignment",
+   "options": [
+     { "value": "left", "label": "Left" },
+     { "value": "center", "label": "Center" },
+     { "value": "right", "label": "Right" }
+   ],
+   "default":   "center"
+},
+{
+   "type": "radio",
+   "id": "width",
+   "options": [
+      { "value": "full", "label": "Full Width"},
+      { "value": "half", "label": "Half Width"}
+   ],
+   "label": "Content Width",
+   "default": "full"
+},
+      {
+    "type":   "range",
+    "id":     "fontwidth",
+    "min":       50,
+    "max":       100,
+    "step":     1,
+    "unit":      "%",
+    "label":     "Font Width",
+    "default":   100
+     },
+{
+   "type": "header",
+   "content": "Spacing"
+},
+      {
+    "type":   "range",
+    "id":     "topposition",
+    "min":       0,
+    "max":       60,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Position from Top",
+    "default":   0
+     },
+     {
+    "type":   "range",
+    "id":     "bottomposition",
+    "min":       0,
+    "max":       60,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Position from Bottom",
+    "default":   15
+     }
+]
+},
+{
+"type": "Button",
+     "name": "Button",
+     "settings" : [
+
+{
+   "id": "text",
+   "type": "text",
+   "label": "Text"
+},
+{
+   "id": "url",
+   "type": "url",
+   "label": "URL Link"
+},
+ {
+     "type": "font_picker",
+     "id": "font",
+     "label": "Font",
+     "default": "work_sans_n6"
+   },
+      {
+    "type":   "range",
+    "id":     "size",
+    "min":       12,
+    "max":       60,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Font Size",
+    "default":   20
+     },
+      {
+        "id": "color",
+        "type": "color",
+        "label": "Text Color",
+        "default": "#FFF"
+      },
+      {
+        "id": "backgroundcolor",
+        "type": "color",
+        "label": "Background Color",
+        "default": "#000"
+      },
+{
+  "type": "checkbox",
+  "id": "rounded",
+  "label": "Rounded Corners",
+  "default": false
+},  
+{
+   "type":      "radio",
+   "id":        "align",
+   "label":     "Button Alignment",
+   "options": [
+     { "value": "left", "label": "Left" },
+     { "value": "center", "label": "Center" },
+     { "value": "right", "label": "Right" }
+   ],
+   "default":   "center"
+},
+{
+   "type": "radio",
+   "id": "width",
+   "options": [
+      { "value": "full", "label": "Full Width"},
+      { "value": "half", "label": "Half Width"}
+   ],
+   "label": "Width",
+   "default": "full"
+},   
+{
+    "type":   "range",
+    "id":     "buttonWidth",
+    "min":       0,
+    "max":       100,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Width",
+    "default":   50
+     },
+{
+   "type": "header",
+   "content": "Spacing"
+},
+
+      {
+    "type":   "range",
+    "id":     "topposition",
+    "min":       0,
+    "max":       60,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Position from Top",
+    "default":   15
+     },
+     {
+    "type":   "range",
+    "id":     "bottomposition",
+    "min":       0,
+    "max":       60,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Position from Bottom",
+    "default":   15
+     }]
+}
+],
+"presets": [
+    {
+      "name": "Parallax",
+      "category": "Advanced"
+    }
+  ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

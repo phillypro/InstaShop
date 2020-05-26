@@ -1,0 +1,21 @@
+{ 
+  "short_name": "{% unless settings.short_app_name != nil %}{{ settings.short_app_name }}{% else %}{{ shop.name }}{% endunless %}",
+  "name": "{% unless settings.home_title != nil %}{{ settings.home_title }}{% else %}{{ shop.name }}{% endunless %}",
+  {% unless settings.home_desc != nil %}"description": "{{ settings.home_desc }}",{% endunless %}
+  "icons": [
+    {
+      "src": "{{ settings.app_image | img_url: 'medium' }}",
+      "sizes": "192x192",
+      "type": "image\/png"
+    },
+    {
+      "src": "{{ settings.app_image | img_url: 'grande' }}",
+      "sizes": "512x512",
+      "type": "image\/png"
+    }
+  ],
+ {% unless settings.app_theme_color == nil %}"theme_color": "{{ settings.app_theme_color }}",{% endunless %}
+  {% unless settings.app_background_color == nil %}"background_color": "{{ settings.app_background_color }}",{% endunless %}
+  "display": "standalone",
+  "orientation": "portrait"
+}

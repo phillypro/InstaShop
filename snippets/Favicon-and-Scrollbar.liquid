@@ -1,0 +1,20 @@
+{% capture Favicon %}
+{% section 'Favicon-and-Scrollbar' %}
+{% endcapture %}
+{% assign FaviconContent = Favicon | remove: '<div id="shopify-section-Favicon-and-Scrollbar" class="shopify-section">' | remove: '</div>' %}
+
+{% assign FaviconContent2 = FaviconContent | split: '<!--start-->' %}
+{% assign FaviconContent3 = FaviconContent2[1] | split: '<!--end-->' %}
+{% assign FaviconContent = FaviconContent3[0] %}
+
+
+{% assign Favicon2 = Favicon | split: '<div id="shopify-section-Favicon-and-Scrollbar" class="shopify-section">' %}
+{% assign Favicon3 = Favicon2[1] | split: '</div>' %}
+{% assign FaviconWrap = Favicon | remove_first: Favicon3[0] %}
+
+
+{% if head == true %}
+{{ FaviconContent }}
+{% else %}
+{{ FaviconWrap }}
+{% endif %}

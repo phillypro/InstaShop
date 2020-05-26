@@ -1,0 +1,1839 @@
+{% if section.settings.hidestories == true %}
+{% style %}
+
+
+  .stories-wrap {
+  background-color:{{ section.settings.background_color }};
+  }  
+.story .gradient {
+  {% if section.settings.background_color_2 contains 'transparent' %}
+      background-color:{{ section.settings.bubble_background_color }};                            
+  {% else %}     
+    background: -moz-linear-gradient(top, {{ section.settings.bubble_background_color }} 0%, {{ section.settings.bubble_background_color_2 }} 100%);
+    background: -webkit-linear-gradient(top, {{ section.settings.bubble_background_color }} 0%, {{ section.settings.bubble_background_color_2 }} 100%);
+    background: linear-gradient(to bottom, {{ section.settings.bubble_background_color }} 0%, {{ section.settings.bubble_background_color_2 }} 100%);                            
+  {% endif %}
+
+}
+.story .title {
+  color:{{ section.settings.font_color }};
+}
+.story .gradient .tag {
+  border-color:{{ section.settings.background_color }} !important;
+    {% if section.settings.background_color_2 contains 'transparent' %}
+      background-color:{{ section.settings.bubble_tag_background_color }};                            
+  {% else %}     
+    background: -moz-linear-gradient(top, {{ section.settings.bubble_tag_background_color }} 0%, {{ section.settings.bubble_tag_background_color_2 }} 100%);
+    background: -webkit-linear-gradient(top, {{ section.settings.bubble_tag_background_color }} 0%, {{ section.settings.bubble_tag_background_color_2 }} 100%);
+    background: linear-gradient(to bottom, {{ section.settings.bubble_tag_background_color }} 0%, {{ section.settings.bubble_tag_background_color_2 }} 100%);                            
+  {% endif %}
+}  
+
+.story .img-wrap {
+background-color:{{ section.settings.background_color }};
+}
+
+   {% for block in section.blocks %}
+   #story-{{ block.id }} .img {
+   background-image:url({{ block.settings.image | img_url: 'small' }}); 
+   background-position:{% if block.settings.imageposition != '' %}{{ block.settings.imageposition }}{% else %}0{% endif %}% 0%
+   }
+   {% endfor %}
+
+{% endstyle %}
+<div class="stories-wrap">
+  <div class="swiper-container">
+    <!-- Additional required wrapper -->
+    <div class="swiper-wrapper">
+   {% for block in section.blocks %}
+     {% case block.type %}
+      {% when 'Video' %}
+       <div class="swiper-slide">
+       <div class="story-wrap">
+       <a id="story-{{ block.id }}" class="story video" href="#" poster="{{ block.settings.image | img_url: '1024x1024' }}" media="{% if block.settings.mp41 %}{{ block.settings.mp41 }}{% if block.settings.mp41swipe %}::{{ block.settings.mp41swipe }}{% endif %}|{% endif %}{% if block.settings.mp42 %}{{ block.settings.mp42 }}{% if block.settings.mp42swipe %}::{{ block.settings.mp42swipe }}{% endif %}|{% endif %}{% if block.settings.mp43 %}{{ block.settings.mp43 }}{% if block.settings.mp43swipe %}::{{ block.settings.mp43swipe }}{% endif %}|{% endif %}{% if block.settings.mp44 %}{{ block.settings.mp44 }}{% if block.settings.mp44swipe %}::{{ block.settings.mp44swipe }}{% endif %}|{% endif %}{% if block.settings.mp45 %}{{ block.settings.mp45 }}{% if block.settings.mp45swipe %}::{{ block.settings.mp45swipe }}{% endif %}|{% endif %}{% if block.settings.mp46 %}{{ block.settings.mp46 }}{% if block.settings.mp46swipe %}::{{ block.settings.mp46swipe }}{% endif %}|{% endif %}{% if block.settings.mp47 %}{{ block.settings.mp47 }}{% if block.settings.mp47swipe %}::{{ block.settings.mp47swipe }}{% endif %}|{% endif %}{% if block.settings.mp48 %}{{ block.settings.mp48 }}{% if block.settings.mp48swipe %}::{{ block.settings.mp48swipe }}{% endif %}|{% endif %}{% if block.settings.mp49 %}{{ block.settings.mp49 }}{% if block.settings.mp49swipe %}::{{ block.settings.mp49swipe }}{% endif %}|{% endif %}{% if block.settings.mp410 %}{{ block.settings.mp410 }}{% if block.settings.mp410swipe %}::{{ block.settings.mp410swipe }}{% endif %}|{% endif %}">
+           <div class="gradient">
+            <div class="img-wrap">
+             <div class="img">
+             </div>
+            </div>
+              {% if block.settings.tag != '' %}<span class="tag">{{ block.settings.tag }}</span>{% endif %}
+         </div>
+         <div class="title">
+           {% if block.settings.title %}{{ block.settings.title }}{% else %}Story{% endif %}
+         </div>
+       </a>
+      
+       </div>
+      </div>
+       {% when 'Image' %}
+       <div class="swiper-slide">
+       <div class="story-wrap">
+          
+       <a id="story-{{ block.id }}" class="story image" href="#" poster="{{ block.settings.image | img_url: '1024x1024' }}" media="{% if block.settings.img1 %}{{ block.settings.img1 | img_url: '1024x1024' }}{% if block.settings.img1swipe %}::{{ block.settings.img1swipe }}{% endif %}|{% endif %}{% if block.settings.img2 %}{{ block.settings.img2 | img_url: '1024x1024' }}{% if block.settings.img2swipe %}::{{ block.settings.img2swipe }}{% endif %}|{% endif %}{% if block.settings.img3 %}{{ block.settings.img3 | img_url: '1024x1024' }}{% if block.settings.img3swipe %}::{{ block.settings.img3swipe }}{% endif %}|{% endif %}{% if block.settings.img4 %}{{ block.settings.img4 | img_url: '1024x1024' }}{% if block.settings.img4swipe %}::{{ block.settings.img4swipe }}{% endif %}|{% endif %}{% if block.settings.img5 %}{{ block.settings.img5 | img_url: '1024x1024' }}{% if block.settings.img5swipe %}::{{ block.settings.img5swipe }}{% endif %}|{% endif %}{% if block.settings.img6 %}{{ block.settings.img6 | img_url: '1024x1024' }}{% if block.settings.img6swipe %}::{{ block.settings.img6swipe }}{% endif %}|{% endif %}{% if block.settings.img7 %}{{ block.settings.img7 | img_url: '1024x1024' }}{% if block.settings.img7swipe %}::{{ block.settings.img7swipe }}{% endif %}|{% endif %}{% if block.settings.img8 %}{{ block.settings.img8 | img_url: '1024x1024' }}{% if block.settings.img8swipe %}::{{ block.settings.img8swipe }}{% endif %}|{% endif %}{% if block.settings.img9 %}{{ block.settings.img9 | img_url: '1024x1024' }}{% if block.settings.img9swipe %}::{{ block.settings.img9swipe }}{% endif %}|{% endif %}{% if block.settings.img10 %}{{ block.settings.img10 | img_url: '1024x1024' }}{% if block.settings.img10swipe %}::{{ block.settings.img10swipe }}{% endif %}|{% endif %}">
+         <div class="gradient">
+            <div class="img-wrap">
+             <div class="img">
+             </div>
+            </div>
+              {% if block.settings.tag != '' %}<span class="tag">{{ block.settings.tag }}</span>{% endif %}
+         </div>
+         <div class="title">
+           {% if block.settings.title %}{{ block.settings.title }}{% else %}Story{% endif %}
+         </div>
+       </a>
+      
+       </div>
+      </div>
+      {% when 'Link' %}
+       <div class="swiper-slide">
+       <div class="story-wrap">
+          
+       <a id="story-{{ block.id }}" class="story" href="{{ block.settings.url }}" poster="{{ block.settings.image | img_url: '1024x1024' }}">
+           <div class="gradient">
+            <div class="img-wrap">
+             <div class="img">
+             </div>
+            </div>
+             {% if block.settings.tag != '' %}<span class="tag">{{ block.settings.tag }}</span>{% endif %}
+         </div>
+         <div class="title">
+           {% if block.settings.title %}{{ block.settings.title }}{% else %}Story{% endif %}
+         </div>
+       </a>
+      
+       </div>
+      </div>
+     {% endcase %}
+  {% endfor %}  
+      
+  {% if section.settings.demo == true %}
+       <div class="swiper-slide">
+       <div class="story-wrap">
+          
+       <a class="story" href="https://youtu.be/bL_X_GK69P4?t=487" poster="{{ 'demo_stories_s-min.jpg' | asset_url }}">
+           <div class="gradient">
+            <div class="img-wrap">
+             <div class="img" style="background-image:url(//cdn.shopify.com/s/files/1/0949/4410/t/75/assets/demo_stories_s-min.jpg?43598);">
+             </div>
+            </div>
+             <span class="tag">How To</span>
+         </div>
+         <div class="title">
+           Setup Video
+         </div>
+       </a>
+      
+       </div>
+      </div>
+       <div class="swiper-slide">
+       <div class="story-wrap">
+          
+       <a class="story" href="https://youtu.be/bL_X_GK69P4?t=487" poster="{{ 'demo_stories_t-min.jpg' | asset_url }}">
+           <div class="gradient">
+            <div class="img-wrap">
+             <div class="img" style="background-image:url(//cdn.shopify.com/s/files/1/0949/4410/t/75/assets/demo_stories_t-min.jpg?43598);">
+             </div>
+            </div>
+         </div>
+         <div class="title">
+           Empty
+         </div>
+       </a>
+      
+       </div>
+      </div>
+       <div class="swiper-slide">
+       <div class="story-wrap">
+          
+       <a class="story" href="https://youtu.be/bL_X_GK69P4?t=487" poster="{{ 'demo_stories_a-min.jpg' | asset_url }}">
+           <div class="gradient">
+            <div class="img-wrap" >
+             <div class="img" style="background-image:url(//cdn.shopify.com/s/files/1/0949/4410/t/75/assets/demo_stories_a-min.jpg?43598);">
+             </div>
+            </div>
+         </div>
+         <div class="title">
+           Empty
+         </div>
+       </a>
+      
+       </div>
+      </div>
+       <div class="swiper-slide">
+       <div class="story-wrap">
+          
+       <a class="story" href="https://youtu.be/bL_X_GK69P4?t=487" poster="{{ 'demo_stories_r-min.jpg' | asset_url }}">
+           <div class="gradient">
+            <div class="img-wrap" > 
+             <div class="img" style="background-image:url(//cdn.shopify.com/s/files/1/0949/4410/t/75/assets/demo_stories_r-min.jpg?43598);">
+             </div>
+            </div>
+         </div>
+         <div class="title">
+           Empty
+         </div>
+       </a>
+      
+       </div>
+      </div>
+      <div class="swiper-slide">
+       <div class="story-wrap">
+          
+       <a class="story" href="https://youtu.be/bL_X_GK69P4?t=487" poster="{{ 'demo_stories_t-min.jpg' | asset_url }}">
+           <div class="gradient">
+            <div class="img-wrap" >
+             <div class="img" style="background-image:url(//cdn.shopify.com/s/files/1/0949/4410/t/75/assets/demo_stories_t-min.jpg?43598);">
+             </div>
+            </div>
+         </div>
+         <div class="title">
+           Empty
+         </div>
+       </a>
+      
+       </div>
+      </div>
+   {% endif %} 
+      
+      
+      
+      </div>
+</div>
+</div>
+<script>
+
+var callbackStories = function(){
+  // Handler when the DOM is fully loaded
+  if(!window.
+     Swiper) {
+    // add script
+    var script = document.createElement("script");
+    script.type = "text/javascript";   
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/{{ settings.swiperjsversion }}/js/swiper.min.js';
+    document.getElementsByTagName("head")[0].appendChild(script);
+    // add style
+    var style = document.createElement("link");
+    style.type = "text/css";  
+    style.rel = "stylesheet";
+    style.href = 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/{{ settings.swiperjsversion }}/css/swiper.min.css';
+    document.getElementsByTagName("head")[0].appendChild(style);
+  }
+  if(!window.Hammer) {
+   // add script
+    var script = document.createElement("script");
+    script.type = "text/javascript";   
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/hammer.js/{{ settings.hammerjsversion }}/hammer.min.js';
+    document.getElementsByTagName("head")[0].appendChild(script);   
+  }
+};
+
+if (
+    document.readyState === "complete" ||
+    (document.readyState !== "loading" && !document.documentElement.doScroll)
+) {
+  callbackStories();
+} else {
+  document.addEventListener("DOMContentLoaded", callbackStories);
+}  
+  
+  
+function deferStories(methodStories) {
+    if (window.jQuery && window.Hammer && window.Swiper) {
+        methodStories();
+    } else {
+        setTimeout(function() { deferStories(methodStories) }, 50);
+    }
+}
+deferStories(function () {
+  
+var stringToHTML = function (str) {
+		var parser = new DOMParser();
+		var doc = parser.parseFromString(str, 'text/html');
+		return doc.body.children[0];
+};
+  
+  
+  // add modal
+   var popup = document.querySelector('#popup');
+  if(popup == null) {
+   var screen =  document.querySelector('#screen');
+   screen.prepend(stringToHTML('<div id="popup" class="popup"><div class="popup-inner"><div class="close" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"width="50" height="50"viewBox="0 0 50 50"style="fill:#fff;"><g id="surface1"><path style=" " d="M 14.40625 13 L 13 14.40625 L 23.625 25 L 13 35.59375 L 14.40625 37 L 25.0625 26.40625 L 35.6875 37 L 37.09375 35.59375 L 26.46875 25 L 37.09375 14.40625 L 35.6875 13 L 25.0625 23.59375 Z "></path></g></svg> </div> <div id="progress-bars-wrap"></div> <div id="NavLeft" class="control left"></div> <div id="NavRight" class="control right"></div> <div class="story-profile"> <div class="story-profile-pic"> <div> </div> </div> <div class="story-profile-content"> </div></div> <div id="swipe" style="opacity:0;"><div class="arrows"><svg width="669pt" height="1151pt" viewBox="0 0 669 1151" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="arrow1" opacity="1" transform="translate(0,0)"><path fill="#ffffff" opacity="1" d=" M 323.44 179.52 C 332.65 174.88 344.63 176.71 351.95 184.01 C 454.69 285.94 557.42 387.89 660.15 489.82 C 667.74 496.79 670.18 508.61 666.01 518.02 C 664.40 522.06 661.41 525.31 658.30 528.27 C 645.11 541.42 631.97 554.63 618.77 567.77 C 609.61 576.78 593.46 576.71 584.35 567.64 C 501.06 485.17 417.76 402.71 334.51 320.19 C 251.25 402.68 167.96 485.15 84.67 567.62 C 75.57 576.71 59.39 576.79 50.22 567.76 C 36.04 553.61 21.86 539.45 7.72 525.26 C -1.47 515.92 -1.17 499.36 8.33 490.35 C 108.70 390.71 209.12 291.13 309.49 191.49 C 314.05 187.41 317.77 182.18 323.44 179.52 Z" /></g><g id="arrow2" opacity="1" transform="translate(0,0)"> <path fill="#ffffff" opacity="1" d=" M 316.30 585.25 C 319.46 581.99 323.46 579.50 327.87 578.35 C 335.44 577.33 343.93 577.47 350.00 582.81 C 358.67 590.85 366.83 599.43 375.31 607.68 C 469.85 701.50 564.40 795.31 658.95 889.12 C 662.07 892.02 664.83 895.43 666.32 899.47 C 669.86 908.36 667.78 919.21 661.03 926.02 C 646.86 940.19 632.72 954.38 618.52 968.51 C 608.85 977.78 591.92 976.94 583.08 966.91 C 500.25 884.82 417.33 802.80 334.51 720.69 C 251.34 803.09 168.13 885.46 84.95 967.85 C 75.46 977.68 58.02 977.26 48.96 967.05 C 35.17 953.18 21.27 939.41 7.50 925.52 C -1.37 916.24 -1.11 900.10 8.07 891.12 C 110.78 789.13 213.56 687.21 316.30 585.25 Z" /></g> <animateTransform attributeName="transform"type="translate"from="0 0"to="0 -200"dur="1.4s"values="0 0 ; 0 -200 ; 0 200 ; 0 0 ; 0 0" keyTimes="0; 0.35; 0.364; 0.77; 1" repeatCount="indefinite"xlink:href="#arrow1" /> <animateTransform attributeName="transform"type="scale"from="1"to="1"dur="1.4s"values="1 ; 0.9 ; 0.9 ; 1 ; 1" keyTimes="0; 0.35; 0.364; 0.77; 1" repeatCount="indefinite"xlink:href="#arrow1" additive="sum" /> <animate attributeType="CSS" attributeName="opacity"from="1"to="0"dur="1.4s"values="1 ; 0 ; 0 ; 1 ; 1" keyTimes="0; 0.35; 0.364; 0.77; 1" repeatCount="indefinite"xlink:href="#arrow1" /> <animateTransform attributeName="transform"type="translate"from="0 0"to="0 -200"dur="1.4s"begin="0.2s" values="0 0 ; 0 -200 ; 0 200 ; 0 0 ; 0 0" keyTimes="0; 0.35; 0.364; 0.77; 1" repeatCount="indefinite"xlink:href="#arrow2" /> <animateTransform attributeName="transform"type="scale"from="1"to="1"dur="1.4s"begin="0.2s" values="1 ; 0.9 ; 0.9 ; 1 ; 1" keyTimes="0; 0.35; 0.364; 0.77; 1" repeatCount="indefinite"xlink:href="#arrow2" additive="sum" /> <animate attributeType="CSS" attributeName="opacity"from="1"to="0"dur="1.4s"begin="0.2s" values="1 ; 0 ; 0 ; 1 ; 1" keyTimes="0; 0.35; 0.364; 0.77; 1" repeatCount="indefinite"xlink:href="#arrow2" /> </svg> </div> Swipe up to view </div><div class="shadow"></div><div class="swiper-container"> <!-- Additional required wrapper --> <div class="swiper-wrapper"> <!-- Slides --> <div class="swiper-slide"> </div> </div></div></div> <div id="popup-overlay"></div></div>'));
+  }
+  
+ function logLoaded{{section.id}}() {
+if(document.getElementById("shopify-section-Stories") !== null) {  
+story();   
+setTimeout(function() {
+var container = document.querySelector('#popup .swiper-container');    
+if(!container.classList.contains('swiper-container-initialized'))  {  
+swiper(); 
+}
+scrollswiper(); 
+},200);   
+  } 
+ }
+(function listen{{section.id}}() {
+
+					if (window.loaded && window.Swiper && window.Hammer) {
+
+						logLoaded{{section.id}}();
+					} else {
+						window.setTimeout(listen{{section.id}}, 50);
+					}
+				})();
+  
+  
+function story(ev) {
+
+   if(!window.key || window.key !== window.password) {
+    return false;
+  }
+     
+    function addEventListenerList(list, event, fn) {
+    for (var i = 0, len = list.length; i < len; i++) {
+        list[i].addEventListener(event, fn, false);
+    }
+    }
+  
+    var stories = document.querySelectorAll('.story.video, .story.image');    
+    addEventListenerList(stories, 'click', handleStories); 
+  
+  function handleStories(event) {
+  var currentStoryEl = event.currentTarget;
+  var $this = $(currentStoryEl);
+  // its loading add the fader
+  currentStoryEl.classList.add('fade');
+  var isvideo = currentStoryEl.classList.contains('video');
+  var isimage = currentStoryEl.classList.contains('image');   
+  // get storyEl original position to launch popup window from
+  var storywidth = currentStoryEl.querySelector('.gradient').offsetWidth / 2;
+  var storyheight = currentStoryEl.querySelector('.gradient').offsetHeight / 2;
+  // calculations i forgot what i did exactly 
+    if (getCoords(currentStoryEl).left < getViewport()[0] / 2) {
+			var toRight = false;
+			var width = getViewport()[0] / 2 - getCoords(currentStoryEl).left;
+			var width = width - storywidth;
+		} else {
+			var toRight = true;
+			var width = getCoords(currentStoryEl).left - getViewport()[0] / 2;
+			var width = width + storywidth;
+	}
+   // setting important variables
+  		var height = getViewport()[1] / 2 - getCoords(currentStoryEl).top;
+		var height = height - storyheight;
+    
+		var popupEl = document.querySelector('#popup');  
+    
+    // throw popup into position
+		if (!toRight) {    
+          popupEl.style.cssText = "transform:-" + width + "px,-" + height + "px) scale(0.1); opacity:0;";
+		} else {
+          popupEl.style.cssText = "transform:" + width + "px,-" + height + "px) scale(0.1); opacity:0;";
+		}
+        popupEl.classList.add('active');
+    
+    
+    	//get bubble stuff
+		var bubbleImage = currentStoryEl.querySelector('.img');
+		var bubbleImageBackground = getComputedStyle(bubbleImage).backgroundImage;
+		var bubbleImagePosition = getComputedStyle(bubbleImage).backgroundPosition;
+		var bubbleTitle = currentStoryEl.querySelector('.title').innerHTML;
+		var storyprofile = popupEl.querySelector('.story-profile');
+		//place bubble stuff
+		var storyProfileImage = storyprofile.querySelector('.story-profile-pic div');
+		storyProfileImage.style.backgroundImage = bubbleImageBackground;
+		storyProfileImage.style.backgroundPosition = bubbleImagePosition;
+		var storyProfileContent = storyprofile.querySelector('.story-profile-content');
+		storyProfileContent.innerHTML = bubbleTitle;
+    
+    
+    		// create array of media files
+			var mediaArrayJoin = currentStoryEl.getAttribute('media').split('|').filter(function (el) {
+				return el != '';
+			});
+			// convert array to object
+			var mediaArray = [];
+			mediaArrayJoin.forEach(function (value, index) {
+               
+				var mediaSingleArray = value.split('::').filter(function (el) {
+					return el != '';
+				})
+				var mediaObject = {};
+				$.each(mediaSingleArray, function (index, value) {
+					if (index == 0) {
+						mediaObject['media'] = value;
+					} else {
+						mediaObject['swipe'] = value;
+					}
+				});
+				mediaArray.push(mediaObject);
+			});
+
+
+    
+        // create slides
+		var slides = '';
+		mediaArray.forEach(function (value, index) {
+         slides += '<div class="swiper-slide'+ (value.swipe ? ' swipe' : '') +'" '+ (value.swipe ? ' swipe="'+ value.swipe +'"' : '') +'>'+ (isvideo ? '<video id="media-'+ index +'" preload="auto" playsinline=""><source src="' : '<img id="media-'+ index +'" src="') + value.media + (isvideo ? '" type="video/mp4"></video>' : '" />') + '</div>';
+		});
+
+    	// create progress bars
+		var count = mediaArray.length;
+		var progressbars = '';
+		for (var i = 0; i < count; i++) {
+			progressbars += '<div id="progress-bar-' + i + '" class="progress-backround"><div class="progressbar"></div></div>';
+		}
+      
+        popupEl.querySelector('.swiper-wrapper').innerHTML = slides;
+		popupEl.querySelector('#progress-bars-wrap').innerHTML = progressbars;
+		window.storyactive = true;
+		// update swiper start at 0 
+		var mySwiper = popupEl.querySelector('.swiper-container').swiper;
+		mySwiper.update();
+		mySwiper.slideTo(0);
+    
+ if (isvideo) {
+
+			jQuery('#popup').find('video').each(function (index, ev) {
+
+				//open popup and remove fade 
+				if (index == 0) {
+					$(this).on('canplay', function () {
+						$this.removeClass('fade');
+						$('#popup').addClass('transition');
+					})
+				}
+
+
+				this.oncanplay = (event) => {
+					var promise = this.play();
+					if (promise !== undefined) {
+						promise.then(_ => {
+							// Autoplay started!
+							if (index !== 0) {
+								this.pause();
+							} else {
+								//  alert('played');
+							}
+						}).catch(error => {
+							// Autoplay was prevented.
+							// Show a "Play" button so that user can start playback.
+							// alert(error);
+						});
+					}
+				}
+
+			});
+
+			// play first video
+			var firstvideo = document.querySelector('#popup video');
+			playvideo(firstvideo, mySwiper);
+
+			jQuery('#popup').find('video').each(function (index, value) {
+				if (index == 0) {
+					var videoEl = $(this).get(0);
+					videoEl.addEventListener('timeupdate', updateProgress, false);
+					videoEl.play();
+				}
+			});
+
+		} else if (isimage) {
+			// play first video
+			convertimagestomp4(mySwiper);
+			var firstimg = document.querySelector('#popup img');
+			playimg(firstimg, mySwiper);
+		}
+
+
+		// open popup
+		setTimeout(function () {
+
+			if (isimage) {
+				$this.removeClass('fade');
+				$('#popup').addClass('transition');
+			}
+
+			//lock scrolling
+			$('#body').addClass('popup-open');
+			$('#popup video, #popup img')[0].ontouchend = (e) => {
+				e.preventDefault();
+			};
+			var vpH = window.innerHeight;
+			document.documentElement.style.height = vpH.toString() + "px";
+			stopBodyScrolling(true);
+
+			mySwiper.update();
+
+
+			//look for swipe
+			var currentslide = $(mySwiper.slides[mySwiper.activeIndex]);
+			var popup = currentslide.closest('.popup');
+			// look for swipe and add or remove class   
+			if (currentslide.attr('swipe')) {
+				popup.addClass('swipe');
+			} else {
+				popup.removeClass('swipe');
+			}
+
+		}, 0);
+
+
+		
+		// pause videos when holding down
+		 jQuery('#popup').find( ".control" ).off("touchstart").on( "touchstart", function( event ) { 
+		  event.preventDefault();
+		  var currentseconds = new Date().getTime() / 1000; console.log(currentseconds);
+		   
+		  var currentslide = $(mySwiper.slides[mySwiper.activeIndex]);
+		  console.log(currentslide)
+		  var video = currentslide.find('video').get(0);
+		   if(video) {
+		   video.pause();
+		   }
+		   
+		   
+		   $(this).off("touchend").on("touchend", function() {
+		     var newseconds = new Date().getTime() / 1000; console.log(newseconds);
+		     var difference = newseconds - currentseconds;
+		     console.log(difference);
+		     if(difference < 0.3) {
+		       $(this).trigger('click');
+		     }else{
+		      if(video) {
+		        video.play();
+		      }
+		     }
+		   }); 
+		 });
+		
+ 
+
+
+		// close popup  
+		$('#popup').find('.close').off('click').on('click', function () {
+			closepopup();
+		});
+
+	}
+	//activate drag on popup-inner
+	dragPopup();
+}
+
+
+function closepopup() {
+     
+ 
+  
+      $('#popup').find('video').each(function() {
+        $(this).get(0).pause();
+      });
+     $('#popup').addClass('transitout').removeClass('transition');
+     setTimeout(function() {  
+         $('#popup').removeClass('transitout').removeClass('active');
+       // kill swiper
+           //unlock scrolling
+    $('body').removeClass('popup-open');
+       stopBodyScrolling(false); 
+       var mySwiper = $('#popup').find('.swiper-container')[0].swiper;
+       window.storyactive = false;
+       mySwiper.slideTo(0,0,false);
+       }, 300);
+  
+   
+ 
+  
+  
+}
+function stopBodyScrolling (bool) {
+    if (bool === true) {
+         $('#swiper_Frame')[0].addEventListener("touchmove", freezeVp, false);
+        $('#popup')[0].addEventListener("touchmove", freezeVp, false);
+    } else {
+        $('#swiper_Frame')[0].removeEventListener("touchmove", freezeVp, false);
+        $('#popup')[0].addEventListener("touchmove", freezeVp, false);
+    }
+}
+function stopBodyScrolling2 (bool) {
+    if (bool === true) {
+        $('.ui-page')[0].addEventListener("touchmove", freezeVp, false);
+        $('#popup')[0].addEventListener("touchmove", freezeVp, false);
+    } else {
+        $('.ui-page')[0].removeEventListener("touchmove", freezeVp, false);
+        $('#popup')[0].addEventListener("touchmove", freezeVp, false);
+    }
+}
+var freezeVp = function(e) {
+    e.preventDefault();
+};
+function getViewport() {
+
+ var viewPortWidth;
+ var viewPortHeight;
+
+ // the more standards compliant browsers (mozilla/netscape/opera/IE7) use window.innerWidth and window.innerHeight
+ if (typeof window.innerWidth != 'undefined') {
+   viewPortWidth = window.innerWidth,
+   viewPortHeight = window.innerHeight
+ }
+
+// IE6 in standards compliant mode (i.e. with a valid doctype as the first line in the document)
+ else if (typeof document.documentElement != 'undefined'
+ && typeof document.documentElement.clientWidth !=
+ 'undefined' && document.documentElement.clientWidth != 0) {
+    viewPortWidth = document.documentElement.clientWidth,
+    viewPortHeight = document.documentElement.clientHeight
+ }
+
+ // older versions of IE
+ else {
+   viewPortWidth = document.getElementsByTagName('body')[0].clientWidth,
+   viewPortHeight = document.getElementsByTagName('body')[0].clientHeight
+ }
+ return [viewPortWidth, viewPortHeight];
+}
+
+function getCoords(elem) { // crossbrowser version
+    var box = elem.getBoundingClientRect();
+
+    var body = document.body;
+    var docEl = document.documentElement;
+
+    var scrollTop = window.pageYOffset || docEl.scrollTop || body.scrollTop;
+    var scrollLeft = window.pageXOffset || docEl.scrollLeft || body.scrollLeft;
+
+    var clientTop = docEl.clientTop || body.clientTop || 0;
+    var clientLeft = docEl.clientLeft || body.clientLeft || 0;
+
+    var top  = box.top +  scrollTop - clientTop;
+    var left = box.left + scrollLeft - clientLeft;
+
+    return { top: Math.round(top), left: Math.round(left) };
+}
+
+function swiper() {
+	var container = jQuery('#popup .swiper-container');
+	// shoutouts swiper
+	var mySwiper = new Swiper((container), {
+		speed: 0,
+		slidesPerView: 1, // or 'auto'
+		// spaceBetween: 10,
+		effect: 'slide', // 'cube', 'fade', 'coverflow',
+		preventClicks: true,
+		slideToClickedSlide: false,
+		grabCursor: true,
+        observer: true,
+        navigation: {
+          nextEl: '#NavRight',
+          prevEl: '#NavLeft'
+        },
+      init: false,
+	})
+    
+mySwiper.on('init', function () {
+  var currentslide = $(mySwiper.slides[mySwiper.activeIndex]);
+  
+
+});
+mySwiper.on('slideChange', function (event) {
+  if(window.storyactive == true) {
+    var currentslide = $(mySwiper.slides[mySwiper.activeIndex]);
+    var nextvideo = currentslide.find('video').get(0);
+  if(nextvideo) { 
+  // pause other videos 
+  currentslide.siblings().find('video').each(function() {
+   var video = $(this).get(0);
+   video.currentTime = 0; 
+   video.pause();
+   video.muted = true;
+  });
+
+   // fill previous bar
+  currentslide.prevAll().find('video').each(function() {
+     var videoid = $(this).attr('id');
+     var progressbarid = videoid.replace('media-','progress-bar-');
+     var progressbarwrap = $('#' + progressbarid);
+   
+     progressbarwrap.addClass('done');
+  });
+    // play video
+
+    playvideo(nextvideo,mySwiper);
+}
+// image rules  
+ var nextimg = currentslide.find('img').get(0); 
+
+   if(nextimg) { 
+   // pause other videos 
+   currentslide.siblings().find('img').each(function() {
+   var img = $(this).get(0);
+   $(img).imgPause();   
+   img.time = 0; 
+   $(img).trigger('timeupdate');
+  });
+   // fill previous bar
+  currentslide.prevAll().find('img').each(function() {
+     var imgid = $(this).attr('id');
+     var progressbarid = imgid.replace('media-','progress-bar-');
+     var progressbarwrap = $('#' + progressbarid);
+     progressbarwrap.addClass('done');
+  });
+    // play video
+
+    playimg(nextimg,mySwiper);
+     
+   var popup = currentslide.closest('.popup');
+ // look for swipe and add or remove class   
+    if(currentslide.attr('swipe')) {
+      popup.addClass('swipe');
+    }else{
+      popup.removeClass('swipe');
+    } 
+     
+} 
+  }
+});  
+mySwiper.init();  
+}
+
+function scrollswiper() {
+	var container = jQuery('#shopify-section-Stories .swiper-container');
+	// shoutouts swiper
+	var scrollSwiper = new Swiper((container), {
+		speed: 0,
+		slidesPerView: 'auto', // or 'auto'
+		spaceBetween: 0,
+        freeMode: true,
+		effect: 'slide', // 'cube', 'fade', 'coverflow',
+		preventClicks: true,
+		slideToClickedSlide: false,
+		grabCursor: true,
+        observer: true,
+      init: false,
+	})
+    
+//if desktop turn on    
+if ($(window).width() > 511) {  
+scrollSwiper.init();   
+}  
+  
+}
+
+
+function dragPopup() {
+           var sliderEl =  document.querySelector('#popup .popup-inner'); 
+          if(!sliderEl.hammer) {
+            var mc = new Hammer(sliderEl);
+            sliderEl.hammer = mc;
+            var wrap = $(sliderEl).closest('.popup-inner');
+            var overlay = wrap.siblings('#popup-overlay');
+            var popup = wrap.parent('#popup');
+     
+           
+            mc.on("panleft panright panup pandown press", function(e) {
+           
+             // find current slide and check for swipe attribute
+             var theSwiper = popup.find('.swiper-container')[0].swiper;
+             var currentslide = $(theSwiper.slides[theSwiper.activeIndex]);
+             
+              var controlheight = window.innerHeight / 2;
+              var percentage = 100 / 1 * e.deltaY / window.innerHeight; // NEW: our % calc
+              var halfpercentage = percentage / 2;
+              var absnumber = 100 - halfpercentage;
+              var absnumberdec = absnumber.toFixed(1) / 100;
+              overlay.get(0).style.opacity = absnumberdec;
+              if(halfpercentage > 0) {
+              wrap.get(0).style.transform = 'translateY(' + halfpercentage + '%)'; // NEW: our CSS transform
+              }
+              if (e.isFinal) { // NEW: this only runs on event end
+                console.log(percentage);
+                if (percentage > 30) {
+                
+                   closepopup();
+                   popup.addClass('is-animating');
+                  wrap.get(0).style.transform = 'translateY(0%)';
+                  overlay.get(0).style.opacity = 1;
+                  popup.get(0).timer = setTimeout( function() {
+                        popup.removeClass('is-animating');
+                        wrap.find('.swiper-wrapper').empty();
+                  }, 300 ); 
+                } else if (percentage < -30) {
+
+                  // if has swipe attribute
+                  if(currentslide.attr('swipe')) {
+                  // swiped up
+                   closepopup();
+                   popup.addClass('is-animating');
+                  wrap.get(0).style.transform = 'translateY(0%)';
+                  overlay.get(0).style.opacity = 1;
+                  
+                 
+                    $( ":mobile-pagecontainer" ).pagecontainer( "change", currentslide.attr('swipe'), {  showLoadMsg: false, reload: true, });
+                
+
+                  popup.get(0).timer = setTimeout( function() {
+                        popup.removeClass('is-animating');
+                        wrap.find('.swiper-wrapper').empty();
+                  }, 300 ); 
+                    }
+                  
+                  
+                }else{
+                  popup.addClass('is-animating');
+                  wrap.get(0).style.transform = 'translateY(0%)';
+                  overlay.get(0).style.opacity = 1;
+                  popup.get(0).timer = setTimeout( function() {
+                        popup.removeClass('is-animating');
+                  }, 300 ); 
+                }
+              }
+          
+            }); 
+            }  
+  
+}  
+  
+  
+
+
+
+
+
+// video functions
+// Update progress bar as the video plays
+function updateProgress(event) {
+  var media = event.target;
+  var mediaID = media.id;
+   var progressBarID = mediaID.replace('media-','progress-bar-'); 
+  var progressBar = document.querySelector('#'+ progressBarID + ' .progressbar');
+  // Calculate current progress
+if(media.nodeName == 'IMG') {
+  var value = (100 / media.endtimer) * media.time;
+}else{
+  var value = (100 / media.duration) * media.currentTime;
+  }  
+  // Update the slider value
+  progressBar.style.width = value + '%';
+}
+
+function playvideo(videoEl, mySwiper) {
+  // activate progress bar
+  videoEl.removeEventListener('timeupdate', updateProgress, false);
+  videoEl.addEventListener('timeupdate', updateProgress, false);
+  
+  // remove done
+  var videoid = videoEl.id;
+  var progressbarid = videoid.replace('media-','progress-bar-');
+  var progressbar = $('#' + progressbarid);
+  progressbar.removeClass('done');
+  //play video
+  videoEl.muted= false;
+  videoEl.play();
+  // check for next video then play next video muted then rewind
+  var nextslide = $(videoEl).parent('.swiper-slide').next();
+  if(nextslide.length) {
+    $(videoEl).off('ended').one('ended',function(){
+    //trigger next slide on ended
+     mySwiper.slideNext();  
+      
+   });
+    var nextvideo = nextslide.find('video').get(0);
+    // mute and play
+    nextvideo.muted= true;
+    nextvideo.oncanplay = (event) => {
+      // pause rewind unmute
+      nextvideo.muted= false;
+     // nextvideo.currentTime = 0;
+    };
+    // stop when playable then rewind and wait
+    
+  }else{
+     $(videoEl).off('ended').one('ended',function(){
+     // close popup
+     closepopup();
+    });
+  }
+}
+
+
+
+function convertimagestomp4(mySwiper) {
+
+
+  $(mySwiper.$wrapperEl[0]).find('img').each(function() {
+    var img = $(this)[0];
+    img.endtimer = 5;
+    img.time = 0;
+    img.updateTime = function() {
+      if (img.time < img.endtimer) {
+      img.time = img.time + 0.250;
+         $(img).trigger('timeupdate');
+        if(img.time == img.endtimer) {
+         $(img).trigger('ended');
+        }
+      }else{
+       clearInterval(img.timer)
+      }
+    };
+   
+  });
+
+}
+
+
+
+
+//popup drag
+(function($) {
+    $.fn.imgPlay = function() {
+
+        // show loading
+        var $this = $(this);
+
+
+        $this.each(function() {
+            var img = this;
+          if(img.timer) {
+          clearInterval(img.timer)
+          }
+            img.timer = setInterval(img.updateTime, 250);
+        })
+    }
+})(jQuery);
+
+
+//popup drag
+(function($) {
+    $.fn.imgPause = function() {
+
+        // show loading
+        var $this = $(this);
+
+
+        $this.each(function() {
+            var img = this;
+            img.timer = clearInterval(img.timer);
+        })
+    }
+})(jQuery);
+
+
+
+  
+  
+function playimg(imgEl, mySwiper) {
+  // activate progress bar
+  $(imgEl).off('timeupdate').on('timeupdate', updateProgress);
+  // remove done
+  var imgid = imgEl.id;
+  var progressbarid = imgid.replace('media-','progress-bar-');
+  var progressbar = $('#' + progressbarid);
+  progressbar.removeClass('done');
+  //play image
+  imgEl.time = 0;
+  $(imgEl).imgPlay();
+  // check for next video then play next video muted then rewind
+  var nextslide = $(imgEl).parent('.swiper-slide').next();
+  if(nextslide.length) {
+    $(imgEl).off('ended').one('ended',function(){
+    //trigger next slide on ended
+     mySwiper.slideNext();  
+   });
+  }else{
+     $(imgEl).off('ended').one('ended',function(){
+     // close popup
+     closepopup();
+    });
+  }
+}  
+  
+  
+});
+</script> 
+{% endif %}
+{% schema %}
+  {
+    "name": "Stories",
+    "settings": [
+{
+   "type":      "paragraph",
+   "content":   "Watch How to Setup Here [Setup Instructions](https://youtu.be/bL_X_GK69P4?t=487)"
+},
+   {
+        "type": "checkbox",
+        "id": "hidestories",
+        "label": "Show Stories",
+        "default": true,
+        "info": "disable this if you want to hide stories functionality"
+      },
+{
+  "type": "checkbox",
+  "id": "demo",
+  "label": "Show Demo Stories",
+  "default": true,
+  "info": "disable this when you start adding your own stories"
+},
+{
+   "type":      "header",
+   "content":   "Stories Area Colors"
+},  
+{
+       "id": "background_color",
+       "type": "color",
+       "label": "Background Color",
+       "default": "#ffffff"
+      },
+      {
+       "id": "font_color",
+       "type": "color",
+       "label": "Font Color",
+       "default": "#000000"
+      },
+{
+   "type":      "header",
+   "content":   "Bubble Colors"
+},  
+{
+       "id": "bubble_background_color",
+       "type": "color",
+       "label": "Background Color",
+       "default": "#bf43a6"
+},{
+       "id": "bubble_background_color_2",
+       "type": "color",
+       "label": "Background Color #2 (Optional Gradient)",
+       "default": "#f5ae5f"
+},{
+   "type":      "header",
+   "content":   "Bubble Tag Colors"
+},  
+{
+       "id": "bubble_tag_background_color",
+       "type": "color",
+       "label": "Background Color",
+       "default": "#cf0168"
+},{
+       "id": "bubble_tag_background_color_2",
+       "type": "color",
+       "label": "Background Color #2 (Optional Gradient)",
+       "default": "#e0023f"
+}],
+"blocks": [
+  {
+"type": "Video",
+     "name": "Video",
+     "settings" : [
+{
+   "type":      "header",
+   "content":   "Bubble Design"
+},
+{
+       "id": "image",
+       "type": "image_picker",
+       "label": "Story Image"
+      },
+   {
+    "type":   "range",
+    "id":     "imageposition",
+    "min":       0,
+    "max":       100,
+    "step":     5,
+    "unit":      "%",
+    "label":     "Image Position",
+    "default":   0
+},
+      {
+       "id": "title",
+       "type": "text",
+       "label": "Title"
+      },
+      {
+       "id": "tag",
+       "type": "text",
+       "label": "Tag (Optional)"
+      },
+{
+   "type":      "header",
+   "content":   "Step 1. Convert Your Video File"
+},
+{
+   "type":      "paragraph",
+   "content":   "If your video is a .mov from an iphone you will need to convert it to MP4 [Convert To MP4](https://convertio.co/mp4-converter/)"
+},
+{
+   "type":      "header",
+   "content":   "Step 2. Optimize Video (Optional)"
+},
+{
+   "type":      "paragraph",
+   "content":   "This is optional but you can make your video load 10X faster for users if you upload it to this Free File Compressor [Optimize Video](https://www.youcompress.com/)"
+},
+{
+   "type":      "header",
+   "content":   "Step 3. Upload your Video"
+},
+{
+   "type":      "paragraph",
+   "content":   "Upload your video to your Shopify File Area [Watch How To Upload](https://youtu.be/bL_X_GK69P4?t=420)"
+},
+{
+   "type":      "header",
+   "content":   "Video Links"
+},
+      {
+       "id": "mp41",
+       "type": "text",
+       "label": "MP4 Link"
+      },
+      {
+       "id": "mp41swipe",
+       "type": "url",
+       "label": "Swipe Up Link (Optional)"
+      },
+      {
+       "id": "mp42",
+       "type": "text",
+       "label": "MP4 Link"
+      },
+      {
+       "id": "mp42swipe",
+       "type": "url",
+       "label": "Swipe Up Link (Optional)"
+      },
+      {
+       "id": "mp43",
+       "type": "text",
+       "label": "MP4 Link"
+      },
+      {
+       "id": "mp43swipe",
+       "type": "url",
+       "label": "Swipe Up Link (Optional)"
+      },
+      {
+       "id": "mp44",
+       "type": "text",
+       "label": "MP4 Link"
+      },
+      {
+       "id": "mp44swipe",
+       "type": "url",
+       "label": "Swipe Up Link (Optional)"
+      },
+      {
+       "id": "mp45",
+       "type": "text",
+       "label": "MP4 Link"
+      },
+      {
+       "id": "mp45swipe",
+       "type": "url",
+       "label": "Swipe Up Link (Optional)"
+      },
+      {
+       "id": "mp46",
+       "type": "text",
+       "label": "MP4 Link"
+      },
+      {
+       "id": "mp46swipe",
+       "type": "url",
+       "label": "Swipe Up Link (Optional)"
+      },
+      {
+       "id": "mp47",
+       "type": "text",
+       "label": "MP4 Link"
+      },
+      {
+       "id": "mp47swipe",
+       "type": "url",
+       "label": "Swipe Up Link (Optional)"
+      },
+      {
+       "id": "mp48",
+       "type": "text",
+       "label": "MP4 Link"
+      },
+      {
+       "id": "mp48swipe",
+       "type": "url",
+       "label": "Swipe Up Link (Optional)"
+      },
+      {
+       "id": "mp49",
+       "type": "text",
+       "label": "MP4 Link"
+      },
+      {
+       "id": "mp49swipe",
+       "type": "url",
+       "label": "Swipe Up Link (Optional)"
+      },
+      {
+       "id": "mp410",
+       "type": "text",
+       "label": "MP4 Link"
+      },
+      {
+       "id": "mp410swipe",
+       "type": "url",
+       "label": "Swipe Up Link (Optional)"
+      }
+]
+},
+  {
+"type": "Image",
+     "name": "Image",
+     "settings" : [
+{
+   "type":      "header",
+   "content":   "Bubble Design"
+},
+{
+       "id": "image",
+       "type": "image_picker",
+       "label": "Story Image"
+      },
+   {
+    "type":   "range",
+    "id":     "imageposition",
+    "min":       0,
+    "max":       100,
+    "step":     5,
+    "unit":      "%",
+    "label":     "Image Position",
+    "default":   0
+},
+      {
+       "id": "title",
+       "type": "text",
+       "label": "Title"
+      },
+      {
+       "id": "tag",
+       "type": "text",
+       "label": "Tag (Optional)"
+      },
+{
+   "type":      "header",
+   "content":   "Images"
+},
+      {
+       "id": "img1",
+       "type": "image_picker",
+       "label": "Image"
+      },
+      {
+       "id": "img1swipe",
+       "type": "url",
+       "label": "Swipe Up Link (Optional)"
+      },
+      {
+       "id": "img2",
+       "type": "image_picker",
+       "label": "Image (Optional)"
+      },
+      {
+       "id": "img2swipe",
+       "type": "url",
+       "label": "Swipe Up Link (Optional)"
+      },
+      {
+       "id": "img3",
+       "type": "image_picker",
+       "label": "Image (Optional)"
+      },
+      {
+       "id": "img3swipe",
+       "type": "url",
+       "label": "Swipe Up Link (Optional)"
+      },
+      {
+       "id": "img4",
+       "type": "image_picker",
+       "label": "Image (Optional)"
+      },
+      {
+       "id": "img4swipe",
+       "type": "url",
+       "label": "Swipe Up Link (Optional)"
+      },
+      {
+       "id": "img5",
+       "type": "image_picker",
+       "label": "Image (Optional)"
+      },
+      {
+       "id": "img5swipe",
+       "type": "url",
+       "label": "Swipe Up Link (Optional)"
+      },
+      {
+       "id": "img6",
+       "type": "image_picker",
+       "label": "Image (Optional)"
+      },
+      {
+       "id": "img6swipe",
+       "type": "url",
+       "label": "Swipe Up Link (Optional)"
+      },
+      {
+       "id": "img7",
+       "type": "image_picker",
+       "label": "Image (Optional)"
+      },
+      {
+       "id": "img7swipe",
+       "type": "url",
+       "label": "Swipe Up Link (Optional)"
+      },
+      {
+       "id": "img8",
+       "type": "image_picker",
+       "label": "Image (Optional)"
+      },
+      {
+       "id": "img8swipe",
+       "type": "url",
+       "label": "Swipe Up Link (Optional)"
+      },
+      {
+       "id": "img9",
+       "type": "image_picker",
+       "label": "Image (Optional)"
+      },
+      {
+       "id": "img9swipe",
+       "type": "url",
+       "label": "Swipe Up Link (Optional)"
+      },
+      {
+       "id": "img10",
+       "type": "image_picker",
+       "label": "Image (Optional)"
+      },
+      {
+       "id": "img10swipe",
+       "type": "url",
+       "label": "Swipe Up Link (Optional)"
+      }
+]
+},
+ {
+"type": "Link",
+     "name": "Link",
+     "settings" : [
+{
+   "type":      "header",
+   "content":   "Bubble Design"
+},
+{
+       "id": "image",
+       "type": "image_picker",
+       "label": "Story Image"
+      },
+   {
+    "type":   "range",
+    "id":     "imageposition",
+    "min":       0,
+    "max":       100,
+    "step":     5,
+    "unit":      "%",
+    "label":     "Image Position",
+    "default":   0
+},
+      {
+       "id": "title",
+       "type": "text",
+       "label": "Title"
+      },
+      {
+       "id": "tag",
+       "type": "text",
+       "label": "Tag (Optional)"
+      },
+{
+   "type":      "header",
+   "content":   "Link Info"
+},
+      {
+       "id": "url",
+       "type": "url",
+       "label": "Link to"
+      }
+]
+}
+ ]
+  }
+{% endschema %}
+
+{% stylesheet 'scss' %}
+
+// responsive sizes
+@mixin bp($point) {
+  
+  $bp-small: "(max-width: 350px)";
+  $bp-mobile: "(max-width: 600px)";
+  $bp-mobileup: "(min-width: 600px)";
+  $bp-phablet: "(max-width: 1022px)";
+  $bp-phabletup: "(min-width: 1022px)";
+  $bp-tablet: "(max-width: 1280px)";
+  $bp-tabletup: "(min-width: 1281px)";
+  $bp-laptop: "(max-width: 1600px)";
+  $bp-desktop: "(min-width: 1600px)";
+  @if $point == desktop {
+    @media #{$bp-desktop}  { @content; }
+  }  
+  @else if $point == laptop {
+    @media #{$bp-laptop} { @content; }
+  }
+  @else if $point == tablet {
+    @media #{$bp-tablet} { @content; }
+  }
+  @else if $point == tabletup {
+    @media #{$bp-tabletup} { @content; }
+  }
+  @else if $point == phablet {
+    @media #{$bp-phablet} { @content; }
+  }
+  @else if $point == phabletup {
+    @media #{$bp-phabletup} { @content; }
+  }
+  @else if $point == mobile {
+    @media #{$bp-mobile}  { @content; }
+  }
+  @else if $point == mobileup {
+    @media #{$bp-mobileup} { @content; }
+  }
+  @else if $point == small {
+    @media #{$bp-small}  { @content; }
+  }
+}
+
+
+//color transition
+@mixin transition($attribute, $duration: null) {
+  
+      @if ($duration) {
+       
+    -webkit-transition: $attribute $duration ease;
+    -moz-transition: $attribute $duration ease;
+    transition: $attribute $duration ease;
+    } @else {
+        
+    -webkit-transition: $attribute;
+    -moz-transition: $attribute;
+    transition: $attribute;
+    }
+
+}
+
+@mixin keyframes($animationName) {
+  @-webkit-keyframes #{$animationName} {
+    @content;
+  }
+  @-moz-keyframes #{$animationName} {
+    @content;
+  }
+  @-o-keyframes #{$animationName} {
+    @content;
+  }
+  @keyframes #{$animationName} {
+    @content;
+  }
+}
+@mixin animate($name, $duration, $iteration, $direction) {
+  -webkit-animation-duration: $duration;
+     -moz-animation-duration: $duration;
+       -o-animation-duration: $duration;
+          animation-duration: $duration;
+  -webkit-animation-iteration-count: $iteration;
+     -moz-animation-iteration-count: $iteration;
+       -o-animation-iteration-count: $iteration;
+          animation-iteration-count: $iteration;
+  -webkit-animation-name: $name;
+     -moz-animation-name: $name;
+       -o-animation-name: $name;
+          animation-name: $name;
+  -webkit-animation-direction: $direction;
+     -moz-animation-direction: $direction;
+       -o-animation-direction: $direction;
+          animation-direction: $direction;
+}
+
+
+
+
+#shopify-section-Stories {
+    z-index: 9;
+    position: relative;
+      font-family: "Helvetica Neue",Helvetica,Roboto,Arial,sans-serif;
+  @include bp(phablet) {
+ position:static;
+}
+  & + * {
+    z-index:10;
+    position: relative;
+  }
+  & .stories-wrap {
+        padding: 12px 0 12px 0px;
+    @include bp(mobile) {
+       margin-bottom:-30px;
+       overflow-y:hidden;
+      }
+    & .swiper-wrapper {
+     @include bp(mobile) {
+       overflow-x: scroll;
+       overflow-y: hidden;
+        -webkit-overflow-scrolling: touch;  
+        padding-bottom:30px;
+      }
+    }
+    & .swiper-slide {
+      width:auto;
+      &:nth-child(1) {
+        & .story-wrap {
+         margin-left:10px;
+        }
+      }
+  & .story-wrap {
+       will-change: transform; 
+   -webkit-transform: translateZ(0);
+        position: relative;
+    display:inline-block;
+        margin-right: 10px;
+  & .story {
+     z-index:2;
+        position: relative;
+    width: auto;
+    height: auto;
+    display: inline-flex;
+    flex-flow: column;
+    align-items: center;
+    font-weight:normal;
+    color:#000;
+    &.fade {
+      .img {
+          filter: brightness(50%);
+      }
+    }
+    & .gradient {
+       display: flex;
+    justify-content: center;   
+   position: relative;     
+    width: auto;
+    height: auto;
+    border-radius: 50%;
+    padding: 3px;
+    & .img-wrap {
+    width: 60px;
+    height: 60px;
+    background-color:#fff;
+    border-radius: 50%;
+    overflow: hidden;
+    padding: 3px;
+      & .img {
+        border-radius: 50%;    
+      width:100%;
+      height:100%;
+       background-repeat: no-repeat;
+    background-size: cover;     
+       @include transition(filter,0.3s)
+	}
+    }
+      & .tag {
+    position: absolute;
+    bottom: -4px;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 8px;
+    letter-spacing: 1px;
+    padding: 2px 4px;
+    border-radius: 5px;
+    border: 2px solid #FFF;
+    text-overflow: ellipsis;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    line-height: normal;
+      }
+   }
+    & .title {
+font-size: 11px;
+    margin-top: 3px;
+    text-overflow: ellipsis;
+    max-width: 80px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-transform: none;
+    font-family: "Helvetica Neue",Helvetica,Roboto,Arial,sans-serif;
+    letter-spacing: normal;
+    }
+   }
+  }
+    }
+ }
+}
+
+
+
+.fa-times-thin:before {
+	content: '\00d7';
+  font-weight: 200;
+    font-style: normal;
+}
+.popup {
+   width: 100%;
+   height: 100%;
+    top: 0px;
+    left: 0px;
+    position: fixed;
+    z-index: 2147483647;
+ display:block;
+ transform: translate(0px, 0px) scale(0);
+ -ms-transform: translate(0px, 0px) scale(0);
+ -webkit-transform: translate(0px, 0px) scale(0);
+  will-change: transform; 
+  display:flex;
+  pointer-events:none;
+  & #popup-overlay {
+    content:'';
+    display:block;
+   background:#000;
+       background:#000;
+   width: 100%;
+   height: 100%;
+   top: 0px;
+   left: 0px; 
+   position: fixed; 
+    z-index:-1;
+    opacity:1;
+  }
+  &.active {
+    pointer-events:auto;
+  &.swipe {
+    & .popup-inner #swipe {
+     opacity:1 !important;
+    }
+    & .popup-inner .shadow {
+    background: -moz-linear-gradient(top,  rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 88%, rgba(0,0,0,0.23) 100%);
+    background: -webkit-linear-gradient(top,  rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 88%, rgba(0,0,0,0.23) 100%);
+    background: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 22%, rgba(0,0,0,0) 88%, rgba(0,0,0,0.23) 100%);
+    }
+  }
+  }
+  &.transition {
+        transition:transform 0.2s, opacity 0.2s;
+    -ms-transition:transform 0.2s, opacity 0.2s;
+    -webkit-transition:transform 0.2s, opacity 0.2s;
+      display:block;
+      transform: translate(0px, 0px) scale(1) !important;
+      -ms-transform: translate(0px, 0px) scale(1) !important;
+      -webkit-transform: translate(0px, 0px) scale(1) !important;
+      opacity:1 !important;
+  }
+  &.transitout {
+        transition:transform 0.2s, opacity 0.2s;
+    -ms-transition:transform 0.2s, opacity 0.2s;
+    -webkit-transition:transform 0.2s, opacity 0.2s;
+      display:block;
+  }
+  &.is-animating {
+    & .popup-inner {
+    -webkit-transition: transform 0.2s linear;
+-moz-transition:  transform 0.2s linear;
+-o-transition:  transform 0.2s linear;
+transition:  transform 0.2s linear;
+    }
+    & #popup-overlay {
+    -webkit-transition: opacity 0.2s linear;
+-moz-transition:  opacity 0.2s linear;
+-o-transition:  opacity 0.2s linear;
+transition:  opacity 0.2s linear;
+    }
+  }
+    & .popup-inner {
+   background:#000;
+   width: 100%;
+   height: 100%;
+   top: 0px;
+   left: 0px;
+   display:flex; 
+   position: fixed; 
+      
+  
+    will-change: transform; 
+   -webkit-transform: translateZ(0);
+   -moz-transform: translateZ(0);
+   -ms-transform: translateZ(0);
+   -o-transform: translateZ(0);
+   transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+   -moz-backface-visibility: hidden;
+   -ms-backface-visibility: hidden;
+   backface-visibility: hidden; 
+   -webkit-perspective: 1000;
+   -moz-perspective: 1000;
+   -ms-perspective: 1000;
+   perspective: 1000;  
+  & .close {
+    display: inline-block;
+    line-height: 1;
+    position: absolute;
+    right: 0px;
+        top: 18px;
+    padding: 0 4px;
+        z-index: 10;
+    & svg {
+    filter: drop-shadow(1px 4px 6px rgba(0,0,0,0.07));
+    line-height: 1;
+      max-width:40px;
+      height:auto;
+    }
+  }
+  & .control {
+   position: fixed;
+    z-index: 3;
+    height: 100%;
+    display:block;
+        outline: none;
+  }
+  #NavLeft {
+   
+    height: 100%;
+    width: 30%;
+    z-index: 9999;
+  }
+  #NavRight {
+    position: fixed;   
+    right:0;
+     width: 70%;
+  }
+  & .shadow {
+position: absolute;
+width: 100%;  
+height:100%;
+pointer-events:none;
+background: -moz-linear-gradient(top, rgba(0, 0, 0, 0.15) 0%,rgba(0, 0, 0, 0) 22%);
+background: -webkit-linear-gradient(top, rgba(0, 0, 0, 0.15) 0%,rgba(0, 0, 0, 0) 22%);
+background: linear-gradient(to bottom, rgba(0, 0, 0, 0.15) 0%,rgba(0, 0, 0, 0) 22%);
+z-index: 2;
+  }
+  & #swipe {
+    opacity:0;
+    pointer-events:none;
+    position: absolute;
+    width: 100%;
+    bottom: 0px;
+    z-index: 9;
+    text-align: center;
+    padding: 20px 0;
+    font-weight: bold;
+    color: #fff;
+    font-size: 19px;
+   .arrows {
+    position: relative;
+    width: 17px;
+    padding: 0px 0;
+    text-align: center;
+    margin: 0 auto;
+    height: 33px;
+
+
+   & svg {
+    width: 17px;
+    height: 100%;
+     & g {
+       -webkit-transform-origin: 50% 50%;
+       transform-origin: center center;
+     }
+    }
+}
+   }
+  & .story-profile {
+    display: flex;
+        align-items: center;
+    transform: translate3d(0px, 0px, 0px);
+    opacity: 1;
+    padding: 16px 0px 0px 12px;
+    transition: transform 250ms ease 0s, opacity 250ms ease 0s;
+      display: flex;
+    transform: translate3d(0px, 0px, 0px);
+    opacity: 1;
+    padding: 16px 0px 0px 12px;
+    transition: transform 250ms ease 0s, opacity 250ms ease 0s;
+    position: absolute;
+    width: calc(100% - 100px);
+      z-index: 9;
+    & .story-profile-pic {
+     position: relative;
+     height: 38px;
+     & div {
+     width: 38px;
+     height: 38px;
+     background-color: rgb(192, 192, 192);
+     border-radius: 50%;
+     overflow: hidden;
+     background-repeat: no-repeat;
+     background-size: cover;
+     }
+    }
+    & .story-profile-content {
+    color: white;
+    text-shadow: rgba(0,0,0,0.07) 0px 1px 12px;
+    margin-left: 10px;
+    font-size: 15px;
+    margin: 0px 0px 0px 10px;
+    font-weight: 600;
+    }
+}    
+  & #progress-bars-wrap {
+    display: flex;
+    position: fixed;
+    width: 100%;
+    z-index: 9999;
+    margin-top: 10px;
+    padding: 0 10px;
+    & .progress-backround {
+     display:block;
+     width:100%;
+     height: 2px;  
+     background-color: rgba(255, 255, 255, 0.49); 
+     margin: 0 3px;
+      &.done {
+      background-color: rgba(255, 255, 255, 1); 
+      }
+      & .progressbar {
+         height: 100%;
+         background: #ffff;
+         width:0;
+    transition:width .35s linear;
+    -ms-transition:width .35s linear;
+    -webkit-transition:width .35s linear;  
+      }
+    }
+  }
+  & .swiper-container {
+        width: 100%;
+    & .swiper-wrapper {
+
+      & .swiper-slide {
+    display: flex;
+    align-items: center;
+        & video, & img  {
+          width: 100%;
+          position:relative;
+          z-index:1;
+        }
+      }
+    }
+  }
+ }
+}
+
+{% endstylesheet %}
+
+{% javascript %}
+                  
+{% endjavascript %}                                      

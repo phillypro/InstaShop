@@ -1,0 +1,186 @@
+{% style %}
+{% capture buynowbutton %}{{settings.buy_now_button}}{{ settings.buynowcolor }}{{ settings.buynowbackground }}{{ settings.product_title_color }}{{ settings.product_price_color }}{% endcapture %}
+#shopify-section-{{ section.id  }} {
+    width: 100%;
+    display: flex;
+    flex-flow: wrap;
+}
+
+{% for block in section.blocks %}
+{% case block.type %}
+{% when 'Product' %}
+#shopify-section-{{ section.id  }} #block-{{ block.id }} {
+margin:{{ block.settings.topposition }}px 0 {{ block.settings.bottomposition }}px 0;
+{% unless block.settings.width == 'full' %}
+width: 49.5%;
+{% else %}
+width: 100%;
+{% endunless %}
+}
+{% when 'productCollection' %}
+
+#shopify-section-{{ section.id  }} #block-{{ block.id }}-collection {
+    width: 100%;
+    display: flex;
+    flex-flow: wrap;
+}
+
+#shopify-section-{{ section.id  }} #block-{{ block.id }}-collection .product {
+margin:{{ block.settings.topposition }}px 0 {{ block.settings.bottomposition }}px 0;
+{% unless block.settings.width == 'full' %}
+width: 49.5%;
+{% else %}
+width: 100%;
+{% endunless %}
+}
+{% when 'featuredProduct' %}
+#shopify-section-{{ section.id  }} #block-{{ block.id }}-featured {
+margin:{{ block.settings.topposition }}px 0 {{ block.settings.bottomposition }}px 0;
+width: 100%;
+}
+
+{% endcase %}
+{% endfor %} 
+{% endstyle %}
+{% for block in section.blocks %}
+{% case block.type %}
+{% when 'Product' %}
+
+{% assign product = all_products[block.settings.product] %}
+
+{% include 'product' %}
+
+{% when 'productCollection' %}
+
+<div id="block-{{ block.id }}-collection">
+ {% for product in collections[block.settings.collection].products limit:block.settings.products_per %}
+   {% include 'product' %} 
+ {% endfor %}
+ </div>
+{% endcase %}
+{% endfor %}
+
+
+
+{% schema %}
+  {
+    "name": "Products",
+    "settings": [],
+"blocks": [
+  {
+"type": "Product",
+     "name": "Single Product",
+     "settings" : [
+{
+       "id": "product",
+       "type": "product",
+       "label": "Product"
+},
+{
+   "type": "radio",
+   "id": "width",
+   "options": [
+      { "value": "full", "label": "Full Width"},
+      { "value": "half", "label": "Half Width"}
+   ],
+   "label": "Width"
+},
+{
+   "type": "header",
+   "content": "Spacing"
+},
+      {
+    "type":   "range",
+    "id":     "topposition",
+    "min":       0,
+    "max":       60,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Position from Top",
+    "default":   0
+     },
+     {
+    "type":   "range",
+    "id":     "bottomposition",
+    "min":       0,
+    "max":       60,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Position from Bottom",
+    "default":   15
+     }
+     ]
+},
+{
+"type": "productCollection",
+     "name": "Collection of Products",
+     "settings" : [
+{
+       "id": "collection",
+       "type": "collection",
+       "label": "Collection"
+},
+{
+   "type": "select",
+   "id": "products_per",
+   "options": [
+      { "value": "2", "label": "2 Products"},
+      { "value": "4", "label": "4 Products"},
+      { "value": "6", "label": "6 Products"},
+      { "value": "8", "label": "8 Products"},
+      { "value": "12", "label": "12 Products"},
+      { "value": "16", "label": "16 Products"},
+      { "value": "50", "label": "All"}
+   ],
+   "default": "50",
+   "label": "Show how many?"
+},
+{
+   "type": "radio",
+   "id": "width",
+   "options": [
+      { "value": "full", "label": "Full Width"},
+      { "value": "half", "label": "Half Width"}
+   ],
+   "label": "Width"
+},
+{
+   "type": "header",
+   "content": "Spacing"
+},
+      {
+    "type":   "range",
+    "id":     "topposition",
+    "min":       0,
+    "max":       60,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Position from Top",
+    "default":   0
+     },
+     {
+    "type":   "range",
+    "id":     "bottomposition",
+    "min":       0,
+    "max":       60,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Position from Bottom",
+    "default":   15
+     }
+     ]
+}],
+ "presets": [
+    {
+      "name": "Products",
+      "category": "Products"
+    }
+  ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

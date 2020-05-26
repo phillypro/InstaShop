@@ -1,0 +1,347 @@
+   {% style %}   
+   #shopify-section-{{ section.id }} {
+    width:100%;
+   }
+   {% assign loadedfonts = '' %}    
+   {% assign familyandweight = section.settings.font.family | append: block.settings.font.weight %}
+   {% if loadedfonts contains familyandweight %}
+   {% else %}
+   {{ section.settings.font | font_face }}  
+   {% endif %}   
+   {% assign loadedfonts = loadedfonts | append: section.settings.font.family | append: section.settings.font.weight | append: section.settings.font.style | append: '|' %}
+   .mailing-list-wrap.mail-{{ section.id }} {
+   margin: {{ section.settings.topposition }}px auto {{ section.settings.bottomposition }}px ;
+   }
+   .mailing-list-wrap.mail-{{ section.id }} p {
+   color:{{ section.settings.message_color }};
+   font-size:{{ section.settings.fontsize }}px;
+   font-family: {{ section.settings.font.family }}; 
+   font-weight:{{ section.settings.font.weight }}; 
+   font-style:{{ section.settings.font.style }};  
+   }
+   .mailing-list-wrap.mail-{{ section.id }} form button[type=submit] {
+   background:{{ section.settings.button_color }};color:{{ section.settings.button_font_color }};
+   }
+   {% endstyle %}
+   <div class="mailing-list-wrap mail-{{ section.id }}">
+      <div class="mailing-list-inner">
+         {% if section.settings.message %}
+         <p><span>{{ section.settings.message }}</span></p>
+         {% endif %}
+         {% if section.settings.mailchimp_url %}
+         {% assign mailchimpform = section.settings.mailchimp_url | split: 'u=' %}
+         {% assign mailchimpform = mailchimpform[1] %}
+         {% assign mailchimpformids = mailchimpform | split: '&amp;id=' %}
+         <!-- Begin Mailchimp Signup Form -->
+         <div id="mc_embed_signup">
+            <form id="mc-embedded-subscribe-form-{{ section.id }}" name="mc-embedded-subscribe-form" class="validate" action="{{ section.settings.mailchimp_url }}"  method="post" target="_blank" novalidate>
+               <input class="email" type="email" value="" name="EMAIL" id="mce-EMAIL" placeholder="{{ block.settings.input_text }}">
+               <div style="position: absolute; left: -5000px;" aria-hidden="true">
+                  <input type="text" name="b_{{ mailchimpformids[0] }}_{{ mailchimpformids[1] }}" tabindex="-1" value="">
+               </div>
+               <button name="subscribe" id="mc-embedded-subscribe" type="submit" class="mc-button">{{ block.settings.button_text }}</button>
+            </form>
+            <div class="response" id="mce-error-response" style="display:none;"></div>
+         </div>
+         <!--End mc_embed_signup-->
+         {% else %}     
+         <form id="klaviyo{{ section.id }}" class="klaviyoform" action="//manage.kmail-lists.com/subscriptions/subscribe" data-ajax-submit="//manage.kmail-lists.com/ajax/subscriptions/subscribe" method="GET" target="_blank" novalidate="novalidate">
+            <input type="hidden" name="g" value="{{ section.settings.klaviyo_list }}">
+            <input type="email" value="" name="email" id="k_id_email" placeholder="{{ section.settings.input_text }}">
+            <button type="submit" class="klaviyo_submit_button">{{ section.settings.button_text }}</button>
+         </form>
+         {% endif %}
+      </div>
+   </div>
+   {% assign ajax = section.settings.ajax %}
+
+<script>
+{% unless mailchimpform %}  
+var callback{{ section.id }} = function(){
+  // Handler when the DOM is fully loaded
+  if(!window.KlaviyoSubscribe) {
+    // add script
+    var script = document.createElement("script");
+    script.type = "text/javascript";   
+    script.src = 'https://www.klaviyo.com/media/js/public/klaviyo_subscribe.js';
+    document.getElementsByTagName("head")[0].appendChild(script);
+  }
+};
+
+if (
+    document.readyState === "complete" ||
+    (document.readyState !== "loading" && !document.documentElement.doScroll)
+) {
+  callback{{ section.id }}();
+} else {
+  document.addEventListener("DOMContentLoaded", callback{{ section.id }});
+}    
+{% endunless %}  
+  
+function defer{{ section.id }}(method{{ section.id }}) {
+    if (window.jQuery) {
+        method{{ section.id }}();
+    } else {
+        setTimeout(function() { defer(method{{ section.id }}) }, 50);
+    }
+}
+defer{{ section.id }}(function () {
+  
+  
+    var callback{{ section.id }} = {
+             extra_properties: {
+                $source: 'section-{{ section.id }}'
+            },
+            success: function() {
+                var form = $('#klaviyo{{ section.id }}');
+                form.children('#k_id_email').hide('fast');
+                form.children('.klaviyo_submit_button').attr("disabled", true).text('Thank You');
+            } 
+  }  
+  
+  
+  
+  
+ {% if ajax %}  
+   {% if mailchimpform %}
+    $.ajaxChimp = {
+        responses: {
+            "We have sent you a confirmation email": 0,
+            "Please enter a value": 1,
+            "An email address must contain a single @": 2,
+            "The domain portion of the email address is invalid (the portion after the @: )": 3,
+            "The username portion of the email address is invalid (the portion before the @: )": 4,
+            "This email address looks fake or invalid. Please enter a real email address": 5
+        },
+        translations: {
+            en: null
+        },
+        init: function(selector, options) {
+            $(selector).ajaxChimp(options)
+        }
+    };
+    $.fn.ajaxChimp = function(options) {
+        $(this).each(function(i, elem) {
+            var form = $(elem);
+            var email = form.find("input[type=email]");
+            var errorrsp = form.siblings('#mce-error-response');
+			var button = form.find("[type='submit']");
+			var buttontext = button.text();
+            var settings = $.extend({
+                url: form.attr("action"),
+                language: "en"
+            }, options);
+            var url = settings.url.replace("/post?", "/post-json?").concat("&c=?");
+            form.attr("novalidate", "true");
+            email.attr("name", "EMAIL");
+            form.submit(function() {
+                var msg;
+                errorrsp.hide();
+                function successCallback{{ section.id }}(resp) {
+                    if (resp.result === "success") {
+						button.html(buttontext);
+						// success functions
+						email.hide('fast');
+				        button.attr("disabled", true).text('Thank You');				
+                    } else {
+                        var index = -1;
+                        try {
+                            var parts = resp.msg.split(" - ", 2);
+                            if (parts[1] === undefined) {
+                                msg = resp.msg
+                            } else {
+                                var i = parseInt(parts[0], 10);
+                                if (i.toString() === parts[0]) {
+                                    index = parts[0];
+                                    msg = parts[1]
+                                } else {
+                                    index = -1;
+                                    msg = resp.msg
+                                }
+                            }
+                        } catch (e) {
+                            index = -1;
+                            msg = resp.msg
+                        }
+						
+					errorrsp.html(msg);
+                    errorrsp.show('fast');
+				    button.html(buttontext);
+                    }
+                    if (settings.language !== "en" && $.ajaxChimp.responses[msg] !== undefined && $.ajaxChimp.translations && $.ajaxChimp.translations[settings.language] && $.ajaxChimp.translations[settings.language][$.ajaxChimp.responses[msg]]) {
+                        msg = $.ajaxChimp.translations[settings.language][$.ajaxChimp.responses[msg]]  	
+                    }
+                    if (settings.callback) {
+                        settings.callback(resp)
+                    }
+                }
+                var data = {};
+                var dataArray = form.serializeArray();
+                $.each(dataArray, function(index, item) {
+                    data[item.name] = item.value
+                });
+                $.ajax({
+                    url: url,
+                    data: data,
+                    success: successCallback{{ section.id }},
+                    dataType: "jsonp",
+                    error: function(resp, text) {
+                        console.log("mailchimp ajax submit error: " + text)
+                    }
+                });
+                var submitMsg = "Submitting...";
+                if (settings.language !== "en" && $.ajaxChimp.translations && $.ajaxChimp.translations[settings.language] && $.ajaxChimp.translations[settings.language]["submit"]) {
+                    submitMsg = $.ajaxChimp.translations[settings.language]["submit"]
+                }
+                button.html(submitMsg).show(2e3);
+                return false
+            })
+        });
+        return this
+    }
+    $('#mc-embedded-subscribe-form-{{ section.id }}').ajaxChimp();
+   {% else %}
+    KlaviyoSubscribe.attachToForms('#klaviyo{{ section.id }}', callback{{ section.id }});
+   {% endif %}
+ {% endif %}
+  
+});
+</script>
+{% schema %}
+  {
+    "name": "Mailing List",
+    "settings": [ 
+         {
+        "type": "header",
+        "content": "A Klaviyo or Mailchimp Account is Required"
+      },
+      {
+        "type": "paragraph",
+"content": "Sign Up for your FREE Klaviyo Account [Click Here](https://www.klaviyo.com/partner/signup?utm_source=001d0000024G2vY&utm_medium=partner). After you sign up watch this video on how to get your List ID [Watch Tutorial Video](https://www.youtube.com)"
+      },
+         {
+        "type": "header",
+        "content": "Klaviyo Settings"
+      },
+         {
+        "id": "klaviyo_list",
+        "type": "text",
+        "label": "Klaviyo List Id (ex: m4stTTd)"
+      },
+         {
+        "type": "header",
+        "content": "Mailchimp Settings"
+      },
+      {
+        "id": "mailchimp_url",
+        "type": "url",
+        "label": "Form action URL (ex: https://dbz.us3.list-manage.com/subscribe/...)"
+      },
+       {
+        "type": "header",
+        "content": "Message Style & Colors"
+      },
+     {
+        "id": "message",
+        "type": "textarea",
+        "label": "Message",
+        "default": "Join our Mailing List and stay updated"
+      },
+ {
+     "type": "font_picker",
+     "id": "font",
+     "label": "Font",
+     "default": "work_sans_n6"
+   },
+     {
+    "type":   "range",
+    "id":     "fontsize",
+    "min":       16,
+    "max":       60,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Font Size",
+    "default":   21
+     },
+      {
+        "id": "message_color",
+        "type": "color",
+        "label": "Message Text Color",
+        "default": "#000"
+      },
+       {
+        "type": "header",
+        "content": "Button Style & Colors"
+      },
+      {
+        "id": "input_text",
+        "type": "text",
+        "label": "Input Placeholder Text",
+        "default": "Your@email.com"
+      },
+      {
+        "id": "button_text",
+        "type": "text",
+        "label": "Button Text",
+        "default": "Sign Up"
+      },
+      {
+        "id": "button_color",
+        "type": "color",
+        "label": "Button Background Color",
+        "default": "#000"
+      },
+      {
+        "id": "button_font_color",
+        "type": "color",
+        "label": "Button Font Color",
+        "default": "#fff"
+      },
+{
+   "type":      "header",
+   "content":   "Advanced (Expert Only!)"
+},
+{
+  "type": "checkbox",
+  "id": "ajax",
+  "label": "Single Opt In",
+  "default": false
+},
+{
+   "type": "header",
+   "content": "Spacing"
+},
+      {
+    "type":   "range",
+    "id":     "topposition",
+    "min":       0,
+    "max":       60,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Position from Top",
+    "default":   0
+     },
+     {
+    "type":   "range",
+    "id":     "bottomposition",
+    "min":       0,
+    "max":       60,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Position from Bottom",
+    "default":   15
+     }],
+ "presets": [
+    {
+      "name": "Mailing List",
+      "category": "Marketing"
+    }
+  ]
+  }  
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

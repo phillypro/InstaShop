@@ -1,0 +1,120 @@
+{% style %}
+#shopify-section-{{ section.id  }} {
+margin:{{ section.settings.topposition }}px 0 {{ section.settings.bottomposition }}px 0;
+{% unless section.settings.width == 'full' %}
+      width: 49.5%;
+  {% else %}
+    width: 100%;
+{% endunless %}
+}
+{% endstyle %}
+
+
+<a {% if section.settings.url contains '#mailPopup' %}data-rel="popup" data-transition="slideupfade"{% endif %} href="{{ section.settings.url }}">
+  <img src="{{ section.settings.image | img_url: '1024x1024' }}" {% unless section.settings.image.alt == blank %}alt="{{ section.settings.image.alt }}"{% endunless %} />
+</a>
+
+
+{% schema %}
+  {
+    "name": "Image",
+    "settings": [{
+       "id": "image",
+       "type": "image_picker",
+       "label": "Image"
+},
+{
+       "id": "url",
+       "type": "url",
+       "label": "Link to"
+},
+{
+   "type": "radio",
+   "id": "width",
+   "options": [
+      { "value": "full", "label": "Full Width"},
+      { "value": "half", "label": "Half Width"}
+   ],
+   "label": "Width"
+},
+{
+   "type": "header",
+   "content": "Spacing"
+},
+      {
+    "type":   "range",
+    "id":     "topposition",
+    "min":       0,
+    "max":       60,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Position from Top",
+    "default":   0
+     },
+     {
+    "type":   "range",
+    "id":     "bottomposition",
+    "min":       0,
+    "max":       60,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Position from Bottom",
+    "default":   15
+     }
+],
+ "presets": [
+    {
+      "name": "Image",
+      "category": "Media"
+    }
+  ]
+  }
+{% endschema %}
+
+{% stylesheet 'scss' %}
+
+{% endstylesheet %}
+
+{% javascript %}
+   
+$(document).on("shopify:section:select", function(e){
+
+var type = 'Image';
+var EditClass = 'editImage';
+
+
+var dataset = e.target.dataset;
+var dataset = JSON.parse(dataset[Object.keys(dataset)[0]]);
+var sectionType = dataset['type'];
+var sectionId = dataset['id'];
+var eventSectionId = e.target.id.replace('shopify-section-','');
+if(sectionType == type && sectionId == eventSectionId) {
+
+//scroll
+var sectionEl = document.querySelector('#shopify-section-'+sectionId);
+var topPos = sectionEl.offsetTop;
+var frame = document.querySelector('#swiper_Frame');
+if(!window['scroll'+sectionId]) {
+$(frame).animate({ scrollTop: topPos }); 
+window['scroll'+sectionId] = true;
+}
+
+
+
+
+
+
+var body =  document.getElementsByTagName("body")[0];
+body.classList.add('editing', EditClass);
+$(document).one("shopify:section:deselect",function(e){
+body.classList.remove(EditClass);
+
+//clear scroll
+window['scroll'+sectionId] = undefined;
+
+
+})
+}
+});   
+
+{% endjavascript %}         

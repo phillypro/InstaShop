@@ -1,0 +1,67 @@
+{% capture colsettings %}
+{{ settings.collectionProductsWidth }}
+{{ settings.collection_title_font }}
+{{ settings.collection_title_fontsize }}
+{{ settings.collection_title_color }}
+{% endcapture %}
+
+{% paginate collection.products by 50 %}
+
+<div class="collection-{{ collection.handle }}">
+
+ {% unless collection.title == blank and collection.description == blank %} 
+ <div class="details"> 
+ {% if collection.title != blank %} 
+ <div class="collection-title">
+  <h1>{{ collection.title }}</h1>
+ </div>
+ {% endif %} 
+  
+  {% if collection.description != blank %}
+  <div class="description">
+    {{ collection.description }}
+   </div>
+  {% endif %}
+  </div>
+ {% endunless %}
+  
+  
+ {% if collection.products_count > 1 %}
+  <div class="collection-products">
+      {% for product in collection.products %}
+        {% include 'product' %} 
+      {% endfor %}
+  </div>
+ {% else %}
+  <p>There are no products here yet.</p>
+ {% endif %}
+  
+  
+</div>
+
+
+  {% if paginate.pages > 1 %}
+   <div class="row pagination-wrap align-center">
+     <div class="text-center">
+    {{ paginate | default_pagination }}
+     </div>
+   </div>
+  {% endif %}
+
+{% endpaginate %}  
+  
+{% schema %}
+  {
+    "name": "Collection",
+    "settings": [{
+"type": "paragraph",
+"content": "Select Theme Settings below to change title style or product width"
+}]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

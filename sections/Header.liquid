@@ -1,0 +1,308 @@
+{% style %}
+{% assign loadedfonts = '' %}    
+{% assign familyandweight = section.settings.font.family | append: section.settings.font.weight %}
+{% if loadedfonts contains familyandweight %}
+{% else %}
+  {{ section.settings.font | font_face }}  
+{% endif %}   
+{% assign loadedfonts = loadedfonts | append: section.settings.font.family | append: section.settings.font.weight | append: section.settings.font.style | append: '|' %}
+
+
+
+
+#shopify-section-{{ section.id }} .header-wrap {
+box-shadow: 1px 1px 24px rgba(0, 0, 0, 0.07);
+{% if section.settings.header_background_color_2 contains 'transparent' or section.settings.header_background_color_2 contains 'rgba(0,0,0,0)' %}
+      background-color:{{ section.settings.header_background_color }};                            
+  {% else %}     
+    background: -moz-linear-gradient(left, {{ section.settings.header_background_color }} 0%, {{ section.settings.header_background_color_2 }} 100%);
+    background: -webkit-linear-gradient(left, {{ section.settings.header_background_color }} 0%, {{ section.settings.header_background_color_2 }} 100%);
+    background: linear-gradient(to right, {{ section.settings.header_background_color }} 0%, {{ section.settings.header_background_color_2 }} 100%);                            
+{% endif %}
+}
+#shopify-section-{{ section.id }} .header-wrap a i {
+background-color:{{ section.settings.menu_icon_color }};
+}
+#shopify-section-{{ section.id }} .header-wrap .logo-wrap {
+max-width:{{ section.settings.logo_width }}%;
+}
+#shopify-section-{{ section.id }} .header-wrap .logo-wrap a {
+color:{{ section.settings.brand_name_color }};
+}
+#shopify-section-{{ section.id }} .header-wrap .logo-wrap a {
+font-family: {{ section.settings.font.family }}; 
+font-weight:{{ section.settings.font.weight }}; 
+font-style:{{ section.settings.font.style }};
+font-size:{{ section.settings.font_size }}px;
+}
+#shopify-section-{{ section.id }} .header-wrap .cart-wrap a {
+color:{{ section.settings.cart_icon_color }};
+}
+#shopify-section-{{ section.id }} .header-wrap .cart-wrap svg path {
+fill:{{ section.settings.cart_icon_color }}:
+}
+{% endstyle %}
+
+<div class="header-wrap">   
+<div class="row align-justify align-middle">
+      <div class="mobile-menu">
+       <a href="#shopify-section-Mobile-Menu">
+          <icon>
+          <i></i>
+          <i></i>
+          <i></i>
+          </icon>
+       </a>
+      </div>
+      <div class="text-center logo-wrap">
+        <!--logo-->
+        <a href="/" title="{{ shop.name }}">
+          {% if section.settings.brand_logo_svg != '' %}
+            {{ section.settings.brand_logo_svg }}
+          {% else %}
+          {% capture logo %}{{ section.settings.brand_logo | img_url: 'compact' }}{% endcapture %}
+         {% if logo contains 'no-image' %} 
+          <span>
+            {% if section.settings.brandname != '' %}
+             {{ section.settings.brandname }}
+            {% else %}
+             {{ shop.name }}
+            {% endif %}
+          </span>
+          {% else %}
+           <img alt="{{ shop.name}} logo" src="{{ section.settings.brand_logo | img_url: 'medium' }}" />
+          {% endif %}
+          {% endif %}
+        </a> 
+        <!--End logo-->
+      </div>
+      <div class="cart-wrap">
+            <a class="cart-target {% if cart.item_count > 0 %}hasitem{% endif %}" href="/cart" title="View your shopping cart">               
+               <div class="cart-count-wrap"><span class="cart-count">{{ cart.item_count }}</span></div>  
+               <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><path fill-rule="nonzero" d="M12 7V6c0-1 1-2 2-2h4c1 0 2 1 2 2v1h7v19H5V7h7zm14 1H6v17h20V8zM13 6v1h6V6c0-.5-.5-1-1-1h-4c-.5 0-1 .5-1 1z"></path></svg></a>  
+      </div>
+    
+</div>
+</div>
+
+{% schema %}
+  {
+    "name": "Logo Header Bar",
+    "settings": [{
+   "type":      "header",
+   "content":   "Brand Name / Brand Logo"
+},      
+{
+       "id": "brandname",
+       "type": "text",
+       "label": "Brand Name"
+      },
+ {
+     "type": "font_picker",
+     "id": "font",
+     "label": "Font",
+     "default": "work_sans_n6"
+   },
+{
+    "type":   "range",
+    "id":     "font_size",
+    "min":       15,
+    "max":      40,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Font Size",
+    "default":   25
+}, 
+      {
+       "id": "brand_logo",
+       "type": "image_picker",
+       "label": "Brand Logo"
+      },
+      {
+       "id": "brand_logo_svg",
+       "type": "html",
+       "label": "Brand Logo SVG (Optional)"
+      },
+{
+    "type":   "range",
+    "id":     "logo_width",
+    "min":       5,
+    "max":       60,
+    "step":     1,
+    "unit":      "%",
+    "label":     "Logo Width",
+    "default":   60
+},  
+{
+   "type":      "header",
+   "content":   "Colors"
+}, 
+{
+   "type":      "paragraph",
+   "content":   "Customize the color scheme of your header background and icons"
+},
+ {
+        "id": "header_background_color",
+        "type": "color",
+        "label": "Background Color",
+        "default": "#FFFFFF"
+      },{
+       "id": "header_background_color_2",
+       "type": "color",
+       "label": "Background Color #2 (Optional Gradient)",
+       "default": "transparent"
+},
+{
+       "id": "brand_name_color",
+       "type": "color",
+       "label": "Brand Name Color",
+       "default": "#000000"
+},
+{
+       "id": "menu_icon_color",
+       "type": "color",
+       "label": "Menu Icon Color",
+       "default": "#919191"
+},
+{
+       "id": "cart_icon_color",
+       "type": "color",
+       "label": "Cart Icon Color",
+       "default": "#000000"
+}
+]
+  }
+{% endschema %}
+
+{% stylesheet 'scss' %}
+// responsive sizes
+@mixin bp($point) {
+  
+  $bp-small: "(max-width: 350px)";
+  $bp-mobile: "(max-width: 600px)";
+  $bp-mobileup: "(min-width: 600px)";
+  $bp-phablet: "(max-width: 1022px)";
+  $bp-phabletup: "(min-width: 1022px)";
+  $bp-tablet: "(max-width: 1280px)";
+  $bp-tabletup: "(min-width: 1280px)";
+  $bp-laptop: "(max-width: 1600px)";
+  $bp-desktop: "(min-width: 1600px)";
+  @if $point == desktop {
+    @media #{$bp-desktop}  { @content; }
+  }  
+  @else if $point == laptop {
+    @media #{$bp-laptop} { @content; }
+  }
+  @else if $point == tablet {
+    @media #{$bp-tablet} { @content; }
+  }
+  @else if $point == tabletup {
+    @media #{$bp-tabletup} { @content; }
+  }
+  @else if $point == phablet {
+    @media #{$bp-phablet} { @content; }
+  }
+  @else if $point == phabletup {
+    @media #{$bp-phabletup} { @content; }
+  }
+  @else if $point == mobile {
+    @media #{$bp-mobile}  { @content; }
+  }
+  @else if $point == mobileup {
+    @media #{$bp-mobileup} { @content; }
+  }
+  @else if $point == small {
+    @media #{$bp-small}  { @content; }
+  }
+
+}
+
+//color transition
+@mixin transition($attribute, $duration) {
+    -webkit-transition: $attribute $duration ease;
+    -moz-transition: $attribute $duration ease;
+    transition: $attribute $duration ease;
+}
+
+
+.header-wrap {
+padding: 10px 20px 10px;
+    background: #fff;
+  & .mobile-menu {
+  & a icon {
+    display: block;
+    position: relative;
+    width: 25px;
+    margin: 0 auto;
+    max-height: 25px;
+    padding-bottom: 2px;
+    & i {
+     background: rgba(255, 255, 255, 0.51);
+    width: 100%;
+    height: 2px;
+    display: block;
+    margin: 6px 0;
+    border-radius: 5px;
+            &:nth-child(3) {
+            	width:80%;
+            }
+    }
+  }
+ }
+  & .logo-wrap {
+    max-width: 60%;
+    line-height: 1;
+    & a {
+      color:#000;
+      & svg {
+        max-width: 100%;
+        height: 100%;
+      }
+      & img {
+       max-width:100%;
+       max-height:50px;
+      }
+      & span {
+        white-space: nowrap;
+        @include bp(mobile) {
+           font-size: 89%;
+        }
+     }
+    }
+  }
+  & .cart-wrap {
+    display:block;
+    & a {
+    height: 32px;
+    width: 32px;
+    display: block;
+    text-align: center;
+    position:relative;
+    line-height: 32px;  
+    color:#000;
+    font-size: 11px;   
+    & svg {
+    position: absolute;
+    top: 0;
+    right: 0;
+    }
+   }
+  }
+}
+
+
+
+{% endstylesheet %}
+
+{% javascript %}
+
+
+
+$(document).on("shopify:section:select",'#shopify-section-Header',function(e){
+$('body').addClass('editing editheader');
+$(document).one("shopify:section:deselect",function(e){
+$('body').removeClass('editheader');
+})
+}) 
+{% endjavascript %}                                                  
+ 

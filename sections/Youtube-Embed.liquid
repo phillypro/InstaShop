@@ -1,0 +1,120 @@
+{% style %}
+#shopify-section-{{ section.id  }} {
+margin:{{ section.settings.topposition }}px 0 {{ section.settings.bottomposition }}px 0;
+{% unless section.settings.width == 'full' %}
+      width: 49.5%;
+  {% else %}
+    width: 100%;
+{% endunless %}
+}
+{% endstyle %}
+
+
+<div class="youtube-video flex-video widescreen youtube">
+   <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ section.settings.video.id }}?modestbranding=1&amp;controls=0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</div>
+
+{% schema %}
+  {
+    "name": "Youtube Video",
+    "settings": [{
+   "id": "video",
+   "type": "video_url",
+   "label": "Youtube URL",
+   "accept": ["youtube"],
+   "placeholder": "https://www.youtube.com/watch?v=6L_k74BOLag"
+},
+{
+   "type": "radio",
+   "id": "width",
+   "options": [
+      { "value": "full", "label": "Full Width"},
+      { "value": "half", "label": "Half Width"}
+   ],
+   "label": "Width"
+},
+{
+   "type": "header",
+   "content": "Spacing"
+},
+      {
+    "type":   "range",
+    "id":     "topposition",
+    "min":       0,
+    "max":       60,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Position from Top",
+    "default":   0
+     },
+     {
+    "type":   "range",
+    "id":     "bottomposition",
+    "min":       0,
+    "max":       60,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Position from Bottom",
+    "default":   15
+     }
+],
+ "presets": [
+    {
+      "name": "Youtube Video",
+      "category": "Media"
+    }
+  ]
+  }
+{% endschema %}
+
+{% stylesheet 'scss' %}
+
+.youtube-video.flex-video {
+margin-bottom:0px;
+}
+
+{% endstylesheet %}
+
+{% javascript %}
+   
+$(document).on("shopify:section:select", function(e){
+
+var type = 'Youtube-Embed';
+var EditClass = 'editYoutubeVideo';
+
+
+var dataset = e.target.dataset;
+var dataset = JSON.parse(dataset[Object.keys(dataset)[0]]);
+var sectionType = dataset['type'];
+var sectionId = dataset['id'];
+var eventSectionId = e.target.id.replace('shopify-section-','');
+if(sectionType == type && sectionId == eventSectionId) {
+
+//scroll
+var sectionEl = document.querySelector('#shopify-section-'+sectionId);
+var topPos = sectionEl.offsetTop;
+var frame = document.querySelector('#swiper_Frame');
+if(!window['scroll'+sectionId]) {
+$(frame).animate({ scrollTop: topPos }); 
+window['scroll'+sectionId] = true;
+}
+
+
+
+
+
+
+var body =  document.getElementsByTagName("body")[0];
+body.classList.add('editing', EditClass);
+$(document).one("shopify:section:deselect",function(e){
+body.classList.remove(EditClass);
+
+//clear scroll
+window['scroll'+sectionId] = undefined;
+
+
+})
+}
+});   
+
+{% endjavascript %}                     

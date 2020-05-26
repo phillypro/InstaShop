@@ -1,0 +1,712 @@
+{% style %}
+{% assign loadedfonts = '' %}    
+{% assign familyandweight = section.settings.font.family | append: section.settings.font.weight %}
+{% if loadedfonts contains familyandweight %}
+{% else %}
+  {{ section.settings.font | font_face }}  
+{% endif %}   
+{% assign loadedfonts = loadedfonts | append: section.settings.font.family | append: section.settings.font.weight | append: section.settings.font.style | append: '|' %}
+
+ #shopify-section-{{ section.id }} .ui-panel-inner .content .content-inner .mobile-menu > ul {
+text-transform:{% if section.settings.link_uppercase == true %}uppercase{% else %}none{% endif %};
+}
+
+ #shopify-section-{{ section.id }} .ui-panel-inner .content a {
+color:{{ section.settings.link_color }}
+}
+
+
+  #shopify-section-{{ section.id }} .ui-panel-inner .content .content-inner .mobile-menu ul li {
+      line-height:{{ section.settings.link_spacing }};
+  }
+  #shopify-section-{{ section.id }} .ui-panel-inner .content .content-inner .mobile-menu ul li a {
+   color:{{ section.settings.link_color }};
+    font-family: {{ section.settings.font.family }}; 
+    font-style:{{ section.settings.font.style }};
+  }
+  
+#shopify-section-{{ section.id }} .ui-panel-inner .content .content-inner .search .inner-addon #productsearch {
+    font-family: {{ section.settings.font.family }}; 
+    font-style:{{ section.settings.font.style }};
+color:{{ section.settings.search_color }}; 
+border-bottom-color:{{ section.settings.search_color }};
+}
+
+#shopify-section-{{ section.id }} .ui-panel-inner .content .content-inner .search .inner-addon i {
+color:{{ section.settings.search_color }};
+}
+
+
+ #shopify-section-{{ section.id }} .ui-panel-inner {
+  {% capture backgroundimage %}{{ section.settings.background_image | img_url: '1024x1024' }}{% endcapture %}                                   
+{% if backgroundimage contains 'no-image' %}
+  {% if section.settings.background_color_2 contains 'transparent' or section.settings.background_color_2 contains 'rgba(0,0,0,0)' %}
+      background-color:{{ section.settings.background_color }};                            
+  {% else %}     
+    background: -moz-linear-gradient(left, {{ section.settings.background_color }} 0%, {{ section.settings.background_color_2 }} 100%);
+    background: -webkit-linear-gradient(left, {{ section.settings.background_color }} 0%, {{ section.settings.background_color_2 }} 100%);
+    background: linear-gradient(to right, {{ section.settings.background_color }} 0%, {{ section.settings.background_color_2 }} 100%);                            
+  {% endif %}
+{% else %}
+background-image:url({{ section.settings.background_image | img_url: '1024x1024' }}); background-color:{{ section.settings.background_color }};
+{% endif %}     
+}
+
+#shopify-section-{{ section.id }} .ui-panel-inner .content .content-inner .mobile-menu ul > li {
+font-size:{{ section.settings.link_size }}%;
+}
+
+
+#shopify-section-{{ section.id }} .ui-panel-inner .content .content-inner .mobile-menu ul li {
+    {% if section.settings.link_border == true %}
+      border-bottom: 1px solid {{ section.settings.link_color }}42;
+    {% endif %} 
+}
+#shopify-section-{{ section.id }} .contactsubmit input {
+background-color:{{ section.settings.button_color }};
+}
+#shopify-section-{{ section.id }} .message {
+color:{{ section.settings.link_color }};
+}
+{% endstyle %}
+
+
+
+
+<div class="ui-panel-inner">
+
+<div class="content">
+    <div class="content-inner"> 
+<form id="productsearchform" class="search columns" action="/search">
+ <input type="hidden" name="type" value="product" />
+  <div class="inner-addon right-addon">
+    <i class="glyphicon glyphicon-search"></i>
+    <input id="productsearch" type="text" name="q" placeholder="{{ section.settings.search_placeholder }}" value="{{ search.terms }}"  data-role="none" autocomplete="off" />
+  </div>
+</form>
+  
+  
+ 
+     <div id="mobile-menu" class="mobile-menu">
+       
+
+       
+       <ul>
+         
+         
+         
+         
+         {% for link in linklists.main-menu.links %}
+         {% if linklists[link.handle] == empty %}
+        {% if link.title == 'Catalog' %}
+         {% else %}
+         <li class="menu-item-{{ link.title }}">
+            <a href="{{ link.url }}" title="{{ link.title }}">
+            {{ link.title }}
+            </a>
+         </li>
+        {% endif %} 
+         {% else %}
+
+         <li class="sub-collapse {% if link.active %} current-menu-item{% endif %} menu-item-{{ link.title }}" data-enhanced="true" data-role="collapsible">
+
+           
+  <div class="ui-collapsible-heading ui-collapsible-heading-collapsed">
+    <a href="#" class="ui-collapsible-heading-toggle" style="color:{{ section.settings.link_color }}" title="{{ link.title }}">
+       {{ link.title }}
+    </a>
+    </div>
+         <div class="ui-collapsible-content ui-collapsible-content-collapsed" aria-hidden="true">
+            <ul>
+               {% for l in linklists[link.handle].links %}
+               <li style="font-size:100%;" class="menu-item-{{ l.title }}"><a href="{{ l.url }}" title="{{ l.title }}">{{ l.title }}</a></li>
+               {% endfor %}
+            </ul>
+          </div>
+         </li>
+         {% endif %}
+         {% endfor %}
+         
+         
+                   <li id="contactCollapse" class="sub-collapse menu-item-ContactUs" data-enhanced="true" data-role="collapsible">
+
+           
+  <div class="ui-collapsible-heading ui-collapsible-heading-collapsed">
+    <a href="#" class="ui-collapsible-heading-toggle" title="{{ link.title }}">
+       Contact Us
+    </a>
+    </div>
+         <div class="ui-collapsible-content ui-collapsible-content-collapsed contact-us" aria-hidden="true">
+              {% form 'contact', data-ajax:'false' %}
+           
+            {% if form.errors %}
+               <div class="errorForm feedback">
+                 <p>{{ 'contact.form.post_error' | t }}</p>          
+                 {% for field in form.errors %}
+                 <p>{{ 'contact.form.post_field_error_html' | t: field: field, error: form.errors.messages[field] }}</p>
+                 {% endfor %}
+               </div> 
+               {% endif %}   
+           
+           
+             {% if form.posted_successfully? %}
+               <div class="successForm feedback row">
+                 <div class="large-12 text-center column">
+                 <p>{{ 'contact.form.post_success' | t }}</p>
+                 </div>
+               </div>
+               {% else %} 
+           
+               <div class="formwrap">
+                <div class="row">
+                 
+                 <div class="large-12 small-12 message">
+                   {{ section.settings.message }}  
+                 </div>
+                  
+                 <div class="large-12 small-12">
+                   <input class="field" type="text" id="contactFormName" name="contact[name]" placeholder="What's your name?" data-role="none" />      
+                 </div>
+                 
+                 <div class="large-12 small-12">
+                   <input class="field" type="email" id="contactFormEmail" name="contact[email]" placeholder="and your email?" data-role="none" />
+                 </div>
+                  
+                 <div class="large-12 small-12">
+                   <textarea class="field" rows="4" cols="15" id="contactFormMessage" name="contact[body]" placeholder="Comments, thoughts or questions?" data-role="none"></textarea>
+                 </div> 
+                 
+                 <div class="large-12 small-12 contactsubmit">
+                   <input type="submit" id="contactFormSubmit" value="Send It" class="btn" data-role="none" />
+                 </div> 
+                  
+                </div>
+               </div>
+               <div class="confirmation" style="color:{{ section.settings.link_color }};">
+                 Thank You. We received your message and will contact you shortly
+               </div>
+               {% endif %}
+             {% endform %}
+          </div>
+         </li>  
+
+
+{% if shop.customer_accounts_enabled %}
+  {% if customer  %}
+  <li class="menu-item-account"><a target="_parent" href="/account">Your Account</a></li>
+  {% else %}
+  <li class="menu-item-login">{{ 'Login' | customer_login_link }}</li>
+  
+  {% endif %}
+{% endif %}
+         
+        
+      </ul>
+     </div>
+
+
+     
+     
+     
+   </div>
+  </div>
+</div>
+<script>
+  function defer{{ section.id | replace: '-', '' }}(method{{ section.id | replace: '-', '' }}) {
+    if (window.jQuery) {
+        method{{ section.id | replace: '-', '' }}();
+    } else {
+        setTimeout(function() { defer{{ section.id | replace: '-', '' }}(method{{ section.id | replace: '-', '' }}) }, 50);
+    }
+}
+defer{{ section.id | replace: '-', '' }}(function () {
+
+  $('#shopify-section-Mobile-Menu').addClass('panel position-fixed').attr({'data-role':'panel','data-position':'left','data-position-fixed':'true', 'data-display':'overlay', 'data-theme': 'a'})
+  
+jQuery(document).on('mobileinit',function(){  
+  $(function(){
+        $("#shopify-section-{{ section.id }}").panel({
+      close: function(event, ui) {
+        $('body').removeClass('popup-open');
+       //stopBodyScrolling2(false); 
+      },
+      open: function(event,ui) {
+             var vpH = window.innerHeight;  
+      $('body').addClass('popup-open');
+document.documentElement.style.height = vpH.toString() + "px";
+//stopBodyScrolling2(true); 
+      }
+      
+    });
+    $('.sub-collapse').collapsible();
+   });
+     });
+});
+</script> 
+{% schema %}
+  {
+    "name": "Slide Out Menu",
+    "settings": [{
+   "type":      "header",
+   "content":   "Menu Options"
+},
+{
+  "type": "checkbox",
+  "id": "collections",
+  "label": "Auto Add Collections to Menu",
+  "default": true
+},
+{
+   "type":      "header",
+   "content":   "Mobile Menu Colors"
+},{
+       "id": "background_color",
+       "type": "color",
+       "label": "Background Color",
+       "default": "#ffffff"
+},{
+       "id": "background_color_2",
+       "type": "color",
+       "label": "Background Color #2 (Optional Gradient)",
+       "default": "transparent"
+},
+{
+       "id": "background_image",
+       "type": "image_picker",
+       "label": "Background Image (Optional)"
+},
+{
+   "type":      "header",
+   "content":   "Search Bar Colors"
+},
+{
+       "id": "search_color",
+       "type": "color",
+       "label": "Search Color",
+       "default": "#000000"
+},
+{
+       "id": "search_placeholder",
+       "type": "text",
+       "label": "Search Placeholder Text",
+       "default": "Search..."
+},
+{
+   "type":      "header",
+   "content":   "Link Style & Color"
+},
+{
+    "type": "font_picker",
+     "id": "font",
+     "label": "Menu Font",
+     "default": "work_sans_n6"
+},
+{
+       "id": "link_color",
+       "type": "color",
+       "label": "Link Color",
+       "default": "#000000"
+},
+{
+    "type":   "range",
+    "id":     "link_size",
+    "min":       25,
+    "max":       100,
+    "step":      1,
+    "unit":      "%",
+    "label":     "Link Size",
+    "default":   100
+},
+{
+    "type":   "range",
+    "id":     "link_spacing",
+    "min":       1,
+    "max":       5,
+    "step":      1,
+    "label":     "Link Spacing",
+    "default":   3
+},
+{
+  "type": "checkbox",
+  "id": "link_uppercase",
+  "label": "Uppercase",
+  "default": true
+},
+{
+  "type": "checkbox",
+  "id": "link_border",
+  "label": "Border Line",
+  "default": false
+},
+{
+   "type":      "header",
+   "content":   "Contact Form Message & Color"
+},
+{
+   "type": "paragraph",
+   "content": "To change the email address messages are sent to go to your Settings page and select General. There you will find settings for the support email"
+},
+{
+       "id": "message",
+       "type": "textarea",
+       "label": "Contact Message",
+       "default": "Questions, concerns or just want to say hi? We are here to help you 24/7"	
+},
+{
+       "id": "button_color",
+       "type": "color",
+       "label": "Button Color",
+       "default": "#000000"
+}
+]
+  }
+{% endschema %}
+
+{% stylesheet 'scss' %}
+
+// responsive sizes
+@mixin bp($point) {
+  
+  $bp-small: "(max-width: 350px)";
+  $bp-mobile: "(max-width: 600px)";
+  $bp-mobileup: "(min-width: 600px)";
+  $bp-phablet: "(max-width: 1022px)";
+  $bp-phabletup: "(min-width: 1022px)";
+  $bp-tablet: "(max-width: 1280px)";
+  $bp-tabletup: "(min-width: 1280px)";
+  $bp-laptop: "(max-width: 1600px)";
+  $bp-desktop: "(min-width: 1600px)";
+  @if $point == desktop {
+    @media #{$bp-desktop}  { @content; }
+  }  
+  @else if $point == laptop {
+    @media #{$bp-laptop} { @content; }
+  }
+  @else if $point == tablet {
+    @media #{$bp-tablet} { @content; }
+  }
+  @else if $point == tabletup {
+    @media #{$bp-tabletup} { @content; }
+  }
+  @else if $point == phablet {
+    @media #{$bp-phablet} { @content; }
+  }
+  @else if $point == phabletup {
+    @media #{$bp-phabletup} { @content; }
+  }
+  @else if $point == mobile {
+    @media #{$bp-mobile}  { @content; }
+  }
+  @else if $point == mobileup {
+    @media #{$bp-mobileup} { @content; }
+  }
+  @else if $point == small {
+    @media #{$bp-small}  { @content; }
+  }
+
+}
+
+
+
+.editpanel {
+	& #shopify-section-Mobile-Menu {
+    -webkit-transform: translate3d(0,0,0);
+    transform: translate3d(0,0,0);
+    -moz-transform: none;
+    left: 0;
+        clip: unset;
+     visibility:visible;
+    width: 17em;
+    & .ui-collapsible-content-collapsed {
+    display: block;
+    margin: 0;
+     }
+	& #productsearchform {
+	transform: translateX(0px);
+	opacity: 1;
+    transition-delay:0s;
+    -webkit-transition-delay:0s;
+	transition-duration:0s;
+-webkit-transition-duration:0s;
+transition-timing-function: linear;
+-webkit-transition-timing-function: linear;
+	}
+	& .ui-panel-inner .content .content-inner .mobile-menu ul li {
+	transform: translateX(0px);
+	opacity: 1;
+       transition-delay:0s;
+    -webkit-transition-delay:0s;
+	transition-duration:0s;
+-webkit-transition-duration:0s;
+transition-timing-function: linear;
+-webkit-transition-timing-function: linear;
+ 	}
+    &.ui-panel-closed {
+& #productsearchform {
+	transform: translateX(0px);
+	opacity: 1;
+    transition-delay:0s;
+    -webkit-transition-delay:0s;
+	transition-duration:0s;
+-webkit-transition-duration:0s;
+transition-timing-function: linear;
+-webkit-transition-timing-function: linear;
+	}
+	& .ui-panel-inner .content .content-inner .mobile-menu ul li {
+	transform: translateX(0px);
+	opacity: 1;
+       transition-delay:0s;
+    -webkit-transition-delay:0s;
+	transition-duration:0s;
+-webkit-transition-duration:0s;
+transition-timing-function: linear;
+-webkit-transition-timing-function: linear;
+ 	}
+    }
+	}
+}
+
+#shopify-section-Mobile-Menu {
+     position:fixed;
+     height: 100%;
+      z-index: 1009; 
+  @include bp(mobile) {
+     min-width: 72vw;
+  }
+  &.ui-panel-open {
+	& #productsearchform {
+	transform: translateX(0px);
+	opacity: 1;
+	}
+	& .ui-panel-inner .content .content-inner .mobile-menu ul li {
+	transform: translateX(0px);
+	opacity: 1;
+ 	}
+}
+&.ui-panel-closed {
+	& #productsearchform {
+	transition-delay:0s;
+-webkit-transition-delay:0s;
+	transition-duration:0s;
+-webkit-transition-duration:0s;
+transition-timing-function: linear;
+-webkit-transition-timing-function: linear;
+	}
+	& li {
+    transition-delay:0s;
+    -webkit-transition-delay:0s;
+	transition-duration:0s;
+-webkit-transition-duration:0s;
+transition-timing-function: linear;
+-webkit-transition-timing-function: linear;
+ 	}
+}
+  & .ui-panel-inner {
+    position:fixed;
+    height: 100%;
+	overflow-y:hidden;
+	overflow-x:hidden;
+    width: 100%;
+    background-size:cover;
+    background-repeat:no-repeat;
+        padding: 0;
+    & .content {
+      & .content-inner {
+            position: absolute;
+    height: calc(100% - 0px );
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+            padding: 1em;
+       &::-webkit-scrollbar {
+
+     width: 0px;
+   background: transparent;
+
+}
+      &  .search {
+         opacity: 0;
+-webkit-transform: translateX(-65px);
+    transform: translateX(-65px);
+  -webkit-transition: opacity 0.5s ease 0.15s, -webkit-transform 0.5s ease 0.15s;
+  transition: opacity 0.5s ease 0.15s, -webkit-transform 0.5s ease 0.15s; 
+       padding:0;
+       margin-top: 20px;  
+        & .inner-addon {
+          & .glyphicon:before {
+              vertical-align: -webkit-baseline-middle;
+             color:inherit;
+          }
+         & #productsearch {
+             height: 2.6rem;
+             font-size: 21px;
+          }
+        }
+      }
+      & .mobile-menu {
+            margin: 30px 0;
+        & ul {
+         margin:0;
+         padding:0;
+         list-style:none;
+         font-size: 31px; 
+          & li {
+               font-size: inherit;
+              list-style: none;
+    opacity: 0;
+-webkit-transform: translateX(-65px);
+    transform: translateX(-65px);
+    -webkit-transition: opacity 0.5s ease 0.5s, -webkit-transform 0.5s ease 0.5s;
+    transition: opacity 0.5s ease 0.5s, -webkit-transform 0.5s ease 0.5s;
+    @for $i from 1 to 20 {
+     &:nth-child(#{$i}) { transition-delay: $i * 0.1s + 0.15s; -webkit-transition-delay: $i * 0.1s + 0.15s;}
+    }
+            & .ui-collapsible-heading {
+              & a {
+                &:before {
+                 content:'\f067';
+                  font-family:FontAwesome;
+                      font-size: 75%;
+                }
+              }
+            }
+            & .contact-us {
+                 padding: .5em 0 .5em 1em;
+              & .formwrap {
+              & .message {
+                  font-size: 14px;
+    text-shadow: none;
+    font-weight: normal;
+    text-transform: none;
+    margin-bottom: 20px;
+                    line-height: 1.5;
+              }
+              & textarea {
+                   font-size: 1rem;
+              }
+              & input[type=submit] {
+    background: #F371F6;
+    color: #fff;
+    border: none;
+    outline: none;
+    padding: 10px 20px;
+    font-size: 18px;
+    width: 100%;
+              }
+             }
+              & .confirmation {
+                display:none;
+                  padding: 10px 20px;
+    font-size: 14px;
+    text-shadow: none;
+    font-weight: normal;
+    text-transform: none;
+    text-align: center;
+    line-height: 1.2;
+              }
+            }
+            & ul {
+                font-size: 60%;
+                & li {
+                  & a {
+                   font-weight:inherit;
+                  }
+                }
+            }
+            & a {
+             font-weight:inherit;
+             text-shadow:none;
+             font-size:inherit;
+             line-height: 1.8;
+            }
+          }
+        }
+      }
+    }
+    }
+  }  
+}
+
+
+/* search */
+
+#productsearchform {
+    & .inner-addon {
+        position: relative;
+        &:focus {
+            & .glyphicon:before {
+                opacity: 1;
+            }
+        }
+        #productsearch {
+    margin-bottom: 0;
+    padding: 1px 30px 1px 5px;
+    height: 2.4rem;
+    font-size: 14px;
+    background: none;
+    border-radius: 0px;
+    border: none;
+    border-bottom: 2px solid #000;
+    box-shadow: none;
+    color: #000;
+          @include bp(laptop) {
+              height: 1.6rem;
+              font-size: 14px;
+          }
+            &::-webkit-input-placeholder {
+                color: inherit;
+            }
+        }
+        & .glyphicon {
+            top: 1px;
+            right: 0px;
+            position: absolute;
+            padding: 2px;
+            pointer-events: none;
+            display: inline-block;
+            font-family: 'FontAwesome';
+            font-style: normal;
+            font-weight: 400;
+            line-height: 1;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            &:before {
+                content: '\f002';
+                opacity: 1;
+              color: inherit;
+              text-shadow:none;
+            }
+        }
+    }
+}
+
+{% endstylesheet %}
+
+{% javascript %}
+
+ $(document).on("shopify:section:select",'#shopify-section-Mobile-Menu',function(e){
+ paneledit();
+ $('body').addClass('editing editpanel');
+
+     $(document).on("shopify:section:deselect",'#shopify-section-Mobile-Menu',function(e){
+        $('body').removeClass('editpanel');
+        paneledit();
+     });   
+}); 
+
+function paneledit() {
+    $("#shopify-section-Mobile-Menu").panel({
+      close: function(event, ui) {
+        $('#swiper_Frame').removeClass('popup-open');
+       stopBodyScrolling(false); 
+      },
+      open: function(event,ui) {
+             var vpH = window.innerHeight;  
+      $('#swiper_Frame').addClass('popup-open');
+document.documentElement.style.height = vpH.toString() + "px";
+$('#swiper_Frame')[0].style.height = vpH.toString() + "px";
+stopBodyScrolling(true); 
+      }
+      
+    });
+}                
+{% endjavascript %}  

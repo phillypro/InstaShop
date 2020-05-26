@@ -1,0 +1,21 @@
+{ 
+  "short_name": "",
+  "name": "",
+  
+  "icons": [
+    {
+      "src": "//cdn.shopify.com/s/assets/no-image-2048-5e88c1b20e087fb7bbe9a3771824e743c244f437e4f8ba93bbf7b11b53f7824c_medium.gif",
+      "sizes": "192x192",
+      "type": "image\/png"
+    },
+    {
+      "src": "//cdn.shopify.com/s/assets/no-image-2048-5e88c1b20e087fb7bbe9a3771824e743c244f437e4f8ba93bbf7b11b53f7824c_grande.gif",
+      "sizes": "512x512",
+      "type": "image\/png"
+    }
+  ],
+ "theme_color": "",
+  "background_color": "",
+  "display": "standalone",
+  "orientation": "portrait"
+}

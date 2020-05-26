@@ -1,0 +1,60 @@
+{% assign on_sale = false %}
+{% if product.compare_at_price > product.price %}
+{% assign on_sale = true %}
+{% endif %}
+
+<div id="block-{{ block.id }}" class="product {% unless product.available %} sold-out{% endunless %}">
+<a href="{{ product.url }}" {% if settings.disableproductajax %}rel="external"{% endif %}>
+  <div class="image {% if settings.product_image_hover != 'none' and settings.product_image_size != 'none' and product.images.size > 1  %} imgswitch {% case settings.product_image_hover %}{% when 'fade' %}fade{% when 'scroll' %}scroll{% endcase %}{% endif %}">
+    <div class="inner">
+      {% if product.featured_image %}
+      <img class="{% unless settings.product_image_hover != 'none' and settings.product_image_size != 'none' and product.images.size > 1  %}hvr-grow{% endunless %}" src="{{ product.featured_image | img_url: '1024x1024' }}" />{% endif %}
+    </div>
+    {% if settings.product_image_hover != 'none' and settings.product_image_size != 'none' and product.images.size > 1  %}
+    <div class="inner">
+      <img src="{{ product.images[1] | product_img_url: 'large' }}" />
+    </div>
+    {% endif %}
+  </div>
+  <div class="details">
+  <h3>
+    <span>{{ product.title }}
+    </span>
+  </h3>
+  <p class="h1 medium-down--left">
+    {% if product.price_max > product.price %}
+    <span class="currPrice">{% include 'price' with product.price_min %}
+    </span> {% if on_sale %}
+    <span class="oldPrice"> {{ product.compare_at_price | money }} 
+    </span>{% endif %}
+    {% else %}
+    <span class="currPrice">{% include 'price' with product.price %}
+    </span>   {% if on_sale %}
+    <span class="oldPrice"> {{ product.compare_at_price | money }}
+    </span> {% endif %}
+    {% endif %}
+    {% unless product.available %}
+    <span class="product-price__sold-out">{{ 'products.product.sold_out' | t }}
+    </span>
+    {% endunless %}  
+  </p>
+  {% if on_sale %}
+  <div class="salew">
+    <span class="sale-tag medium-down--right{% if settings.product_reviews_enable %} has-reviews{% endif %}">
+      {% assign compare_price = product.compare_at_price %}
+      {% assign product_price = product.price %}
+      {% include 'price-sale' %}
+    </span>
+  </div>
+  {% endif %}  
+  {% if section.settings.desc %}
+  <div class="desc">
+    {{ product.description | truncate: 300, ", ..." }}
+  </div>
+  {% endif %}
+  </div>
+</a>
+  
+<a href="{{ product.url }}" class="buynow" {% if settings.disableproductajax %}rel="external"{% endif %}>{{ settings.buynowtext }}</a>
+  
+</div>

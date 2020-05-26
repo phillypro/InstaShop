@@ -1,0 +1,23 @@
+<script>
+window.virtualGuide = {{ section.settings.virtualGuide }};
+</script>
+
+{% schema %}
+  {
+    "name": "Setup Instructions",
+    "settings": [  {
+        "type": "checkbox",
+        "id": "virtualGuide",
+        "label": "Show Virtual Guide",
+        "default": true
+      }
+
+]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}

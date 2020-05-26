@@ -1,0 +1,1544 @@
+{% if settings.boldoptions %} {%- include 'bold-common' -%} {% endif %} {% if cart.item_count > 0 %}
+<script>
+    var checkoutBar = document.getElementById('checkout-bar');
+    if (!checkoutBar) {
+        // create checkoutbar 
+        var checkoutbar = document.createElement('div');
+        checkoutbar.id = 'checkout-bar';
+        checkoutbar.classList.add('checkout-bar');
+        // create button 
+        var checkoutbarbutton = document.createElement('a');
+        checkoutbarbutton.id = 'checkout-bar-button';
+        checkoutbarbutton.setAttribute('href', '#');
+        // create total
+        var checkoutbartotal = document.createElement('span');
+        checkoutbartotal.id = 'checkout-bar-total';
+        // put continue and total into button
+        checkoutbarbutton.innerHTML = 'Continue';
+        checkoutbarbutton.append(checkoutbartotal);
+        checkoutbar.innerHTML = '<a href="#" onclick="goBack()" class="continue"> <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-left" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-arrow-left fa-w-14 fa-3x" style=" width: 10px; margin-right: 3px;"><path fill="currentColor" d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z" class=""></path></svg>Continue Shopping</a>';
+        checkoutbar.append(checkoutbarbutton);
+        var screen =  document.querySelector('#screen'); 
+        screen.append(checkoutbar);
+    }
+</script>
+{% style %} .cart-totals>div input[type=submit] { background:{{ section.settings.checkoutbackground }}; color:{{ section.settings.checkoutcolor }}; } #cart-total { color:{{ section.settings.totalcolor}}; } #cart .sezzle-checkout-button-wrapper .sezzle-button-text .sezzle-payment-amount { color:{{ section.settings.totalcolor}}; } 
+{% if section.settings.css != nil %}
+{% assign css = section.settings.css | replace: '&gt;','>' %}
+{{ css }}
+{% endif %}
+{% endstyle %}
+<div class="cart-header">
+    <div class="row">
+        <div class="large-12 text-center columns">
+            <!--logo-->
+            <a href="/" title="{{ shop.name }}">
+          {% if section.settings.brand_logo_svg != '' %}
+            {{ section.settings.brand_logo_svg }}
+          {% else %}
+          {% capture logo %}{{ section.settings.brand_logo | img_url: 'compact' }}{% endcapture %}
+         {% if logo contains 'no-image' %} 
+
+          <span>
+            {% if section.settings.brandname != '' %}
+            {{ section.settings.brandname }}
+            {% else %}
+             {{ shop.name }}
+            {% endif %}
+          </span>
+          {% else %}
+           <img alt="{{ shop.name}} logo" src="{{ section.settings.brand_logo | img_url: 'medium' }}" />
+          {% endif %}
+          {% endif %}
+        </a>
+            <!--End logo-->
+        </div>
+        <div class="large-12 columns">
+            <h2>
+       Your Shopping Bag
+      </h2>
+            <span>
+       {{ section.settings.message }}
+      </span>
+        </div>
+    </div>
+</div>
+
+<form id="cartform" action="/cart" method="post" data-ajax="false">
+    <div class="row">
+        <div class="large-12 columns">
+            {% assign cartitems = cart.items %} {% if settings.boldoptions or settings.boldsubscriptions %} {% for item in cartitems %} {%- include 'bold-options-hybrid-cart-item' with item -%}
+            <div cart-item="{{ item.id }}" class="product-cart-wrap">
+                <div class="thumbnail-wrap" style="background-image:url({{ item | img_url: 'large' }})">
+                </div>
+                <div class="quantity-display">
+                    {{ item.quantity }}
+                </div>
+                <div class="product-title-wrap">
+                    <a href="{{ item.url }}">
+             {{ item.product.title }} 
+             {% assign item_variant = item.variant %}
+            {% if item_variant.option1 and item_variant.option1 != 'Default Title' %}{{ item_variant.option1 }}{% endif %}
+            {% if item_variant.option2 %}<span>{{ item_variant.option2 }}</span>{% endif %}
+	            <div class="attributes">
+                    {% unless settings.boldsubscriptions %}
+                      {% assign propertySize = item.properties | size %}
+                      {% if propertySize > 0 %}
+                      {% for p in item.properties %}
+                      {%- if p.first.first == '_' -%}{%- continue -%}{%- endif -%}
+                      {% assign first_character_in_key = p.first | truncate: 1, '' %}
+                      {% unless p.last == blank or first_character_in_key == '_' %}
+                      {{ p.first }}:
+                      {% if p.last contains '/uploads/' %}
+                      <a href="{{ p.last }}">{{ p.last | split: '/' | last }}</a> {% else %} {{ p.last }} {% endif %}
+                    <br/> {% endunless %} {% endfor %} {% endif %}
+                    <!-- Bold:POv2 -->
+                    {% else %}
+                    <span class="bold_ro_desc" data-product-id="{{item.id}}-{{ forloop.index0 }}"></span>
+                    <span class="bold_load_cart_item_properties"></span>
+                    {% endunless %}
+                </div>
+                </a>
+            </div>
+            <div class="quantity-wrap">
+                <div>
+                    <input type="number" name="updates[]" id="updates_{{ item.id }}" class="quantity input-number" min="0" max="99" value="{{ item.quantity }}" />
+                </div>
+                <a href="#" product-id="{{ item.id }}" class="remove"></a>
+            </div>
+            <div class="price-wrap">
+                <span>
+          <span> 
+	   <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" style="display:none !important;"></span>{% unless settings.boldsubscriptions %}{% include 'price' with item.price %}{% else %}{% include 'price' with item.final_price %}{% endunless %}
+                </span>
+                <div>
+                </div>
+                </span>
+            </div>
+        </div>
+        {% endfor %} {% else %} {% for item in cartitems reversed %}
+        <div cart-item="{{ item.id }}" class="product-cart-wrap">
+            <div class="thumbnail-wrap" style="background-image:url({{ item | img_url: 'large' }})">
+            </div>
+            <div class="quantity-display">
+                {{ item.quantity }}
+            </div>
+            <div class="product-title-wrap">
+                <a href="{{ item.url }}">
+             {{ item.product.title }} 
+             {% assign item_variant = item.variant %}
+             {% if item_variant.option1 and item_variant.option1 != 'Default Title' %}{{ item_variant.option1 }}{% endif %}
+            {% if item_variant.option2 %}<span>{{ item_variant.option2 }}</span>{% endif %}
+         </a>
+            </div>
+            <div class="quantity-wrap">
+                <div>
+                    <input type="number" name="updates[]" id="updates_{{ item.id }}" class="quantity input-number" min="0" max="99" value="{{ item.quantity }}" />
+                </div>
+                <a href="#" product-id="{{ item.id }}" class="remove"></a>
+            </div>
+            <div class="price-wrap">
+                <span>
+          <span> 
+           {% assign price = item.price | money | split: '.' %}{{ price.first }}
+           </span>
+                <div>
+                </div>
+                </span>
+            </div>
+        </div>
+        {% endfor %} {% endif %}
+
+    </div>
+    </div>
+    <div class="row align-justify">
+        <div class="large-12 small-12">
+
+            <!-- get all cart items into an array -->
+            {% for item in cart.items %} {% if settings.boldoptions %} {%- comment -%}Bold:PO 2.0 - Hybrid Input{%- endcomment -%} {%- if item.properties._boldBuilderId and item.properties._boldVariantIds == null -%}
+            <input type="hidden" name="updates[]" id="updates_{{- item.key -}}" class="bold_hidden_input cart__product-qty" value="{{- item.quantity -}}" min="0" data-id="{{- item.key -}}"> {%- continue -%} {%- endif -%} {% endif %} {% if forloop.last == true %} {% assign cartitems = cartitems | append: item.product.handle %} {% else %} {% assign cartitems = cartitems | append: item.product.handle | append: ',' %} {% endif %} {% endfor %} {% assign cartitems = cartitems | split: ',' %}
+
+            <!-- see if anythings available -->
+            {% assign available = '' %} {% for block in section.blocks %} {% case block.type %} {% when 'Upsell' %} {% assign compare = all_products[block.settings.upsell_info] %} {% if cartitems contains compare.handle %} {% else %} {% assign available = available | append: compare.handle %} {% endif %} {% endcase %} {% endfor %} {% if available != '' %}
+            <div class="frequently-bought-wrap">
+                <h2>{{ section.settings.frequently-bought-title }}
+</h2>
+
+                <div class="swiper-container frequently-swiper">
+                    <!-- Additional required wrapper -->
+                    <div class="swiper-wrapper">
+                        {% assign i = 0 %} {% for block in section.blocks %} {% case block.type %} {% when 'Upsell' %} {% assign upsell = all_products[block.settings.upsell_info] %} {% if cartitems contains upsell.handle %} {% else %}
+
+                        <div class="swiper-slide">
+                            <div class="row">
+                                <div class="columns">
+                                    <a href="#{{ upsell.handle }}{{ i }}" data-rel="popup" data-transition="slideup" data-position-to="window" class="frequently-bought">
+                                        <div>
+                                            <div class="flex-video">
+                                                <div>
+                                                    <img src="{{ upsell.featured_image | product_img_url: 'medium' }}" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <h2>{{ upsell.title }}</h2>
+                                            <span>{% assign price = upsell.price | money | split: '.' %}{{ price.first }}</span>
+                                        </div>
+                                        <span>view</span>
+
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+
+                        {% endif %} {% assign i = i | plus: 1 %} {% endcase %} {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div id="frequently-bought-popups">
+                {% assign i = 0 %} {% for block in section.blocks %} {% case block.type %} {% when 'Upsell' %} {% assign upsell = all_products[block.settings.upsell_info] %} {% if cartitems contains upsell.handle %} {% else %}
+                <div class="popupwrap" data-role="popup" id="{{ upsell.handle }}{{ i }}" data-dismissible="false">
+                    <a class="close" href="#" data-rel="back">
+                        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 34 364 420">
+                            <path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" class=""></path>
+                        </svg>
+                    </a>
+                    <div class="featured-image">
+                        <img src="{{ upsell.featured_image | product_img_url: 'large' }}" />
+                    </div>
+                    <div>
+                        <div>
+                            <h2>{{ upsell.title }}</h2>
+                            <span>{{ upsell.price | money }}</span>
+                        </div>
+                        <div>
+                            {{ block.settings.upsell_details }}
+                        </div>
+                        <div class="quantity-wrap">
+                            <div class="input-group">
+                                <span class="input-group-button">
+              <button type="button" class="btn btn-danger btn-number"  data-type="minus">
+                <span class="glyphicon glyphicon-minus">-</span>
+                                </button>
+                                </span>
+                                <input type="number" name="quantity" class="quantity input-number input-group-field" value="1" min="1" max="10" />
+                                <span class="input-group-button">
+              <button type="button" class="btn btn-success btn-number" data-type="plus">
+                  <span class="glyphicon glyphicon-plus">+</span>
+                                </button>
+                                </span>
+                            </div>
+                            <a data-rel="back" href="#" variant-id="{{ upsell.variants[0].id }}" class="frequently-add" id="frequently-bought-button">ADD<span id="frequently-bought-total" price="{{ upsell.price | money }}">{% capture newprice %}{{ upsell.price | money  }}{% endcapture %}{{ newprice | strip }}</span></a>
+                        </div>
+                    </div>
+                </div>
+
+                {% endif %} {% assign i = i | plus: 1 %} {% endcase %} {% endfor %}
+            </div>
+            {% endif %}
+
+            <input autocomplete="off" type="hidden" name="discount" />
+
+        </div>
+        <div class="large-12 small-12 columns cart-totals">
+            <ul>
+                {% if section.settings.advanced_klaviyo_list != '' and section.settings.advanced-discount != '' %}
+                <li class="top">
+                    <h2>Promo</h2>
+                    <a href="#advanced-abandoned-cart" data-rel="popup" data-transition="pop" onclick="triggerklaviyo();">Get discount</a>
+                    <div id="advanced-abandoned-cart" class="advanced-popup-wrap" data-role="popup">
+                        <div class="advanced-popup" style="background-color:{{ section.settings.advanced_background_color }};">
+                            <h4>
+      {{ section.settings.advanced-header }}
+    </h4>
+                            <div>
+                                <form></form>
+                                <form id="email_signup" class="klaviyoform" action="//manage.kmail-lists.com/subscriptions/subscribe" data-ajax-submit="//manage.kmail-lists.com/ajax/subscriptions/subscribe" method="GET" target="_blank" novalidate="novalidate">
+                                    <input type="hidden" name="g" value="{{ section.settings.advanced_klaviyo_list }}">
+                                    <input type="hidden" name="code" value="{{ section.settings.advanced-discount }}">
+                                    <input type="email" value="" name="email" id="k_id_email" placeholder="Your@email.com">
+                                    <button type="submit" class="klaviyo_submit_button">Unlock</button>
+                                </form>
+                                <div>
+                                    will apply at checkout
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                {% endif %}
+                <li>
+                    <h2>Total</h2>
+                    <span id="cart-total">{% if settings.boldsubscriptions or boldoptions %}<span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_total" style="display:none !important;"></span>{% endif %}{% assign price = cart.total_price | money | split: '.' %}{{ price.first }}</span>
+                </li>
+
+                {% if settings.quadpay %} {% comment %}
+                <!-- Insert QuadPay Widget -->{% endcomment %}
+                <div class="quadpay" style="min-height:20px;">
+                    <quadpay-widget amount={{ cart.total_price | divided_by: 100.00 }} alignment="right"></quadpay-widget>
+                </div>
+                {% endif %} {% unless section.settings.reserve == 'off' %}
+                <div class="cart-reserve">
+                    <div>🔥 Items in your cart are in high demand. But we have reserved your order.</div>
+                    <div class="time-wrap">Your order is reserved for <span time-left="{{ section.settings.reserve }}" id="reserve-cart-timer"></span> minutes!</div>
+                </div>
+                {% endunless %} {% if section.settings.terms %} {% style %} .cart-totals .agbwrap label input:checked { background:{{ section.settings.checkoutbackground }}; } .cart-totals .agbwrap label input { color:{{ section.settings.checkoutcolor }}; } .cart-totals .agbwrap label input:checked::after { background:{{ section.settings.checkoutbackground }}; } {% endstyle %}
+                {% assign policy = shop.terms_of_service %}
+                <div class="agbwrap">
+                    <label class="ag" for="agree-agb">
+                        <a class="agburl" data-fancybox data-src="#hidden-content" href="javascript:;">By clicking this box I accept the {{ policy.title }}.</a>
+                        <input type="checkbox" id="agree-agb" />
+                    </label>
+                    <span id="notchecked">Please read and accept the{{ policy.title }} to proceed with your order.</span>
+                </div>
+                <div style="display: none;" id="hidden-content">
+                   {{ policy.body }}
+                 <div class="text-center">
+                   <a href="#" onClick="$.fancybox.close()">Close</a>
+                </div>
+                </div>
+                <script>
+                    setTimeout(function() {
+                        var checkbox = document.querySelector('#agree-agb');
+                        var checkoutForm = document.querySelector('form[action="/cart"]');
+
+                        checkoutForm.addEventListener('submit', checkTerms);
+
+                        function checkTerms(e) {
+                            var errorHTML = document.querySelector('#notchecked');
+                            if (checkbox.checked == true) {
+                                errorHTML.style.display = 'none';
+                                var checkoutButton = this.querySelector('[name="checkout"]');
+                                checkoutButton.click();
+                            } else {
+                                e.preventDefault();
+                                errorHTML.style.display = 'block';
+                            }
+                        }
+                    }, 300);
+                </script>
+                {% endif %}
+  {% if section.settings.notes %}
+                 <label for="CartNote">Special instructions</label>
+                   <textarea name="note" id="CartNote">{{ cart.note }}</textarea>
+               {% endif %}
+            </ul>
+            <div>
+                <input id="checkoutnow" type="submit" name="checkout" value="Continue" />
+            </div>
+        </div>
+    </div>
+
+</form>
+
+<script>
+    var callbackCart = function() {
+        // Handler when the DOM is fully loaded
+        if (!window.Swiper) {
+            // add script
+            var script = document.createElement("script");
+            script.type = "text/javascript";
+            script.src = 'https://cdn.jsdelivr.net/npm/swiper@{{ settings.swiperjsversion }}/js/swiper.min.js';
+            document.getElementsByTagName("head")[0].appendChild(script);
+            // add style
+            var style = document.createElement("link");
+            style.type = "text/css";
+            style.rel = "stylesheet";
+            style.href = 'https://cdn.jsdelivr.net/npm/swiper@{{ settings.swiperjsversion }}/css/swiper.min.css';
+            document.getElementsByTagName("head")[0].appendChild(style);
+        }
+        if (!window.Hammer) {
+            // add script
+            var script = document.createElement("script");
+            script.type = "text/javascript";
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/hammer.js/{{ settings.hammerjsversion }}/hammer.min.js';
+            document.getElementsByTagName("head")[0].appendChild(script);
+        }
+      if(!window.jQuery.fancybox) {
+    // add script
+    var script = document.createElement("script");
+    script.type = "text/javascript";   
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/fancybox/{{ settings.fancybox3version }}/jquery.fancybox.min.js';
+    document.getElementsByTagName("head")[0].appendChild(script);  
+
+    // add style
+    var style = document.createElement("link");
+    style.type = "text/css";  
+    style.rel = "stylesheet";
+    style.href = 'https://cdnjs.cloudflare.com/ajax/libs/fancybox/{{ settings.fancybox3version }}/jquery.fancybox.min.css';
+    document.getElementsByTagName("head")[0].appendChild(style); 
+  }
+    };
+
+    if (
+        document.readyState === "complete" ||
+        (document.readyState !== "loading" && !document.documentElement.doScroll)
+    ) {
+        callbackCart();
+    } else {
+        document.addEventListener("DOMContentLoaded", callbackCart);
+    }
+
+    function deferCart(methodCart) {
+        if (window.Swiper && window.jQuery && window.Hammer && window.jQuery.fancybox) {
+            methodCart();
+        } else {
+            setTimeout(function() {
+                deferCart(methodCart)
+            }, 50);
+        }
+    }
+    deferCart(function() {
+
+    });
+</script>
+
+{% else %}
+<div class="row align-center">
+    <div class="large-6 medium-6 small-6 column text-center">
+        <div class="mascot">
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="large-12 text-center column page-title">
+        <h1 class="gamma">Your Cart is empty</h1>
+        <h3 class="delta"><div>What are you waiting for?</div> <a href="/">Get started here</a></h3>
+    </div>
+</div>
+{% endif %}
+
+
+    
+
+{% schema %}
+  {
+    "name": "Cart",
+    "settings": [
+{
+"type":"header",
+"content":"Colors"
+},
+{
+       "id": "checkoutbackground",
+       "type": "color",
+       "label": "Checkout Button Background",
+       "default": "#299F3D"
+},
+{
+       "id": "checkoutcolor",
+       "type": "color",
+       "label": "Checkout Button Color",
+       "default": "#FFFFFF"
+},
+{
+       "id": "totalcolor",
+       "type": "color",
+       "label": "Price Total Color",
+       "default": "#299F3D"
+},
+{
+   "type":      "header",
+   "content":   "Brand Name / Brand Logo"
+},      
+{
+       "id": "brandname",
+       "type": "text",
+       "label": "Brand Name"
+      },
+ {
+     "type": "font_picker",
+     "id": "font",
+     "label": "Font",
+     "default": "work_sans_n6"
+   },
+      {
+       "id": "brand_logo",
+       "type": "image_picker",
+       "label": "Brand Logo"
+      },
+      {
+       "id": "brand_logo_svg",
+       "type": "html",
+       "label": "Brand Logo SVG (Optional)"
+      },
+{
+"type":"header",
+"content":"Additional Messaging"
+},
+{
+"type": "text",
+"id": "message",
+"label": "Welcome Message",
+"default": "Your day is about to get better"
+},
+{
+   "type":      "radio",
+   "id":        "reserve",
+   "label":     "Show Cart Reserved for 10 mins",
+   "options": [
+     { "value": "off", "label": "Don't Show" },
+     { "value": "1", "label": "1 min" },
+     { "value": "3", "label": "3 mins" },
+     { "value": "5", "label": "5 mins" }
+   ],
+   "default":   "off"
+},
+{
+  "id": "terms",
+  "default": false,
+  "label": "Enable Terms of Service Checkbox",
+   "info": "Adds a required checkbox before checkout, [click here to add Terms of Service](/admin/settings/legal)",
+   "type": "checkbox"
+},
+{
+  "id": "notes",
+  "default": false,
+  "label": "Enable Order Notes",
+   "info": "Adds an area for customers to leave special instructions",
+   "type": "checkbox"
+},
+{
+"type":"header",
+"content":"Upsell Settings"
+},
+{
+        "id": "frequently-bought-title",
+        "type": "text",
+        "label": "Title",
+"default": "Frequently bought together"
+},
+{
+"type":"header",
+"content":"Advanced Abandoned Cart (Klaviyo Only)"
+},
+{
+        "id": "advanced_klaviyo_list",
+        "type": "text",
+        "label": "Klaviyo List Id (ex: m4stTTd)"
+      },
+      {
+        "type": "color",
+        "id": "advanced_background_color",
+        "label": "Background Color",
+        "default": "#B350B4"
+      },
+      {
+        "type": "color",
+        "id": "advanced_button_color",
+        "label": "Button Color",
+        "default": "#3ACE9A"
+      },
+      {
+        "id": "advanced-header",
+        "type": "text",
+        "label": "Header",
+"default": "Unlock Your Discount"
+      },
+     {
+        "id": "advanced-discount",
+        "type": "text",
+        "label": "Discount Code"
+      },
+{
+ "type": "header",
+ "content": "Additional Custom CSS"
+},
+{
+        "id": "css",
+        "type": "html",
+        "label": "Custom CSS"
+}], 
+  "blocks": [
+    {
+     "type": "Upsell",
+     "name": "Upsell",
+     "settings" : [
+      {
+       "id": "upsell_info",
+       "type": "product",
+       "label": "Upsell"
+      },
+      {
+       "id": "upsell_details",
+       "type": "textarea",
+       "label": "Small Description"
+      }
+     ]
+    }
+   ]
+  }
+{% endschema %}
+
+{% stylesheet 'scss' %}
+
+
+
+// responsive sizes
+@mixin bp($point) {
+  
+  $bp-small: "(max-width: 350px)";
+  $bp-mobile: "(max-width: 600px)";
+  $bp-mobileup: "(min-width: 600px)";
+  $bp-phablet: "(max-width: 1022px)";
+  $bp-phabletup: "(min-width: 1022px)";
+  $bp-tablet: "(max-width: 1280px)";
+  $bp-tabletup: "(min-width: 1280px)";
+  $bp-laptop: "(max-width: 1600px)";
+  $bp-desktop: "(min-width: 1600px)";
+  @if $point == desktop {
+    @media #{$bp-desktop}  { @content; }
+  }  
+  @else if $point == laptop {
+    @media #{$bp-laptop} { @content; }
+  }
+  @else if $point == tablet {
+    @media #{$bp-tablet} { @content; }
+  }
+  @else if $point == tabletup {
+    @media #{$bp-tabletup} { @content; }
+  }
+  @else if $point == phablet {
+    @media #{$bp-phablet} { @content; }
+  }
+  @else if $point == phabletup {
+    @media #{$bp-phabletup} { @content; }
+  }
+  @else if $point == mobile {
+    @media #{$bp-mobile}  { @content; }
+  }
+  @else if $point == mobileup {
+    @media #{$bp-mobileup} { @content; }
+  }
+  @else if $point == small {
+    @media #{$bp-small}  { @content; }
+  }
+
+}
+
+
+//color transition
+@mixin transition($attribute, $duration) {
+    -webkit-transition: $attribute $duration ease;
+    -moz-transition: $attribute $duration ease;
+    transition: $attribute $duration ease;
+}
+
+
+@mixin keyframes($animationName) {
+  @-webkit-keyframes #{$animationName} {
+    @content;
+  }
+  @-moz-keyframes #{$animationName} {
+    @content;
+  }
+  @-o-keyframes #{$animationName} {
+    @content;
+  }
+  @keyframes #{$animationName} {
+    @content;
+  }
+}
+@mixin animate($name, $duration, $iteration, $direction) {
+  -webkit-animation-duration: $duration;
+     -moz-animation-duration: $duration;
+       -o-animation-duration: $duration;
+          animation-duration: $duration;
+  -webkit-animation-iteration-count: $iteration;
+     -moz-animation-iteration-count: $iteration;
+       -o-animation-iteration-count: $iteration;
+          animation-iteration-count: $iteration;
+  -webkit-animation-name: $name;
+     -moz-animation-name: $name;
+       -o-animation-name: $name;
+          animation-name: $name;
+  -webkit-animation-direction: $direction;
+     -moz-animation-direction: $direction;
+       -o-animation-direction: $direction;
+          animation-direction: $direction;
+}
+
+
+/* Cart Page/Panel  ----------------------------------------------------------------------------------------------------------------------------*/
+
+
+
+@include keyframes(controls) {
+  0% {
+   transform: translateX(-50%);
+  }
+  100% {
+   transform: translateX(0%);
+  }
+}
+@mixin controls {
+  @include animate(controls, 0.3s, 1, normal);
+}
+
+
+body.cart header {
+
+  display:none;
+}
+
+#cart[data-role='page'] {
+padding-top:0 !important;
+}
+
+#cart[data-role='page'] .footer {
+    display: none;
+}
+
+#cart[data-role='page'] .row {
+       max-width: 71.5rem;
+}
+
+#cart[data-role='page'] {
+
+}
+#cart[data-role='page'] .mascot {
+
+
+          margin-top: 40px; 
+     
+   & .a2, & .a {
+    fill: rgba(58, 58, 58, 0.19);
+    opacity: 1 !important;
+   }
+}
+
+
+.template-cart {
+  &.animate {
+    & .product-cart-wrap {
+      transform: translateX(-50%);
+     @include controls;
+     animation-fill-mode: forwards; 
+     @for $i from 1 to 10 {
+       &:nth-child(#{$i}) {
+        -webkit-animation-delay:(#{$i* 200ms + 300}); 
+        animation-delay:(#{$i* 200ms + 300}); 
+       }
+      }
+    }
+  }
+  & .cart-header {
+        padding: 15px 0 25px;
+    & > .row:nth-child(1) {
+      & .columns:nth-child(1) {
+         text-align:center;
+         padding:0 15px;
+            flex: unset;  
+         & a {
+          &:before {
+
+        font-family: FontAwesome;
+    content: '\f104';
+    display: inline-block;
+    font-size: 100%;
+    vertical-align: top;
+    width: 13px;
+    color: rgba(0, 0, 0, 0.14);
+    line-height: 17px;
+    margin-right: 3px;
+             display:none;
+          }
+     	 & svg, & img {
+      		max-width: 177px;
+      	    height:auto;
+              max-width: 45px;
+           & path {
+           }
+    	  }
+         }
+      }
+      & .columns:nth-child(2) {
+     
+
+              margin: 0; 
+              padding: 0 10px;
+              text-align: right;
+
+        & a {
+        	display:none;
+
+          	 display:block;
+
+          & svg {
+          	 max-width: 30px;
+             height: auto;
+          }
+        }
+        & h2 {
+        font-family: 'Open Sans';      
+             font-size: 17px;
+                opacity: 0.2;
+                margin: 0;
+            line-height: 1;
+   
+        }
+        & span {
+            font-family: 'Open Sans', sans-serif;
+  			color: rgba(0, 0, 0, 0.37);
+            font-size: 15px; 
+            	display:none;
+        }
+      } 
+    }
+  }
+    & form {
+    padding-bottom: 135px;
+    & > .row {
+      & > .columns:nth-child(1) {
+      	padding:0;
+      }
+    }
+  }
+}
+
+/* product wrap */
+
+.product-cart-wrap {
+  display:flex;
+   position:relative;
+    font-weight: 600;
+    font-family: 'Open Sans', sans-serif;
+    
+
+     margin-bottom: 0px;
+     box-shadow: none;
+    -webkit-box-shadow: none;  
+         font-size: 14px;
+         padding: 0px 0;
+
+  &.is-animating {
+-webkit-transition: transform 0.2s linear;
+-moz-transition:  transform 0.2s linear;
+-o-transition:  transform 0.2s linear;
+transition:  transform 0.2s linear;
+  }
+    & .quantity-display {
+      padding: 8px 5px;
+      width: 9%;
+      text-align: center;
+    }
+    & .thumbnail-wrap {
+      width: 15%;
+      max-width: 15%;
+      background-size:cover;
+      position: relative;
+    height: 0;
+    padding-bottom: 12%;
+    overflow: hidden;
+
+      	display:none;
+
+    } 
+    & .product-title-wrap {
+  
+      position:relative;
+      display: flex;
+      flex-direction: column;
+
+         width: 80%;
+         max-width: 80%;
+        justify-content: unset;
+            padding: 8px 5px;
+
+      &:before {
+          content: '';
+    display: block;
+    height: 100%;
+    width: 25px;
+    position: absolute;
+    left: -10px;
+    top: 0px;
+    background: #fff;
+    z-index: 4;
+    overflow: hidden;
+    border-radius: 360px;
+  
+        	display:none;
+     
+      }
+      & a {
+          font-weight:600;
+        & span {
+            display: block;
+   			font-size: 90%;
+  			color: rgba(0, 0, 0, 0.18);
+ 			margin-top: 4px;
+        }
+      }
+    }
+    & .quantity-wrap {
+      display:flex;
+      flex-grow: 1;
+      justify-content: center;
+
+         order: 3;
+         position: absolute;
+         width: 50%;
+        right:0px;
+        top: 0px;
+        height: 100%;
+        background: #00CC99;
+        align-items: stretch; 
+        transform: translateX(100%);
+        -webkit-transform: translateX(100%);
+      
+      & > div {
+        display:flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0 20px;  
+      & input {
+            width: 60px;
+            margin: 0;
+       
+             background: none;
+   			 border: 1px solid rgba(255, 255, 255, 0.39);
+    		 color: #fff;
+   			 font-size: 139%;
+            text-align: center;
+    
+       } 
+      }
+      & .remove {
+      
+        	    flex-grow: 1;
+    background: #d6434b;
+    color: #fff;
+    font-size: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+          cursor:pointer;
+        
+        &:before {
+            content: 'Remove';
+            font-size: 11px;
+            display:inline-block;
+        }
+      }
+    }
+    & .price-wrap {
+      display:flex;
+      flex-grow: 1;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 20px;
+  
+    align-items: unset;
+    font-size: 100%;
+    padding: 0px 0px 0 10px;
+    align-self: normal;
+
+
+      & > span {
+        display: flex;
+        & span {
+      
+              padding: 8px 0;
+     
+        }
+        & > div {
+     
+              align-items: center;
+    display: flex;
+    background: #f5f5f5;
+    margin-left: 13px;
+        & svg {
+     max-width: 18px;
+    height: auto;
+    margin: 0px 3px 0 3px;
+          & path {
+              fill: rgba(0, 0, 0, 0.27);
+          }
+        }
+        }
+      }
+      & sup {
+      	  font-size: 63%;
+          margin-left: 2px;
+      }
+    }
+   &.open {
+   
+        transform: translateX(-50%);
+        -webkit-transform: translateX(-50%);
+     
+   }
+}
+
+.cart-totals {
+  font-family: 'Open Sans',sans-serif;
+
+      margin-top: 0px;
+    padding-bottom: 50px ;
+  
+  & ul {
+  margin:0;
+  list-style:none;
+    & li, & .shopify-section li {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    color: rgba(0, 0, 0, 0.26); 
+    padding: 10px 0px 10px; 
+    font-weight: bold;   
+    line-height: 1;  
+ 
+        font-size: 14px; 
+      
+      &.top, &:last-of-type:not(.top) {
+
+ 
+            padding: 15px 0px 15px;
+    margin: 5px 0px;
+          font-size: 95%;
+        
+       & h2 {
+         font-weight: bold;
+         color:#000;
+         font-size: 100%;
+       }
+       & a {
+        color: #00CC99;
+        text-transform: uppercase;
+        font-weight: bold;
+         font-size: 100%;
+       }
+       & span {
+   
+      font-weight: 600; 
+    line-height: 1;
+         font-weight: bold;
+      
+              font-size: 100%;
+               
+               color: #000000;
+          
+         &#sezzle-price {
+          display:none;
+         }
+        }
+      }
+      &:nth-child(1) {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.11);
+      }
+      &:last-of-type:not(.top) {
+      border-top: 1px solid rgba(0, 0, 0, 0.11);
+      }
+      & h2 {
+    font-size: 110%;
+    line-height: 1;
+    margin: 0;
+    font-weight: 600;
+    color: rgba(0, 0, 0, 0.26);     
+      }
+      & > span {
+         color: #000;  
+        & > span {
+            text-decoration: line-through;
+               color: rgba(0, 0, 0, 0.26);
+               margin-right:15px;
+        }
+      }
+    }
+  }
+& .cart-reserve {
+text-align:right;
+margin: 0 0 25px 0;
+  & > div:nth-child(1) {
+      font-size: 15px;
+  }
+  & > div:nth-child(2) {
+      background: #FEF4D0;
+    border: 1px solid #EBD29A;
+    font-weight: bold;
+    font-size: 14px;
+    text-align: center;
+    display: inline-block;
+    padding: 10px 25px;
+    margin-top: 5px;
+  }
+}
+& .agbwrap {
+      text-align:right;
+    margin: 0 0 25px;
+        
+              text-align: center;
+          
+        & label {
+      align-items: center;
+    display: flex;
+	line-height: 40px;
+	& input {
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		-ms-appearance: none;
+		-o-appearance: none;
+		appearance: none;
+		position: relative;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		height: 40px;
+		width: 40px;
+		transition: all 0.15s ease-out 0s;
+		background: #cbd1d8;
+		border: none;
+		cursor: pointer;
+		display: inline-block;
+		outline: none;
+		position: relative;
+		z-index: 1000;
+    
+            margin: 0 0 0 0;
+                  -webkit-animation: pulse2 2s ease-out 0s infinite;    
+             animation: pulse2 2s ease-out 0s infinite;   
+      
+		&:hover {
+			background: #9faab7;
+		}
+		&:checked {
+          
+                  -webkit-animation: none; 
+            -webkit-animation: none; 
+      
+			&::before {
+				height: 40px;
+				width: 40px;
+				position: absolute;
+                font-family:'FontAwesome';
+				content: '\f00c';
+				display: inline-block;
+				font-size: 26.66667px;
+				text-align: center;
+				line-height: 40px;
+			}
+			&::after {
+				-webkit-animation: click-wave 0.65s;
+				-moz-animation: click-wave 0.65s;
+				animation: click-wave 0.65s;
+				content: '';
+				display: block;
+				position: relative;
+				z-index: 100;
+			}
+		}
+	}
+}   
+& #notchecked {
+    margin-top: 20px;
+    display: none;
+    color: red;
+    text-align: right;
+}
+        & .agburl {
+    font-size: 15px;
+    display: inline;
+    line-height: 1.2;
+    text-align: right;
+    margin-right: 20px;
+          flex: 1;
+     
+     }
+    }
+   & label[for="CartNote"] {
+    text-align:right;
+  }
+  & > div {
+    margin-top: 20px;
+    text-align:right;
+
+    	display:none;
+    
+    & input[type=submit] {
+    font-family: 'Open Sans',sans-serif;
+    cursor:pointer;
+    border: none;
+      font-size: 18px;    
+    font-weight: bold;
+    padding: 20px 40px;
+       min-width: 75%;   
+    }
+  }
+}
+    @keyframes pulse2{
+        0% {
+          transform: scale(1);
+              background: #9faab7;
+        }
+        50% {
+        transform: scale(1.2);
+           background: rgba(64, 224, 208, 0.48);
+        }
+        100% {
+        transform: scale(1);
+              background: #9faab7;
+        }
+      }
+
+
+
+/* frequently bought */
+
+.frequently-bought-wrap {
+      margin-top: 10px;
+  position:relative;
+  background:#FAFAFA;
+  padding: 10px 0px;  
+  
+  & > h2 {
+
+    font-family: 'Open Sans',sans-serif;
+    font-weight: 600;
+        padding: 0 20px;
+         font-size: 14px;
+           margin: 5px 0;
+
+    & span {
+/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#325dc2+0,1c96a2+100 */
+background: rgb(50,93,194); /* Old browsers */
+background: -moz-linear-gradient(left, rgba(50,93,194,1) 0%, rgba(28,150,162,1) 100%); /* FF3.6-15 */
+background: -webkit-linear-gradient(left, rgba(50,93,194,1) 0%,rgba(28,150,162,1) 100%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(to right, rgba(50,93,194,1) 0%,rgba(28,150,162,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#325dc2', endColorstr='#1c96a2',GradientType=1 ); /* IE6-9 */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+          font-family: 'Open Sans';
+    text-transform: uppercase;
+    display: block;
+    font-size: 130%;
+    }
+  }
+  & .swiper-slide {
+  
+   }
+}
+
+
+.frequently-bought {
+    font-weight:normal;
+    display: flex;
+    align-items: center;
+    background: #fff;
+
+
+
+  margin: 10px 0 10px 0px;
+   box-shadow: 1px 1px 15px rgba(0, 0, 0, 0.12);
+    border: none;
+  
+  
+  & > div:nth-child(1) {
+        width: 33%;
+    & .flex-video {
+      margin-bottom: 0;
+      padding-bottom: 100%;
+      & div {
+          height: 100%;
+    display: flex;
+    position: absolute;
+    justify-content: center;
+    align-items: center;  
+      & img {
+     	max-width: 100%;
+      }
+      }
+    }
+  }
+  & > div:nth-child(2) {
+
+ 
+      display: flex;
+    flex-flow: column;
+    justify-content: center;  
+ 
+       padding: 10px 5px 10px 12px;
+    width: 33%;
+    font-size: 15px;
+    min-height: 75px;
+
+    
+    & h2 {
+    font-family: 'OswaldMedium', sans-serif;
+    margin: 0 0 2px 0;
+    font-weight: normal;
+   
+          font-size: 90%;
+      
+    }
+    & span {
+     display:block;
+     font-family:'Open Sans', sans-serif;
+          font-weight: 600;
+          font-size: 91%;
+    }
+  }
+  & > span {
+    flex-grow: 1;
+    justify-content: center;
+    text-align: center;
+    align-self: stretch;
+    display: flex;
+    align-items: center;
+    border-left: 1px solid rgba(0, 0, 0, 0.13);
+    color: #e662ac;
+    width: 30%;
+    font-family: 'Open Sans', sans-serif;
+
+          font-size: 16px;
+     margin:10px 0px 10px 5px;
+    
+  }
+}
+
+body.hasitem.cart {
+  & .checkout-bar {
+      transform: translateY(0);
+      -webkit-transform: translateY(0);
+  }
+}
+
+.checkout-bar {
+    position: fixed;
+    overflow: hidden;
+    z-index: 1001;
+    bottom: 0;
+    padding: 20px 20px 25px 20px;
+    width: 100%;
+    text-align: center;
+    background:#fff;
+    box-shadow: 0px 0px 19px rgba(0, 0, 0, 0.18); 
+      transform: translateY(100%);
+      -webkit-transform: translateY(100%);
+    @include transition(all,0.3s);
+    & a {
+    background: #00a953;
+    color: #fff;
+    font-family: 'Open Sans', sans-serif;
+    border-radius: 20px;
+    padding: 13px 30px;
+    width: 100%;
+    display: inline-block;
+    text-transform: uppercase;
+    font-size: 15px;
+            position: relative;
+      font-weight:600;
+      & span {
+          position: absolute;
+          right: 25px;
+        font-weight:normal;
+      }
+     &.continue {
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.1);
+    margin-bottom: 15px;
+    color: rgba(0,0,0,0.78);
+     }
+    }
+}
+
+.ui-popup-container.slideup, .ui-popup-container.slideup .ui-popup.popupwrap {
+  background:#fff;
+    height: 100%;
+    width: 100%;
+    max-width:100% !important;
+    position: absolute;
+    top: 0;
+    left:0;
+    border:none;
+    box-shadow:none;
+   
+}
+
+.popupwrap {
+   display:block;
+  
+  & .close {  
+
+
+ 
+    border-radius: 100%;
+    position: absolute;
+    font-size: 24px;
+    line-height: 1;
+ 
+    background: none;  
+    border:none;
+    color:#000;
+    text-shadow:none;
+    box-shadow:none;
+    -webkit-box-shadow:none;
+    -moz-box-shadow:none;
+    padding:0;
+    top: 10px;
+    left: 12px;
+    
+    & svg {
+    width: 18px;
+    height: auto;
+    line-height: 1;
+     & path {
+       fill: #bdbdbd;
+	 }
+	}
+}
+  & .featured-image {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  }
+  & > div:nth-child(3) {
+
+    display:block;
+    width:100%;
+   
+     & > div:nth-child(1) {
+        margin-top: 20px;
+        text-align: center;
+    & h2 {
+          font-size: 17px;
+          font-weight: bold;
+          margin-bottom: 2px;
+    }
+    & span {
+        font-size: 14px;
+   		display: block;
+    text-shadow: none;
+          color: #6b6b6b;
+    }
+  }
+  & > div:nth-child(2) {
+    padding: 10px 20px;
+    max-width: 87%;
+    margin: 0 auto;
+    font-size: 12px;
+    line-height: 1.5;
+    text-align: center;
+    font-family: 'Open Sans';
+        color: #6b6b6b;
+  }
+  & > div:nth-child(3) {
+    
+    z-index: 1001;
+    position:relative;
+    bottom: 0;
+    padding: 20px 20px 25px 20px;
+    width: 100%;
+    display: flex; 
+
+    position: fixed;
+    
+    & a {
+    background: #00CC99;
+    color: #fff;
+    font-family: 'Open Sans', sans-serif;
+    border-radius: 20px;
+    padding: 15px 30px;
+    width: 100%;
+    display: inline-block;
+    text-transform: uppercase;
+       font-size: 12px;
+    position: relative;
+    font-weight: 600;
+    text-align: center;
+    cursor:pointer;
+      & span {
+    text-shadow: none;
+       margin-left: 5px; 
+        & sup {
+            top: 0;
+            font-size: 100%;
+          &:before {
+           content:'.';
+            display:inline-block;
+          }
+        }
+      }
+   }
+    & .input-group {
+          margin-right: 10px;
+          background: #F6F6F8;
+    border-radius: 20px;
+          width: auto;
+        margin-bottom: 0;
+      & .btn-number {
+             padding: 10px 18px;
+        &:focus {
+        	outline:none;
+        }
+      }
+      & .input-number {
+            font-weight: bold;
+    background:none;
+    text-align: center;
+     width: 30px;
+    padding: 0;
+    border: none;
+    box-shadow: none;
+      }
+    }
+  }
+  }
+}
+
+
+
+/* Advanced Abandoned Cart Popup */
+
+#advanced-abandoned-cart {
+overflow:hidden;
+border:none;
+  & .advanced-popup {
+    font-family:'Open Sans', sans-serif;
+    color:#fff;
+    text-shadow:none;
+    & h4 {
+    font-family: inherit;
+    font-weight: 600;
+    font-size: 100%;
+    text-align: center;
+    padding: 10px 20px;
+    background: rgba(0, 0, 0, 0.14);
+    margin-bottom: 10px;    
+    }
+    & > div {
+    	padding:0 15px;
+      text-align: center;
+      & > form {
+       	display:flex;
+        & input {
+          margin-bottom:0px;
+             border-radius: 3px 0px 0px 3px;
+    -webkit-border-radius: 3px 0px 0px 3px;  
+         border:none; 
+        }
+        & button {
+            background: #3ACE9A;
+    color: #fff;
+    padding: 0 20px;
+    font-weight: 600;
+    border-radius: 0px 3px 3px 0px;
+    -webkit-border-radius: 0px 3px 3px 0px;   
+          cursor:pointer;
+        }
+      }
+      & > div {
+       padding:15px 10px;
+            font-size: 80%;
+      }
+    }
+  }
+}
+
+
+/* END Cart Page-------------------------------------------------------------------------------------------------------------------------*/
+{% endstylesheet %}
+
+{% javascript %}    
+
+{% endjavascript %}                                                

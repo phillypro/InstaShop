@@ -1,0 +1,120 @@
+<!--start-->
+<style>
+body::-webkit-scrollbar-thumb {
+    {% if section.settings.scrollbar_color_2 contains 'rgba(0,0,0,0)' %}
+     {% if section.settings.scrollbar_color contains 'transparent' %}
+     {% else %}
+      background-color:{{ section.settings.scrollbar_color }};    
+     {% endif %}
+  {% else %}     
+  background-image: -webkit-linear-gradient({{ section.settings.scrollbar_color }},{{ section.settings.scrollbar_color_2 }});  
+  {% endif %}  
+}
+
+body::-webkit-scrollbar-track {
+    background-color: #F5F5F5;
+}  
+  
+{% if section.settings.loader_color_2 contains 'rgba(0,0,0,0)' %}
+ {% if section.settings.loader_color contains 'transparent' %}
+   {% else %}
+   .ui-loader svg circle  {
+      fill: {{ section.settings.loader_color }};
+    }
+   {% endif %}
+ {% else %}    
+ .ui-loader svg circle:nth-child(1) {
+   fill:{{ section.settings.loader_color }};
+ }
+ .ui-loader svg circle:nth-child(2)  {
+  fill:{{ section.settings.loader_color_2 }};
+ }
+{% endif %}    
+  
+{% if section.settings.css != nil %}
+{% assign css = section.settings.css | replace: '&gt;','>' %}
+{{ css }}
+{% endif %}
+</style>
+<link rel="icon" type="image/png" href="{{ section.settings.favicon | img_url: 'pico' }}">
+
+<!--end-->
+
+
+
+
+{% schema %}
+  {
+    "name": "Favicon & Scrollbar",
+    "settings": [
+{
+       "id": "favicon",
+       "type": "image_picker",
+       "label": "Favicon (Important)",
+       "info": "Must be 17px by 17px"
+},
+{ "type": "header",
+ "content": "ScrollBar Colors"
+},
+{
+       "id": "scrollbar_color",
+       "type": "color",
+       "label": "Scrollbar Color",
+       "default": "#000000"
+},{
+       "id": "scrollbar_color_2",
+       "type": "color",
+       "label": "Scrollbar Color #2 (Optional Gradient)",
+       "default": "rgba(0,0,0,0)"
+},
+{ "type": "header",
+ "content": "Loader Color"
+},
+{
+       "id": "loader_color",
+       "type": "color",
+       "label": "Loader Color",
+       "default": "#000000"
+},{
+       "id": "loader_color_2",
+       "type": "color",
+       "label": "Loader Color #2 (Optional Gradient)",
+       "default": "rgba(0,0,0,0)"
+},
+{
+ "type": "header",
+ "content": "Universal Custom CSS"
+},
+{
+ "type": "paragraph",
+ "content": "This CSS will apply to every page just like style.scss"
+},
+{
+        "id": "css",
+        "type": "html",
+        "label": "Custom CSS"
+}]
+  }
+{% endschema %}
+
+{% stylesheet 'scss' %}
+.editfavicon {
+ & .ui-loader {
+   display:block;
+  }
+}
+{% endstylesheet %}
+
+{% javascript %}
+
+ $(document).on("shopify:section:select",'#shopify-section-Favicon-and-Scrollbar',function(e){
+
+ $('body').addClass('editing editfavicon');
+
+     $(document).on("shopify:section:deselect",'#shopify-section-Favicon-and-Scrollbar',function(e){
+        $('body').removeClass('editfavicon');
+      
+     });   
+}); 
+ 
+{% endjavascript %}  

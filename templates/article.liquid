@@ -1,0 +1,93 @@
+<div class="article-page-wrap">
+  <div class="article-page-inner row align-left">
+    <div class="large-2 medium-2 small-4 columns latest-wrap articles-wrap">
+     {% for tag in article.tags %}
+       
+     {% if tag != 'featured' and tag != 'video' %}
+       
+    
+      
+       {% assign counter = 0 %}
+      {% assign blog = article.handle | split: '/' %}
+{% for article2 in blogs[blog[0]].articles %}
+{% if article.id == article2.id %}
+    {% assign start = true %}
+{% endif %}
+{% if article2.id != article.id and counter < 4 %}
+  {% assign counter = counter | plus: 1 %}
+  <a class="article-wrap" href="{{ article2.url }}">
+    <div class="article-inner">
+      <div class="top-image flex-content">
+        <img src="{{ article2.image.src | img_url: 'medium' }}" alt="{{ article2.title }}" />
+      </div>
+      <div class="bottom-content">
+        <div class="bottom-inner">
+          <title >{{ article2.title }}</title>
+        </div>
+      </div>
+    </div>
+  </a>
+{% endif %}
+{% endfor %}
+      
+      
+      
+      
+      
+       {% break %}
+      {% endif %}
+      
+     {% endfor %}
+    </div>
+    
+    <div class="large-10 medium-10 small-12 columns article-column" itemscope itemtype="http://schema.org/Article">
+      <div class="desktop-article-header article-header">
+        <div class="title" itemprop="headline">{{ article.title }}</div>
+        <div class="excerpt" itemprop="description">{{ article.excerpt }}</div>
+        <div class="hide">
+          <span itemprop="author"  itemscope itemtype="https://schema.org/Person">
+            <span itemprop="name">The Club</span>           
+          </span>
+        </div>
+      </div>
+      <div class="top-image" itemprop="image" itemscope itemtype="https://schema.org/ImageObject">
+         {% if article.metafields.c_f.featured_video %}
+          {% assign youtubeid = article.metafields.c_f.featured_video | split: 'v=' %}
+           <div id="player-article-{{ article.id }}" class="flex-video youtube widescreen videobox" video-id="{{ youtubeid.last }}"></div>
+           <div class="hide">
+              <img src="{{ article.image.src | img_url: '1024x1024' }}" alt="{{ article.title }}" />
+              <meta itemprop="url" content="https:{{ article.image.src | img_url: '1024x1024' }}">
+              <meta itemprop="width" content="1024">
+              <meta itemprop="height" content="600">  
+           </div>
+          {% else %}
+            <img src="{{ article.image.src | img_url: '1024x1024' }}" alt="{{ article.title }}" />
+             <meta itemprop="url" content="https:{{ article.image.src | img_url: '1024x1024' }}">
+              <meta itemprop="width" content="1024">
+              <meta itemprop="height" content="600">
+         {% endif %}
+      </div>
+      <div class="article-body-wrap">
+      <div class="mobile-article-header article-header">
+        <div class="title">{{ article.title }}</div>
+        <div class="excerpt">{{ article.excerpt }}</div>
+      </div>
+        <div class="article-inner-wrap row">
+          <div class="article-content large-8 medium-12 small-12 columns">
+           {{ article.content }}
+           
+            <div id="comments-wrap" class="comments-wrap">
+                 <div id="disqus_thread"></div>
+            </div>
+
+        
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    
+  </div>
+</div>

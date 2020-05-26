@@ -1,0 +1,217 @@
+{% style %}
+
+{% assign loadedfonts = '' %}  
+{% assign familyandweight = section.settings.font.family | append: section.settings.font.weight %}
+{% if loadedfonts contains familyandweight %}
+{% else %}
+{{ section.settings.font | font_face }}
+{% endif %}
+{% assign loadedfonts = loadedfonts | append: section.settings.font.family | append: section.settings.font.weight | append: section.settings.font.style | append: '|' %}
+
+#shopify-section-{{ section.id  }} {
+margin:{{ section.settings.topposition }}px 0 {{ section.settings.bottomposition }}px 0;
+font-size:{{ section.settings.size }}px;
+color:{{ section.settings.color }};
+font-family: {{ section.settings.font.family }}; 
+font-weight:{{ section.settings.font.weight }};
+font-style:{{ section.settings.font.style }};
+
+
+{% unless section.settings.width == 'full' %}
+      width: 49.5%;
+  {% else %}
+    width: 100%;
+{% endunless %}
+
+{% case section.settings.align %}
+{% when 'center' %}
+text-align:center;
+{% when 'left' %}
+text-align:left;
+{% when 'right' %}
+text-align:right;
+{% endcase %}
+}
+
+#shopify-section-{{ section.id  }} a {
+min-width:{{ section.settings.buttonWidth }}%;
+background:{{ section.settings.backgroundcolor }}; 
+color:{{ section.settings.color }};
+{% if section.settings.rounded == true %} 
+ border-radius:30px;
+{% endif %}
+}
+
+
+{% endstyle %}
+
+
+<div class="button-wrap">
+   <a href="{{ section.settings.url }}" {% if section.settings.url contains '#mailPopup' %}data-rel="popup" data-transition="slideupfade"{% endif %}>
+      {{ section.settings.text }}
+   </a>
+</div>
+
+
+{% schema %}
+  {
+    "name": "Button",
+    "settings": [
+
+{
+   "id": "text",
+   "type": "text",
+   "label": "Text"
+},
+{
+   "id": "url",
+   "type": "url",
+   "label": "URL Link"
+},
+ {
+     "type": "font_picker",
+     "id": "font",
+     "label": "Font",
+     "default": "work_sans_n6"
+   },
+      {
+    "type":   "range",
+    "id":     "size",
+    "min":       12,
+    "max":       60,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Font Size",
+    "default":   20
+     },
+      {
+        "id": "color",
+        "type": "color",
+        "label": "Text Color",
+        "default": "#FFF"
+      },
+      {
+        "id": "backgroundcolor",
+        "type": "color",
+        "label": "Background Color",
+        "default": "#000"
+      },
+{
+  "type": "checkbox",
+  "id": "rounded",
+  "label": "Rounded Corners",
+  "default": false
+},  
+{
+   "type":      "radio",
+   "id":        "align",
+   "label":     "Button Alignment",
+   "options": [
+     { "value": "left", "label": "Left" },
+     { "value": "center", "label": "Center" },
+     { "value": "right", "label": "Right" }
+   ],
+   "default":   "center"
+},
+{
+   "type": "radio",
+   "id": "width",
+   "options": [
+      { "value": "full", "label": "Full Width"},
+      { "value": "half", "label": "Half Width"}
+   ],
+   "label": "Width",
+   "default": "full"
+},   
+{
+    "type":   "range",
+    "id":     "buttonWidth",
+    "min":       0,
+    "max":       100,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Width",
+    "default":   50
+     },
+{
+   "type": "header",
+   "content": "Spacing"
+},
+
+      {
+    "type":   "range",
+    "id":     "topposition",
+    "min":       0,
+    "max":       60,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Position from Top",
+    "default":   15
+     },
+     {
+    "type":   "range",
+    "id":     "bottomposition",
+    "min":       0,
+    "max":       60,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Position from Bottom",
+    "default":   15
+     }],
+ "presets": [
+    {
+      "name": "Button",
+      "category": "Content"
+    }
+  ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+
+
+$(document).on("shopify:section:select", function(e){
+
+var type = 'Button';
+var EditClass = 'editButton';
+
+
+var dataset = e.target.dataset;
+var dataset = JSON.parse(dataset[Object.keys(dataset)[0]]);
+var sectionType = dataset['type'];
+var sectionId = dataset['id'];
+var eventSectionId = e.target.id.replace('shopify-section-','');
+if(sectionType == type && sectionId == eventSectionId) {
+
+//scroll
+var sectionEl = document.querySelector('#shopify-section-'+sectionId);
+var topPos = sectionEl.offsetTop;
+var frame = document.querySelector('#swiper_Frame');
+if(!window['scroll'+sectionId]) {
+$(frame).animate({ scrollTop: topPos }); 
+window['scroll'+sectionId] = true;
+}
+
+
+
+
+
+
+var body =  document.getElementsByTagName("body")[0];
+body.classList.add('editing', EditClass);
+$(document).one("shopify:section:deselect",function(e){
+body.classList.remove(EditClass);
+
+//clear scroll
+window['scroll'+sectionId] = undefined;
+
+
+})
+}
+});   
+
+
+{% endjavascript %}        

@@ -1,0 +1,358 @@
+{% style %}
+ #shopify-section-{{ section.id }} {
+ margin:{{ section.settings.topposition }}px 0 {{ section.settings.bottomposition }}px 0;
+}
+{% endstyle %}
+<div class="banner-wrap">
+  <div class="swiper-container">
+    <!-- Additional required wrapper -->
+    <div class="swiper-wrapper">
+   {% if section.blocks.size == 0 %}
+     <div class="swiper-slide">
+       <a target="_blank" href="https://www.youtube.com/watch?v=bL_X_GK69P4">
+         <img src="{{ 'banner.jpg' | asset_url }}" />
+      </a>
+     </div>      
+   {% endif %}   
+      
+   {% for block in section.blocks %}
+     {% case block.type %}
+      {% when 'Image' %}
+      <div class="swiper-slide">
+       <a href="{{ block.settings.url }}" {% if block.settings.url contains '#mailPopup' %}data-rel="popup" data-transition="slideupfade"{% endif %}>
+         <img src="{{ block.settings.image | img_url: '1024x1024' }}" />
+      </a>
+      </div>
+      {% when 'Video' %}
+      <div class="swiper-slide video-slide">
+      <a href="{{ block.settings.url }}">
+         <video preload="auto"  playsinline="" muted><source src="{{ block.settings.video }}" type="video/mp4"></video>
+      </a>
+      </div>
+     {% endcase %}
+  {% endfor %}   
+      </div>
+</div>
+</div>
+
+<script>
+
+  
+  
+var callback{{ section.id}} = function(){
+  // Handler when the DOM is fully loaded
+  if(!window.Swiper) {
+    // add script
+    var script = document.createElement("script");
+    script.type = "text/javascript";   
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/{{ settings.swiperjsversion }}/js/swiper.min.js';
+    document.getElementsByTagName("head")[0].appendChild(script);
+    // add style
+    var style = document.createElement("link");
+    style.type = "text/css";  
+    style.rel = "stylesheet";
+    style.href = 'https://cdnjs.cloudflare.com/ajax/libs/Swiper/{{ settings.swiperjsversion }}/css/swiper.min.css';
+    document.getElementsByTagName("head")[0].appendChild(style);
+  }
+};
+
+if (
+    document.readyState === "complete" ||
+    (document.readyState !== "loading" && !document.documentElement.doScroll)
+) {
+  callback{{ section.id}}();
+} else {
+  document.addEventListener("DOMContentLoaded", callback{{ section.id}});
+}  
+  
+  
+function defer{{ section.id}}(method{{ section.id}}) {
+    if (window.Swiper) {
+        method{{ section.id}}();
+    } else {
+        setTimeout(function() { defer{{ section.id}}(method{{ section.id}}) }, 50);
+    }
+}
+  defer{{ section.id}}(function () {  
+ 
+    window['clone{{ section.id}}'] = function() {
+  
+  autoplaycheck{{ section.id }}();  
+  function autoplaycheck{{ section.id }}() {
+   var video = document.querySelector('#shopify-section-{{ section.id }} video');
+   if(video) {
+    var promise = video.play();
+    if (promise !== undefined) {
+    promise.then(_ => {
+    slider{{ section.id }}(); 
+    }).catch(error => {
+var videoSlide = document.querySelector('#shopify-section-{{ section.id }} .video-slide');
+videoSlide.remove();
+    slider{{ section.id }}(); 
+ });
+}
+  }else{
+  slider{{ section.id }}(); 
+  }    
+}
+
+  
+function slider{{ section.id }}() {
+	var container = document.querySelector('#shopify-section-{{ section.id }} .swiper-container');                                     
+	// shoutouts swiper
+   options = {
+		speed: 800,
+		slidesPerView: 'auto', // or 'auto'
+		spaceBetween: 0,
+		effect: 'slide', // 'cube', 'fade', 'coverflow',
+		preventClicks: true,
+		slideToClickedSlide: false,
+        observer: true,
+      observeParents: true,
+      loop:true,
+      init: false,
+      autoHeight: true,	
+      {% unless section.blocks.size == 0 %}
+      autoplay: {
+			delay: 5000,
+			disableOnInteraction: false,
+		},
+      {% endunless %}
+	}
+
+
+  
+var slider{{ section.id }} = new Swiper((container), options);
+slider{{ section.id }}.on('slideChangeTransitionStart', function () {
+  //if has video...restart it
+  var currentslide = slider{{ section.id }}.slides[slider{{ section.id }}.activeIndex];
+  var video = currentslide.querySelector('video');
+  if(video) {
+   var videoEl = video;
+   videoEl.currentTime = 0;
+   videoEl.play(); 
+   // stop autoplay of swiper
+
+   slider{{ section.id }}.autoplay.stop();
+   // remove other video events
+    var allVideos = currentslide.closest('.swiper-wrapper').querySelectorAll('video');
+    [].forEach.call(allVideos, function(videosib) {
+     videosib.removeEventListener('ended',skip{{ section.id }});
+    });
+    videoEl.addEventListener('ended', skip{{ section.id }} );
+  }
+});
+slider{{ section.id }}.on('init', function () {
+  //if has video...restart it
+  var currentslide = slider{{ section.id }}.slides[slider{{ section.id }}.activeIndex];
+  var video = currentslide.querySelector('video');
+  if(video) {
+   var videoEl = video;
+   videoEl.currentTime = 0;
+   videoEl.play(); 
+   // stop autoplay of swiper
+
+   slider{{ section.id }}.autoplay.stop();
+   // remove other video events
+    var allVideos = currentslide.closest('.swiper-wrapper').querySelectorAll('video');
+    [].forEach.call(allVideos, function(videosib) {
+     videosib.removeEventListener('ended',skip{{ section.id }});
+    });
+    videoEl.addEventListener('ended', skip{{ section.id }} );
+  }
+});  
+slider{{ section.id }}.init();   
+}  
+  
+    
+function skip{{ section.id }}() {  
+    var video = event.target;
+    video.play(); 
+    //trigger next slide on ended
+    var bannerSwiper = video.closest('.swiper-container').swiper;
+    bannerSwiper.autoplay.start();  
+    bannerSwiper.slideNext();
+}    
+
+  };
+  
+  window['clone{{ section.id }}']();
+    
+  });  
+</script>
+{% schema %}
+  {
+    "name": "Image & Video Slider",
+    "settings": [ 
+{
+   "type": "header",
+   "content": "Spacing"
+},
+   {
+    "type":   "range",
+    "id":     "topposition",
+    "min":       0,
+    "max":       60,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Position from Top",
+    "default":   0
+     },
+     {
+    "type":   "range",
+    "id":     "bottomposition",
+    "min":       0,
+    "max":       60,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Position from Bottom",
+    "default":   15
+     }
+], 
+  "blocks": [
+    {
+     "type": "Image",
+     "name": "Image",
+     "settings" : [
+      {
+       "id": "image",
+       "type": "image_picker",
+       "label": "Image"
+      },
+      {
+       "id": "url",
+       "type": "url",
+       "label": "Link to"
+      }
+     ]
+    },
+    {
+     "type": "Video",
+     "name": "Video",
+     "settings" : [
+{
+   "type":      "header",
+   "content":   "Step 1. Convert Your Video File"
+},
+{
+   "type":      "paragraph",
+   "content":   "If your video is a .mov from an iphone you will need to convert it to MP4 [Convert To MP4](https://convertio.co/mp4-converter/)"
+},
+{
+   "type":      "header",
+   "content":   "Step 2. Optimize Video (Optional)"
+},
+{
+   "type":      "paragraph",
+   "content":   "This is optional but you can make your video load 10X faster for users if you upload it to this Free File Compressor [Optimize Video](https://www.youcompress.com/)"
+},
+{
+   "type":      "header",
+   "content":   "Step 3. Upload your Video"
+},
+{
+   "type":      "paragraph",
+   "content":   "Upload your video to your Shopify File Area [Watch How To Upload](https://youtu.be/bL_X_GK69P4?t=420)"
+},
+      {
+       "id": "video",
+       "type": "text",
+       "label": "MP4 URL"
+      },
+      {
+       "id": "url",
+       "type": "url",
+       "label": "Link to"
+      }
+     ]
+    }
+   ],
+ "presets": [
+    {
+      "name": "Image & Video Slider",
+      "category": "Media"
+    }
+  ]
+  }
+{% endschema %}
+
+{% stylesheet 'scss' %}
+
+.banner-wrap {
+  &.battery-mode {
+    & .video {
+     display:none;
+    }
+    & .image {
+     display:block;
+    }
+  }
+  & .image {
+   display:none;
+  }
+  & a {
+        display: block;
+    line-height:0;
+  & video {
+   max-width:100%;
+    height:auto;
+  }
+  }
+}
+
+{% endstylesheet %}
+
+{% javascript %}
+   
+$(document).on("shopify:section:select", function(e){
+
+var type = 'Banner';
+var EditClass = 'editbanner';
+
+
+var dataset = e.target.dataset;
+var dataset = JSON.parse(dataset[Object.keys(dataset)[0]]);
+var sectionType = dataset['type'];
+var sectionId = dataset['id'];
+var eventSectionId = e.target.id.replace('shopify-section-','');
+if(sectionType == type && sectionId == eventSectionId) {
+
+//scroll
+var sectionEl = document.querySelector('#shopify-section-'+sectionId);
+var topPos = sectionEl.offsetTop;
+var frame = document.querySelector('#swiper_Frame');
+if(!window['scroll'+sectionId]) {
+$(frame).animate({ scrollTop: topPos }); 
+window['scroll'+sectionId] = true;
+}
+
+
+
+
+//re-intialize
+$(document).off("shopify:section:select", sectionEl, reInit);
+$(document).on("shopify:section:select", sectionEl, reInit);
+function reInit() {
+var mySwiper = this.querySelector('.swiper-container').swiper;
+if(mySwiper) {
+mySwiper.destroy( true, true );
+}
+window['clone'+sectionId]();
+} 
+
+
+var body =  document.getElementsByTagName("body")[0];
+body.classList.add('editing', EditClass);
+$(document).one("shopify:section:deselect",function(e){
+body.classList.remove(EditClass);
+
+//clear scroll
+window['scroll'+sectionId] = undefined;
+
+// remove re-initialize event listenener
+$(document).off("shopify:section:select", sectionEl, reInit);
+
+})
+}
+});   
+{% endjavascript %}                         

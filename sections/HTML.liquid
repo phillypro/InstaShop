@@ -1,0 +1,71 @@
+{% style %}
+#shopify-section-{{ section.id  }} {
+margin:{{ section.settings.topposition }}px 0 {{ section.settings.bottomposition }}px 0;
+{% unless section.settings.width == 'full' %}
+      width: 49.5%;
+  {% else %}
+    width: 100%;
+{% endunless %}
+}
+{% endstyle %}
+
+{{ block.settings.html }}
+
+
+
+{% schema %}
+  {
+    "name": "HTML",
+    "settings": [{
+       "id": "html",
+       "type": "html",
+       "label": "HTML"
+},
+{
+   "type": "radio",
+   "id": "width",
+   "options": [
+      { "value": "full", "label": "Full Width"},
+      { "value": "half", "label": "Half Width"}
+   ],
+   "label": "Width",
+   "default": "full"
+},
+{
+   "type": "header",
+   "content": "Spacing"
+},
+      {
+    "type":   "range",
+    "id":     "topposition",
+    "min":       0,
+    "max":       60,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Position from Top",
+    "default":   0
+     },
+     {
+    "type":   "range",
+    "id":     "bottomposition",
+    "min":       0,
+    "max":       60,
+    "step":     1,
+    "unit":      "px",
+    "label":     "Position from Bottom",
+    "default":   15
+     }],
+ "presets": [
+    {
+      "name": "HTML",
+      "category": "Advanced"
+    }
+  ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}
