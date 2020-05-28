@@ -166,13 +166,17 @@ defer{{ section.id }}(function() {
  
   
   function rellax{{ section.id }}() {
-   $('[data-rellax]').attr('data-rellax-percentage','0.08');
-   var rellax = new Rellax('[data-rellax]', {
+
+   var rellaxEl = document.querySelector('#shopify-section-{{ section.id }} [data-rellax]');
+   rellaxEl.setAttribute('data-rellax-percentage','0.08');
+   rellaxEl.rellax = new Rellax(rellaxEl, {
     wrapper: '#swiper_Frame',
     round: true,
     vertical: true,
     horizontal: false
   });   
+    
+  console.log(rellaxEl.rellax);
 } 
 
  
@@ -455,4 +459,63 @@ defer{{ section.id }}(function() {
 {% endstylesheet %}
 
 {% javascript %}
-{% endjavascript %}
+
+  
+$(document).on("shopify:section:select", function(e){
+
+var type = 'Parallax';
+var EditClass = 'editParallax';
+
+
+var dataset = e.target.dataset;
+var dataset = JSON.parse(dataset[Object.keys(dataset)[0]]);
+var sectionType = dataset['type'];
+var sectionId = dataset['id'];
+var eventSectionId = e.target.id.replace('shopify-section-','');
+if(sectionType == type && sectionId == eventSectionId) {
+
+//scroll
+var sectionEl = document.querySelector('#shopify-section-'+sectionId);
+var topPos = sectionEl.offsetTop;
+var frame = document.querySelector('#swiper_Frame');
+if(!window['scroll'+sectionId]) {
+$(frame).animate({ scrollTop: topPos }); 
+window['scroll'+sectionId] = true;
+}
+
+
+// refresh Rellax
+var rellaxEl = document.querySelector('#shopify-section-'+sectionId+' [data-rellax]');
+console.log(rellaxEl);
+console.log(rellaxEl.rellax);
+if(rellaxEl.rellax !== undefined) {
+rellaxEl.rellax.refresh();
+}else{
+rellaxEl.setAttribute('data-rellax-percentage','0.08');
+new Rellax(rellaxEl, {
+    wrapper: '#swiper_Frame',
+    round: true,
+    vertical: true,
+    horizontal: false
+  });   
+}
+
+
+
+var body =  document.getElementsByTagName("body")[0];
+body.classList.add('editing', EditClass);
+$(document).one("shopify:section:deselect",function(e){
+body.classList.remove(EditClass);
+
+//clear scroll
+window['scroll'+sectionId] = undefined;
+
+
+})
+}
+});   
+
+
+
+
+{% endjavascript %}                 
