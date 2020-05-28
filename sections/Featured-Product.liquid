@@ -5,7 +5,7 @@
 }
 {% endstyle %}
 
-
+{% unless section.settings.product == blank %}
 {% assign product = all_products[section.settings.product] %}
       {% assign add_to_cart = 'Add to cart' %}
       {% assign sold_out = 'Sold Out' %}
@@ -486,10 +486,10 @@ function startSlider{{ section.id }}() {
 });
 </script>        
         
-        
+{% endunless %}        
 {% schema %}
   {
-    "name": "Featurted Product",
+    "name": "Shoppable Product",
     "settings": [{
        "id": "product",
        "type": "product",
@@ -535,7 +535,7 @@ function startSlider{{ section.id }}() {
 }],
  "presets": [
     {
-      "name": "Featured Product",
+      "name": "Shoppable Product",
       "category": "Products"
     }
   ]
