@@ -183,4 +183,48 @@ width: 100%;
 {% endstylesheet %}
 
 {% javascript %}
-{% endjavascript %}
+
+
+   
+$(document).on("shopify:section:select", function(e){
+
+var type = 'Products';
+var EditClass = 'editProducts';
+
+
+var dataset = e.target.dataset;
+var dataset = JSON.parse(dataset[Object.keys(dataset)[0]]);
+var sectionType = dataset['type'];
+var sectionId = dataset['id'];
+var eventSectionId = e.target.id.replace('shopify-section-','');
+if(sectionType == type && sectionId == eventSectionId) {
+
+//scroll
+var sectionEl = document.querySelector('#shopify-section-'+sectionId);
+var topPos = sectionEl.offsetTop;
+var frame = document.querySelector('#swiper_Frame');
+if(!window['scroll'+sectionId]) {
+$(frame).animate({ scrollTop: topPos }); 
+window['scroll'+sectionId] = true;
+}
+
+
+
+
+
+
+var body =  document.getElementsByTagName("body")[0];
+body.classList.add('editing', EditClass);
+$(document).one("shopify:section:deselect",function(e){
+body.classList.remove(EditClass);
+
+//clear scroll
+window['scroll'+sectionId] = undefined;
+
+
+})
+}
+});   
+
+
+{% endjavascript %}   
