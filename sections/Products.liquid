@@ -1,5 +1,5 @@
 {% style %}
-{% capture buynowbutton %}{{settings.buy_now_button}}{{ settings.buynowcolor }}{{ settings.buynowbackground }}{{ settings.product_title_color }}{{ settings.product_price_color }}{% endcapture %}
+{% capture buynowbutton %}{{ settings.product_image_size }}{{ settings.product_image_hover }}{{settings.buy_now_button}}{{ settings.buynowcolor }}{{ settings.buynowbackground }}{{ settings.product_title_color }}{{ settings.product_price_color }}{{ settings.buynowrounded }}{% endcapture %}
 #shopify-section-{{ section.id  }} {
     width: 100%;
     display: flex;
@@ -172,7 +172,7 @@ width: 100%;
 }],
  "presets": [
     {
-      "name": "Products",
+      "name": "Product Preview",
       "category": "Products"
     }
   ]
