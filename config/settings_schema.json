@@ -232,11 +232,11 @@
         "default": "#000000"
       },
       {
-  	   "type": "checkbox",
-  	   "id": "buynowrounded",
-  	   "label": "Rounded Corners",
-	   "default": true
-     }
+        "type": "checkbox",
+        "id": "buynowrounded",
+        "label": "Rounded Corners",
+        "default": true
+      }
     ],
     "name": "Product Preview Style"
   },
