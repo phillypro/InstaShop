@@ -10,6 +10,11 @@ overflow:hidden;
 }
 #shopify-section-{{ section.id }} .rellax-element {
 height:{{ height }}px;
+{% unless section.settings.direction == 'horizontal' %}
+        flex-flow:column;
+        {% else %}
+        flex-flow:row;
+       {% endunless %}
 }
 #shopify-section-{{ section.id }} .overlay {
 {% if section.settings.darkenbackground %}
@@ -42,11 +47,7 @@ min-height:{{imgheight}}px;
     font-style:{{ block.settings.font.style }};  
         color:{{ block.settings.color }};
         margin:{{ block.settings.topposition }}px 0 {{ block.settings.bottomposition }}px 0;
-       {% unless block.settings.width == 'full' %}
-         width: 49.5%;
-        {% else %}
           width: 100%;
-       {% endunless %}
       }
 
       #shopify-section-{{ section.id }} #block-{{ block.id }} .inner {
@@ -85,11 +86,7 @@ color:{{ block.settings.color }};
 #shopify-section-{{ section.id }} #block-{{ block.id }} {
         text-align:{{ block.settings.align }};
      margin:{{ block.settings.topposition }}px 0 {{ block.settings.bottomposition }}px 0;
- {% unless block.settings.width == 'full' %}
-        max-width: 49.5%;
-        {% else %}
           width: 100%;
-       {% endunless %}
 }
 
    {% endcase %}
@@ -119,7 +116,12 @@ color:{{ block.settings.color }};
       {% endcase %}
      {% endfor %} 
     <div class="overlay"></div>
+{% capture backgroundimage %}{{ section.settings.image | img_url: '1024x1024' }}{% endcapture %}                                   
+{% if backgroundimage contains 'no-image' %}
+    <img class="fill" data-rellax data-rellax-speed="1.5" data-rellax-percentage="0.1" data-rellax-zindex="0" src="{{ 'parallax-demo-min.jpg' | asset_url }}">
+{% else %}
     <img class="fill" data-rellax data-rellax-speed="1.5" data-rellax-percentage="0.1" data-rellax-zindex="0" src="{{ section.settings.image | img_url: 'large' }}">
+{% endif %}
   </div>
 </div>
 <script>
@@ -203,6 +205,17 @@ defer{{ section.id }}(function() {
 {
    "type":      "header",
    "content":   "Sizing"
+},
+{
+   "type": "radio",
+   "id": "direction",
+   "options": [
+      { "value": "vertical", "label": "Vertical"},
+      { "value": "horizontal", "label": "Horizontal"}
+      
+   ],
+   "label": "Content Direction",
+   "default": "vertical"
 },
 {
     "type":   "range",
@@ -292,16 +305,6 @@ defer{{ section.id }}(function() {
      { "value": "right", "label": "Right" }
    ],
    "default":   "center"
-},
-{
-   "type": "radio",
-   "id": "width",
-   "options": [
-      { "value": "full", "label": "Full Width"},
-      { "value": "half", "label": "Half Width"}
-   ],
-   "label": "Content Width",
-   "default": "full"
 },
       {
     "type":   "range",
@@ -398,17 +401,7 @@ defer{{ section.id }}(function() {
      { "value": "right", "label": "Right" }
    ],
    "default":   "center"
-},
-{
-   "type": "radio",
-   "id": "width",
-   "options": [
-      { "value": "full", "label": "Full Width"},
-      { "value": "half", "label": "Half Width"}
-   ],
-   "label": "Width",
-   "default": "full"
-},   
+}, 
 {
     "type":   "range",
     "id":     "buttonWidth",
