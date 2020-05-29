@@ -1,2 +1,255 @@
 {
+  "current": {
+    "sections": {
+      "Setup-Instructions": {
+        "type": "Setup-Instructions",
+        "settings": {
+          "virtualGuide": true
+        }
+      },
+      "Favicon-and-Scrollbar": {
+        "type": "Favicon-and-Scrollbar",
+        "settings": {
+          "favicon": "",
+          "scrollbar_color": "#a9a9a9",
+          "scrollbar_color_2": "rgba(0,0,0,0)",
+          "loader_color": "#000000",
+          "loader_color_2": "rgba(0,0,0,0)",
+          "css": ""
+        }
+      },
+      "Loader": {
+        "type": "Loader",
+        "settings": {
+          "activate": true,
+          "brand_logo": "",
+          "brand_logo_svg": ""
+        }
+      },
+      "Mobile-Menu": {
+        "type": "Mobile-Menu",
+        "settings": {
+          "collections": true,
+          "background_color": "#ffffff",
+          "background_color_2": "transparent",
+          "background_image": "",
+          "search_color": "#000000",
+          "search_placeholder": "Search...",
+          "font": "work_sans_n6",
+          "link_color": "#000000",
+          "link_size": 58,
+          "link_spacing": 2,
+          "link_uppercase": true,
+          "link_border": false,
+          "message": "Questions, concerns or just want to say hi? We are here to help you 24\/7",
+          "button_color": "#000000"
+        }
+      },
+      "Header-Notification": {
+        "type": "Header-Notification",
+        "settings": {
+          "notification": "Demo Store Launch! Free Shipping",
+          "url": "",
+          "background_color": "#9c35a7",
+          "background_color_2": "#cb8335",
+          "text_color": "#ffffff",
+          "dismissable": true
+        }
+      },
+      "Header": {
+        "type": "Header",
+        "settings": {
+          "brandname": "",
+          "font": "work_sans_n6",
+          "font_size": 25,
+          "brand_logo": "",
+          "brand_logo_svg": "",
+          "logo_width": 30,
+          "header_background_color": "#ffffff",
+          "header_background_color_2": "rgba(0,0,0,0)",
+          "brand_name_color": "#000000",
+          "menu_icon_color": "#000000",
+          "cart_icon_color": "#000000"
+        }
+      },
+      "Stories": {
+        "type": "Stories",
+        "settings": {
+          "hidestories": true,
+          "demo": true,
+          "background_color": "#ffffff",
+          "font_color": "#000000",
+          "bubble_background_color": "#bf43a6",
+          "bubble_background_color_2": "#f5ae5f",
+          "bubble_tag_background_color": "#cf0168",
+          "bubble_tag_background_color_2": "#e0023f"
+        }
+      },
+      "Footer": {
+        "type": "Footer",
+        "blocks": {
+          "1590715410104": {
+            "type": "Mailing-List",
+            "settings": {
+              "klaviyo_list": "",
+              "mailchimp_url": "",
+              "message": "Join our Mailing List and stay updated",
+              "font": "work_sans_n6",
+              "fontsize": 21,
+              "message_color": "#000",
+              "input_text": "Your@email.com",
+              "button_text": "Sign Up",
+              "button_color": "#000",
+              "button_font_color": "#fff",
+              "ajax": false,
+              "topposition": 0,
+              "bottomposition": 15
+            }
+          }
+        },
+        "block_order": [
+          "1590715410104"
+        ],
+        "settings": {
+          "top_background_color": "#f3f3f3",
+          "top_background_color_2": "transparent",
+          "topcolor": "#000000",
+          "bottom_background_color": "#000000",
+          "bottom_background_color_2": "transparent",
+          "bottomcolor": "#ffffff",
+          "visa": true,
+          "mastercard": true,
+          "discover": true,
+          "american": true,
+          "paypal": true,
+          "applepay": true,
+          "card_color": "#000",
+          "policy_color": "#000"
+        }
+      },
+      "1589669189418": {
+        "type": "Banner",
+        "settings": {
+          "topposition": 0,
+          "bottomposition": 15
+        }
+      },
+      "Product-Video-Gallery": {
+        "type": "Product-Video-Gallery",
+        "settings": {
+          "sticky": true
+        }
+      },
+      "Multiselect": {
+        "type": "Multiselect",
+        "settings": {
+          "animate": true,
+          "selectedColor": "#f1a3b0"
+        }
+      },   
+      "1590711542047": {
+        "type": "Text",
+        "settings": {
+          "text": "<p>About Us<\/p>",
+          "color": "#000",
+          "font": "work_sans_n6",
+          "underline": true,
+          "size": 20,
+          "align": "center",
+          "width": "full",
+          "topposition": 0,
+          "bottomposition": 12
+        }
+      },
+      "1590711746642": {
+        "type": "Text",
+        "settings": {
+          "text": "<p>This is where you enter content in, like your about us info. Or you can just delete this block. Make sure you watch the videos. It will save you time.&nbsp;<\/p>",
+          "color": "#000",
+          "font": "work_sans_n4",
+          "underline": false,
+          "size": 15,
+          "align": "center",
+          "width": "full",
+          "topposition": 0,
+          "bottomposition": 15
+        }
+      },
+      "1590712049243": {
+        "type": "Products",
+        "blocks": {
+          "1590712113666": {
+            "type": "productCollection",
+            "settings": {
+              "collection": "frontpage",
+              "products_per": "50",
+              "width": "half",
+              "topposition": 0,
+              "bottomposition": 15
+            }
+          }
+        },
+        "block_order": [
+          "1590712113666"
+        ],
+        "settings": {
+        }
+      },
+      "1590713877885": {
+        "type": "Parallax",
+        "blocks": {
+          "1590714266677": {
+            "type": "Text",
+            "settings": {
+              "text": "<p>Parallax Area<\/p>",
+              "color": "#ffffff",
+              "shadow": false,
+              "font": "work_sans_n6",
+              "underline": false,
+              "size": 31,
+              "align": "center",
+              "fontwidth": 100,
+              "topposition": 0,
+              "bottomposition": 0
+            }
+          },
+          "1590714300526": {
+            "type": "Button",
+            "settings": {
+              "text": "Shop Now",
+              "url": "",
+              "font": "work_sans_n6",
+              "size": 20,
+              "color": "#fff",
+              "backgroundcolor": "#000",
+              "rounded": false,
+              "align": "center",
+              "buttonWidth": 48,
+              "topposition": 0,
+              "bottomposition": 0
+            }
+          }
+        },
+        "block_order": [
+          "1590714266677",
+          "1590714300526"
+        ],
+        "settings": {
+          "image": "",
+          "darkenbackground": false,
+          "direction": "vertical",
+          "height": 40,
+          "topposition": 0,
+          "bottomposition": 15
+        }
+      }
+    },
+    "content_for_index": [
+      "1589669189418",
+      "1590711542047",
+      "1590711746642",
+      "1590712049243",
+      "1590713877885"
+    ]
+  }
 }
