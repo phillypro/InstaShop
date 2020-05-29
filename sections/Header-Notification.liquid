@@ -1,6 +1,6 @@
 {% style %}
 #shopify-section-{{ section.id }} .header-notification {
-{% if section.settings.background_color_2 contains 'transparent' %}
+{% if section.settings.background_color_2 contains 'transparent' or section.settings.background_color_2 contains 'rgba(0,0,0,0)' %}
       background-color:{{ section.settings.background_color }};                            
   {% else %}     
     background: -moz-linear-gradient(left, {{ section.settings.background_color }} 0%, {{ section.settings.background_color_2 }} 100%);
