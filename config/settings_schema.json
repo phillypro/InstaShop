@@ -240,10 +240,20 @@
     ],
     "name": "Product Preview Style"
   },
-  {
+    {
     "settings": [
       {
-        "content": "Heading",
+        "content": "Body (Homepage)",
+        "type": "header"
+      },
+      {
+        "id": "homepage_body_background",
+        "type": "color",
+        "label": "Homepage Background",
+        "default": "#ffffff"
+      },
+      {
+        "content": "Heading (Additional Pages)",
         "type": "header"
       },
       {
@@ -275,7 +285,7 @@
         "default": "#000000"
       },
       {
-        "content": "Body",
+        "content": "Body (Additional Pages)",
         "type": "header"
       },
       {
