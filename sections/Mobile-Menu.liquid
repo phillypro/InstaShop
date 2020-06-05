@@ -127,11 +127,11 @@ color:{{ section.settings.link_color }};
          </li>
          {% endif %}
          {% endfor %}
-         {% if section.settings.collections == true %}
+            {% if section.settings.collections == true %}
            {% for collection in collections %}
            {% if collection.handle == 'frontpage' %}
            {% else %}
-            <li style="font-size:100%;" class="menu-item-{{ collection.title }}">
+            <li class="menu-item-{{ collection.title }}">
               <a href="{{ collection.url }}" title="{{ collection.title }}">
               {{ collection.title }}
               </a>
