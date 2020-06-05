@@ -37,8 +37,8 @@
       
      setTimeout(function() {
       // add selected to total...and zero it out
-     var pricewrapEl = form.querySelector('#product-price-{{ product.id }}');
-      var priceEl = form.querySelector('.product-price');
+     var pricewrapEl = form.parentElement.querySelector('#product-price-{{ product.id }}');
+      var priceEl = pricewrapEl.querySelector('.product-price');
       priceEl.innerHTML = '$0.00'; 
       var totalSelect = document.createElement("SPAN");
       totalSelect.classList.add('total-select');
@@ -248,7 +248,7 @@
                     // add to total price
                     var mspriceEl = quantitywrap.nextElementSibling.querySelector('.multiselect_price');
                     var msprice = parseFloat(mspriceEl.innerHTML.replace('$',''));
-                    var totalSelectEl = form.querySelector('.product-price');
+                    var totalSelectEl = form.parentElement.querySelector('.product-price');
                     var totalSelect = parseFloat(totalSelectEl.innerHTML.replace('$',''));
                     var newTotal = (Number(msprice) + Number(totalSelect)).toFixed(2);
                     totalSelectEl.innerHTML = '$' + newTotal;
@@ -291,7 +291,7 @@
              quantitycheckbox.parentElement.classList.remove('active');
           }); 
           // clear current total
-          var totalSelectEl = form.querySelector('.product-price'); 
+          var totalSelectEl = form.parentElement.querySelector('.product-price'); 
           totalSelectEl.innerHTML = '$0.00';  
          });
          {% endif %}   
@@ -465,7 +465,7 @@
                     // add to total price
                     var mspriceEl = quantitywrap.nextElementSibling.querySelector('.multiselect_price');
                     var msprice = parseFloat(mspriceEl.innerHTML.replace('$',''));
-                    var totalSelectEl = form.querySelector('.product-price');
+                    var totalSelectEl = form.parentElement.querySelector('.product-price');
                     var totalSelect = parseFloat(totalSelectEl.innerHTML.replace('$',''));
                     var newTotal = (Number(msprice) + Number(totalSelect)).toFixed(2);
                     totalSelectEl.innerHTML = '$' + newTotal;
@@ -505,7 +505,7 @@
              quantitycheckbox.nextElementSibling.getElementsByTagName('span')[0].innerHTML = 0;
              quantitycheckbox.parentElement.classList.remove('active');
           }); 
-          var totalSelectEl = form.querySelector('.product-price'); 
+          var totalSelectEl = form.parentElement.querySelector('.product-price'); 
           totalSelectEl.innerHTML = '$0.00'; 
         });
         });
@@ -713,7 +713,7 @@
                     // add to total price
                     var mspriceEl = quantitywrap.nextElementSibling.querySelector('.multiselect_price');
                     var msprice = parseFloat(mspriceEl.innerHTML.replace('$',''));
-                    var totalSelectEl = form.querySelector('.product-price');
+                    var totalSelectEl = form.parentElement.querySelector('.product-price');
                     var totalSelect = parseFloat(totalSelectEl.innerHTML.replace('$',''));
                     var newTotal = (Number(msprice) + Number(totalSelect)).toFixed(2);
                     totalSelectEl.innerHTML = '$' + newTotal;
@@ -752,7 +752,7 @@
              quantitycheckbox.nextElementSibling.getElementsByTagName('span')[0].innerHTML = 0;
              quantitycheckbox.parentElement.classList.remove('active');
           }); 
-          var totalSelectEl = form.querySelector('.product-price'); 
+          var totalSelectEl = form.parentElement.querySelector('.product-price'); 
           totalSelectEl.innerHTML = '$0.00'; 
         });
         });
@@ -771,75 +771,14 @@
 {% endif %}
 
 
-{% if section.settings.animate %}
-<script>
-var element{{ product.id }} = document.querySelector('#Multiselect_{{ product.id }}.animate');
-var elementHeight{{ product.id }} = element{{ product.id }}.clientHeight;
-     
-// listen for scroll event and call animate function
-setTimeout(function() {                                                     
-document.removeEventListener('scroll', animate{{ product.id }});                                     
-document.addEventListener('scroll', animate{{ product.id }});
-document.dispatchEvent(new CustomEvent('scroll'));  
-}, 600);
-  
-  
-// check if element is in view
-function inView{{ product.id }}() {
 
-  // get window height
-  var windowHeight = window.innerHeight;
-  // get number of pixels that the document is scrolled
-  var scrollY = window.scrollY || window.pageYOffset;
-  
-  // get current scroll position (distance from the top of the page to the bottom of the current viewport)
-  var scrollPosition = scrollY + windowHeight;
-  // get element position (distance from the top of the page to the bottom of the element)
-  var elementPosition = element{{ product.id }}.getBoundingClientRect().top + scrollY + (elementHeight{{ product.id }} / 5);
-  
-  // is scroll position greater than element position? (is element in view?)
-  if (scrollPosition > elementPosition) {
-    return true;
-  }
-  
-  return false;
-}
-  
-// animate element when it is in view
-function animate{{ product.id }}() {
-  // is element in view?
-  if (inView{{ product.id }}()) {
-    
-    // get last animated element
-     var elementLast{{ product.id }}Array = element{{ product.id }}.querySelectorAll('.first .multi-swatch-element');
-     var elementLast{{ product.id }} = elementLast{{ product.id }}Array[elementLast{{ product.id }}Array.length-1];
-     // listen for last animation and remove animate/effect classes                                    
-      "webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend".split(" ").map(name =>  elementLast{{ product.id }}.removeEventListener(name, animateEnd{{ product.id }}, false));                    
-      "webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend".split(" ").map(name =>  elementLast{{ product.id }}.addEventListener(name, animateEnd{{ product.id }}, false)); 
-      // element is in view, add class to element
-      element{{ product.id }}.classList.add('effect');
-  }
-}   
-  
-function animateEnd{{ product.id }}() {
-   element{{ product.id }}.classList.remove("effect", "animate");
-} 
- 
-</script> 
-{% endif %}
 {% endif %}
 {% endcase %}
 {% endfor %}  
 {% schema %}
 {
 "name": "Multiselect",
-"settings": [{
-"id": "animate",
-"type": "checkbox",
-"label": "Animate Intro",
-"default":true,
-"info": "fade in effect for the options"
-},
+"settings": [
 {
 "type": "header",
 "content": "Color & Style"
@@ -1271,4 +1210,3 @@ padding: 5px 11px;
 {% endstylesheet %} 
 {% javascript %}            
 {% endjavascript %}                                              
- 
