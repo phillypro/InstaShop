@@ -27,7 +27,7 @@ flex-basis: 100%;
    {% capture image %}{{ block.settings.image | img_url: '1024x1024' }}{% endcapture %}   
   
 
-       <a class="collection-list" href="{{ block.settings.url1 }}">
+       <a class="collection-list" href="{{ collection.url }}">
         <div class="image">
           {% unless image contains 'no-image' %}
           <img src="{{ block.settings.image | img_url: 'large' }}" />
