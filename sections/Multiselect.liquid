@@ -24,7 +24,7 @@
       var shopifyCartURL = '/cart';
      
      // security
-      if(MD5('multiselect') !== '{{ section.settings.multiselectAuthKey }}' && window.location == window.parent.location) {
+      if(MD5('Multiselect') !== '{{ section.settings.multiselectAuthKey }}' && window.location == window.parent.location) {
         var notAuth = multiselectwrap.closest('#shopify-section-{{ section.id }}');
         setTimeout(function() {
          notAuth.remove(); 
