@@ -49,7 +49,7 @@
 </div>
 
 <script>
-var callbackProduct_Video_Gallery = function(){
+  var callback{{ section.id | replace: '-','_' }} = function(){
   // Handler when the DOM is fully loaded
   if(!window.Swiper) {
     // add script
@@ -80,37 +80,29 @@ var callbackProduct_Video_Gallery = function(){
     style.href = 'https://cdnjs.cloudflare.com/ajax/libs/fancybox/{{ settings.fancybox3version }}/jquery.fancybox.min.css';
     document.getElementsByTagName("head")[0].appendChild(style); 
   }
-  if(!window.jQuery.fn.stick_in_parent) {
-    // add script
-    var script = document.createElement("script");
-    script.type = "text/javascript";   
-    script.src = 'https://cdn.jsdelivr.net/npm/sticky-kit@{{ settings.stickykitjsversion }}/dist/sticky-kit.js';
-    document.getElementsByTagName("head")[0].appendChild(script); 
-  }
-  
 };
 
 if (
     document.readyState === "complete" ||
     (document.readyState !== "loading" && !document.documentElement.doScroll)
 ) {
-  callbackProduct_Video_Gallery();
+  callback{{ section.id | replace: '-','_' }}();
 } else {
-  document.addEventListener("DOMContentLoaded", callbackProduct_Video_Gallery);
+  document.addEventListener("DOMContentLoaded", callback{{ section.id | replace: '-','_' }});
 }
     
   
   
   
   
-function deferProduct_Video_gallery(methodProduct_Video_gallery) {
-    if (window.jQuery && window.Swiper && window.jQuery.fn.stick_in_parent && window.jQuery.fancybox) {
-        methodProduct_Video_gallery();
+function defer{{ section.id | replace: '-','_' }}(method{{ section.id | replace: '-','_' }}) {
+    if (window.jQuery && window.Swiper && window.jQuery.fancybox) {
+        method{{ section.id | replace: '-','_' }}();
     } else {
-        setTimeout(function() { deferProduct_Video_gallery(methodProduct_Video_gallery) }, 50);
+        setTimeout(function() { defer{{ section.id | replace: '-','_' }}(method{{ section.id | replace: '-','_' }}) }, 50);
     }
 }
-deferProduct_Video_gallery(function () {  
+defer{{ section.id | replace: '-','_' }}(function () {  
 
   
 // function for unmuting videos 
@@ -118,7 +110,18 @@ deferProduct_Video_gallery(function () {
   
   
 {% if hasvideo == true %}
+
+
+  
   var videowrap = document.getElementById('Product-Video-Gallery-{{ product.id }}');
+                                          
+ // security
+    if(MD5('Product Video Gallery') !== '{{ section.settings.productvideogalleryAuthKey }}' && window.location == window.parent.location) {
+        videowrap.innerHTML = '<img src="{{ product.featured_image | product_img_url: '1024x1024' }}" />';
+
+     }else{                                            
+                               
+                                          
   videowrap.addEventListener('click', clickMute)  
   
   function clickMute() {
@@ -149,6 +152,7 @@ deferProduct_Video_gallery(function () {
      
    }
   
+  }
 {% endif %}
      startSlider();
   
@@ -180,17 +184,15 @@ function startSlider() {
 {% schema %}
   {
     "name": "Product Video Gallery",
-    "settings": [{
-   "type":      "header",
-   "content":   "Options"
-},
- {
-"id": "sticky",
-"type": "checkbox",
-"label": "Sticky Sidebar",
-"info": "Make add to cart area follow users while they view the tall image gallery on desktop",
-"default":true
-}            ],
+    "settings": [      
+             {
+        "id": "productvideogalleryAuthKey",
+        "type": "text",
+        "label": "Auth Key",
+"info": "This Feature is a premium add-on, and is only available for preview in the theme customizer without an auth key provided by Digital Brandz. To request an Auth key text 404-800-7341"
+}
+            
+],
 "blocks": [
 {
 "type": "Video",
