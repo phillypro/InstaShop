@@ -15,10 +15,23 @@
    {% for option in product.options %}
    {% if forloop.index0 == 0 %}
    <script>
+     
+
+     
       var multiselectwrap = document.querySelector('#Multiselect_{{ product.id }}');
       var form = multiselectwrap.closest('form');
       var shopifyAjaxAddURL = '/cart/update.js';       
       var shopifyCartURL = '/cart';
+     
+     // security
+      if(MD5('multiselect') !== '{{ section.settings.multiselectAuthKey }}' && window.location == window.parent.location) {
+        var notAuth = multiselectwrap.closest('#shopify-section-{{ section.id }}');
+        setTimeout(function() {
+         notAuth.remove(); 
+        },300);
+     }else{
+     
+     
       
       // this might need to be changed based on theme
      // var price = document.querySelector('.price-item');
@@ -91,7 +104,7 @@
        var siblings = n => [...n.parentElement.children].filter(c=> c!=n && c.classList.contains('option-wrap'))
        var siblings2 = n => [...n.parentElement.children].filter(c=> c!=n && c.classList.contains('multi-swatch-element'))
        
-      
+       }
    </script>
   {% style %}
        #product-variants-{{ product.id }} { display: none !important; }
@@ -779,6 +792,12 @@
 {
 "name": "Multiselect",
 "settings": [
+{
+        "id": "multiselectAuthKey",
+        "type": "text",
+        "label": "Auth Key",
+"info": "This Feature is a premium add-on, and is only available for preview in the theme customizer without an auth key provided by Digital Brandz. To request an Auth key text 404-800-7341"
+},
 {
 "type": "header",
 "content": "Color & Style"
