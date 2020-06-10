@@ -101,7 +101,7 @@ videoSlide.remove();
 function slider{{ section.id }}() {
 	var container = document.querySelector('#shopify-section-{{ section.id }} .swiper-container');                                     
 	// shoutouts swiper
-   options = {
+  options = {
 		speed: 800,
 		slidesPerView: 'auto', // or 'auto'
 		spaceBetween: 0,
@@ -113,13 +113,14 @@ function slider{{ section.id }}() {
       loop:true,
       init: false,
       autoHeight: true,	
-      {% unless section.blocks.size <= 1 %}
-      autoplay: {
+	}
+           
+    if(container.querySelectorAll('.swiper-slide:not(.swiper-slide-duplicate)').length > 1) {
+     options['autoplay'] = {
 			delay: 5000,
 			disableOnInteraction: false,
-		},
-      {% endunless %}
-	}
+		};    
+    }
 
 
   
