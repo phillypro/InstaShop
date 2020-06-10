@@ -113,7 +113,7 @@ function slider{{ section.id }}() {
       loop:true,
       init: false,
       autoHeight: true,	
-      {% unless section.blocks.size == 0 %}
+      {% unless section.blocks.size <= 1 %}
       autoplay: {
 			delay: 5000,
 			disableOnInteraction: false,
