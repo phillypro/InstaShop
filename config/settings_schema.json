@@ -249,7 +249,7 @@
       {
         "id": "homepage_body_background",
         "type": "color",
-        "label": "Homepage Background",
+        "label": "Homepage & Collection Background",
         "default": "#ffffff"
       },
       {
