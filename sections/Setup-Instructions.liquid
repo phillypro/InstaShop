@@ -1,6 +1,4 @@
-<script>
-window.virtualGuide = {{ section.settings.virtualGuide }};
-</script>
+<script type="template/html" id="Setup-Instructions">{{ section.settings.virtualGuide }}</script>
 
 {% schema %}
   {
@@ -22,10 +20,61 @@ window.virtualGuide = {{ section.settings.virtualGuide }};
 {% javascript %}
 
 
-if (window.location !== window.parent.location) {	  
-  if(window.virtualGuide) {
+
+$(document).on("shopify:section:select", function(e){
+
+var type = 'Setup-Instructions';
+var EditClass = 'editSetup';
+
+
+var dataset = e.target.dataset;
+var dataset = JSON.parse(dataset[Object.keys(dataset)[0]]);
+var sectionType = dataset['type'];
+var sectionId = dataset['id'];
+var eventSectionId = e.target.id.replace('shopify-section-','');
+if(sectionType == type && sectionId == eventSectionId) {
+
+
+
+
+
+
+
+var body =  document.getElementsByTagName("body")[0];
+body.classList.add('editing', EditClass);
+$(document).one("shopify:section:deselect",function(e){
+body.classList.remove(EditClass);
+})
+
+$(document).one("shopify:section:load",function(e){
+if (window.location !== window.parent.location) {	 
+  var virtualGuide = document.querySelector("#Setup-Instructions");
+  if(virtualGuide.innerHTML == 'true') {
+    console.log('start guide');
     startGuide();
   }else{
+   console.log('remove guide');
+   var guideWrapEl = document.querySelector('#guideWrap');
+   guideWrapEl.remove();
+  }
+}
+})
+
+
+}
+
+
+
+
+});   
+
+if (window.location !== window.parent.location) {	  
+  var virtualGuide = document.querySelector("#Setup-Instructions");
+  if(virtualGuide.innerHTML == 'true') {
+    console.log('start guide');
+    startGuide();
+  }else{
+   console.log('remove guide');
    var guideWrapEl = document.querySelector('#guideWrap');
    guideWrapEl.remove();
   }
@@ -42,10 +91,6 @@ var stringToHTML = function (str) {
 		return doc.body.children[0];
 }; 
   
-  
-  
-  
-  
  
 var guideWrapEl = document.querySelector('#guideWrap');
 var filters = '?modestbranding=1';  
@@ -56,4 +101,4 @@ if(!guideWrapEl) {
  
 }
 
-{% endjavascript %}    
+{% endjavascript %}               
