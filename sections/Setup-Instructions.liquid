@@ -18,7 +18,94 @@
   }
 {% endschema %}
 
-{% stylesheet %}
+{% stylesheet 'scss' %}
+
+
+// responsive sizes
+@mixin bp($point) {
+  
+  $bp-small: "(max-width: 350px)";
+  $bp-mobile: "(max-width: 600px)";
+  $bp-mobileup: "(min-width: 600px)";
+  $bp-phablet: "(max-width: 1022px)";
+  $bp-phabletup: "(min-width: 1022px)";
+  $bp-tablet: "(max-width: 1280px)";
+  $bp-tabletup: "(min-width: 1280px)";
+  $bp-laptop: "(max-width: 1600px)";
+  $bp-desktop: "(min-width: 1600px)";
+  @if $point == desktop {
+    @media #{$bp-desktop}  { @content; }
+  }  
+  @else if $point == laptop {
+    @media #{$bp-laptop} { @content; }
+  }
+  @else if $point == tablet {
+    @media #{$bp-tablet} { @content; }
+  }
+  @else if $point == tabletup {
+    @media #{$bp-tabletup} { @content; }
+  }
+  @else if $point == phablet {
+    @media #{$bp-phablet} { @content; }
+  }
+  @else if $point == phabletup {
+    @media #{$bp-phabletup} { @content; }
+  }
+  @else if $point == mobile {
+    @media #{$bp-mobile}  { @content; }
+  }
+  @else if $point == mobileup {
+    @media #{$bp-mobileup} { @content; }
+  }
+  @else if $point == small {
+    @media #{$bp-small}  { @content; }
+  }
+
+}
+
+
+/* virtualGuide  ----------------------------------------------------------------------------------------------------------------------------*/
+
+.virtualGuide {
+    justify-content: space-around;
+  #guideWrap {
+     width: 56%;
+     order: 2;
+    @include bp(tablet) {
+      width: 50%;
+    }
+    h2 {
+      @include bp(tablet) {
+          font-size: 1.5rem;
+      }
+    }
+    .more {
+      text-align:center;
+    h3 {
+        font-size: 15px;
+      @include bp(tablet) {
+        font-size: 13px;
+        }
+    }
+    a {
+    background: #0062b5;
+    color: #fff;
+    border-radius: 30px;
+    padding: 15px 24px;
+    font-size: 16px;
+    display: inline-block;
+    margin-top:10px;
+      @include bp(tablet) {
+        font-size: 12px;
+        }
+     }
+    }
+  }
+  > .footer {
+      display: none;
+  }
+}
+
 {% endstylesheet %}
 
 {% javascript %}
@@ -99,10 +186,10 @@ var stringToHTML = function (str) {
 var guideWrapEl = document.querySelector('#guideWrap');
 var filters = '?modestbranding=1&VQ=HD1080';  
 if(!guideWrapEl) {  
-   document.body.prepend(stringToHTML('<div id="guideWrap"><h2>Overview</h2><div class="flex-video youtube widescreen"><iframe width="1920" height="1080" src="https://www.youtube.com/embed/qJsRdVNCcn4'+ filters +'" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div></div>'));
+document.body.prepend(stringToHTML('<div id="guideWrap"><h2>Overview</h2><div class="flex-video youtube widescreen"><iframe width="1920" height="1080" src="https://www.youtube.com/embed/qJsRdVNCcn4'+ filters +'" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div><div class="more"><h3>When you finish watching click the link below</h3><a href="https://digitalbrandz.marketing/pages/tutorials">More Advanced Tips</a></div></div>'));
 }  
   
  
 }
 
-{% endjavascript %}               
+{% endjavascript %}              
