@@ -353,6 +353,16 @@
   {
     "settings": [
       {
+        "id": "gotocart",
+        "default": true,
+        "label": "Enable Redirect to cart on Add",
+        "type": "checkbox"
+      },
+      {
+        "type": "header",
+        "content": "Product Page Style"
+      },     
+      {
         "type": "font_picker",
         "id": "product_page_title_font",
         "label": "Product Title Font",
@@ -376,7 +386,7 @@
         "default": "#2BA6CB"
       }
     ],
-    "name": "Product Page Style"
+    "name": "Product Page"
   },
   {
     "settings": [
@@ -471,41 +481,6 @@
       }
     ],
     "name": "Payment Gateways"
-  },
-  {
-    "settings": [
-      {
-        "id": "gotocart",
-        "default": true,
-        "label": "Enable Redirect to cart on Add",
-        "type": "checkbox"
-      },
-      {
-        "content": "Default Additional Details",
-        "type": "header"
-      },
-      {
-        "id": "details_title",
-        "label": "Details title",
-        "type": "text"
-      },
-      {
-        "id": "details_text",
-        "label": "Details text",
-        "type": "textarea"
-      },
-      {
-        "id": "shipping_title",
-        "label": "Shipping title",
-        "type": "text"
-      },
-      {
-        "id": "shipping_text",
-        "label": "Shippin text",
-        "type": "textarea"
-      }
-    ],
-    "name": "Product Page"
   },
   {
     "settings": [
