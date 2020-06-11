@@ -2642,30 +2642,6 @@ body .desktopv {
 }
 
 
-
-
-
-
-
-
-/* virtualGuide  ----------------------------------------------------------------------------------------------------------------------------*/
-
-.virtualGuide {
-    justify-content: space-around;
-  #guideWrap {
-     width: 56%;
-     order: 2;
-    @include bp(tablet) {
-      width: 53%;
-    }
-  }
-  > .footer {
-      display: none;
-  }
-}
-
-
-
 {% if settings.extraStyle != nil %}
 {{ settings.extraStyle | replace: '&gt;', '>' }}
 {% endif %}
