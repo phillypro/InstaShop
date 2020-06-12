@@ -6,10 +6,10 @@
 {% if section.settings.top_background_color_2 contains 'transparent' %}
 background-color:{{ section.settings.top_background_color }};                            
 {% else %}     
-background: -moz-linear-gradient(left, {{ section.settings.top_background_color }} 0%, {{ section.settings.top_background_color_2 }} 100%);
-background: -webkit-linear-gradient(left, {{ section.settings.btop_ackground_color }} 0%, {{ section.settings.top_background_color_2 }} 100%);
-background: linear-gradient(to right, {{ section.settings.top_background_color }} 0%, {{ section.settings.top_background_color_2 }} 100%);                            
-{% endif %}  
+background: -moz-linear-gradient(top, {{ section.settings.top_background_color }} 0%, {{ section.settings.top_background_color_2 }} 100%);
+background: -webkit-linear-gradient(top, {{ section.settings.btop_ackground_color }} 0%, {{ section.settings.top_background_color_2 }} 100%);
+background: linear-gradient(to bottom, {{ section.settings.top_background_color }} 0%, {{ section.settings.top_background_color_2 }} 100%);                            
+{% endif %}   
    
 }
 #shopify-section-Footer .bottom-footer {
