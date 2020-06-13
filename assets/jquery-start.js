@@ -16,7 +16,13 @@ $(function(){
 
 
 
-
+$(document).on("pagecreate", '#index', function (event, ui) {
+sr();
+});
+               
+function sr() {
+     ScrollReveal().reveal('.headline-inner, .product, .button-wrap, .text.parallax-element', {  container: '#swiper_Frame', viewFactor: 0.2,	distance: '50px', duration: 800,  easing: 'ease-out'}); 
+}
 
 
 
