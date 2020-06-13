@@ -1087,12 +1087,32 @@ margin-bottom: 20px;
     font-weight:{{ settings.page_title_font.weight }}; 
     font-style:{{ settings.page_title_font.style }}; 
  }
-  .product-add {
-      margin-top: 1em;
+  & .product-add {
+       margin-top: 1em;
+     & a {
+       color: {{ settings.product_page_accent_color }}; 
+     }
+     & .ajaxified-cart-feedback.success {
+       color: #000000;
+     }
+& .shopify-payment-button__button--unbranded {
+      background-color: #000000;
   }
+  & [type=button].shopify-payment-button__button--hidden {
+      display:none;
+  }
+  & .add {
+    background: {{ settings.product_page_accent_color }};
+    color:#fff;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+    & button {
+       width:100%;
+  }
+    }
 }
   
-
 
 
 
