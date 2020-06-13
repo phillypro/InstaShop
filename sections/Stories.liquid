@@ -680,7 +680,9 @@ mySwiper.on('slideChange', function (event) {
     // play video
 
     playimg(nextimg,mySwiper);
-     
+   }   
+   
+   
    var popup = currentslide.closest('.popup');
  // look for swipe and add or remove class   
     if(currentslide.attr('swipe')) {
@@ -689,7 +691,7 @@ mySwiper.on('slideChange', function (event) {
       popup.removeClass('swipe');
     } 
      
-} 
+
   }
 });  
 mySwiper.init();  
