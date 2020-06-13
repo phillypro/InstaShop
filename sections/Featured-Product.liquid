@@ -297,7 +297,19 @@ swatches.forEach(radio => radio.addEventListener('change', function() {
   
 {% endunless %}  
   
-  
+// avoid conflict with product pages  
+setTimeout(function() {
+ // if jQuery Mobile 
+ if (window.$.mobile) {
+
+  // Remove page when done 
+  jQuery(document).one('pagehide', '#index', function(event, ui) {
+   if (ui.prevPage[0].id == "index") {
+    jQuery(ui.prevPage[0]).remove();
+   }
+  });
+ }
+}, 300);  
   
   
   
