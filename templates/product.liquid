@@ -445,7 +445,7 @@ var selectCallback = function(variant, selector) {
   }
 
 
-  var pricewrapEl = formEl.querySelector('#product-price-{{ product.id }}');
+  var pricewrapEl = formEl.parentElement.querySelector('#product-price-{{ product.id }}');
   var priceEl = pricewrapEl.querySelector('.product-price');
   // Whether the variant is in stock or not, we can update the price and compare at price.
   if (variant.compare_at_price > variant.price) {
