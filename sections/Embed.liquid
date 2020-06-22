@@ -1,0 +1,121 @@
+<iframe src="{{ section.settings.iframe }}"></iframe>
+<script>
+  
+  function defer{{ section.id }}(method{{ section.id }}) {
+    if (window.jQuery) {
+        methodEmbed();
+    } else {
+        setTimeout(function() { defer{{ section.id }}(method{{ section.id }}) }, 50);
+    }
+}
+defer{{ section.id }}(function () {  
+  
+var section = document.querySelector('#shopify-section-{{ section.id }}');  
+var pageEl = section.closest('.ui-page');
+$(document).on("pageshow", pageEl, function (event) {
+  if($(window).width() <= 600) {
+   var content = SetHeightOfDiv();
+   var target = $(event.target).find("iframe");
+   if(target.height() != content)
+     target.css({'min-height' : content, 'height' : content}); 
+  }
+});
+
+function SetHeightOfDiv() {
+    var screen = $.mobile.getScreenHeight();
+    var header = $("#header") ? $("#header").outerHeight() - 1 : $("#header").outerHeight();
+    var footer = $("#footer") ? $("#footer").outerHeight() : $("#footer").outerHeight();
+  
+    /* content div has padding of 1em = 16px (32px top+bottom). This step
+   can be skipped by subtracting 32px from content var directly. */
+    var contentCurrent = $(".ui-content").outerHeight() - $(".ui-content").height();
+    var content = screen - header;
+    return content;
+}
+});
+</script>
+{% schema %}
+  {
+    "name": "Embed (Booking)",
+    "settings": [ 
+      {
+        "type": "header",
+        "content": "Step 2. Add Your Styleseat\/Acuity"
+      },
+      {
+        "type": "paragraph",
+        "content": "if you haven't done so already, sign up for styleseat or acuity scheduling then add the link to your profile below"
+      },
+      {
+        "id": "iframe",
+        "label": "Styleseat Or Acuity Scheduling URL",
+        "type": "url"
+      }
+  ]
+  }
+{% endschema %}
+
+{% stylesheet 'scss' %}
+
+
+// responsive sizes
+@mixin bp($point) {
+  
+  $bp-small: "(max-width: 350px)";
+  $bp-mobile: "(max-width: 600px)";
+  $bp-mobileup: "(min-width: 600px)";
+  $bp-phablet: "(max-width: 1022px)";
+  $bp-phabletup: "(min-width: 1022px)";
+  $bp-tablet: "(max-width: 1280px)";
+  $bp-tabletup: "(min-width: 1281px)";
+  $bp-laptop: "(max-width: 1600px)";
+  $bp-desktop: "(min-width: 1600px)";
+  @if $point == desktop {
+    @media #{$bp-desktop}  { @content; }
+  }  
+  @else if $point == laptop {
+    @media #{$bp-laptop} { @content; }
+  }
+  @else if $point == tablet {
+    @media #{$bp-tablet} { @content; }
+  }
+  @else if $point == tabletup {
+    @media #{$bp-tabletup} { @content; }
+  }
+  @else if $point == phablet {
+    @media #{$bp-phablet} { @content; }
+  }
+  @else if $point == phabletup {
+    @media #{$bp-phabletup} { @content; }
+  }
+  @else if $point == mobile {
+    @media #{$bp-mobile}  { @content; }
+  }
+  @else if $point == mobileup {
+    @media #{$bp-mobileup} { @content; }
+  }
+  @else if $point == small {
+    @media #{$bp-small}  { @content; }
+  }
+}
+
+
+#shopify-section-Embed {
+ & iframe {
+    display: block;       /* iframes are inline by default */
+    border: none;         /* Reset default border */
+height: 571px;
+    width: 100%;
+   @include bp(mobile) {
+    height: 100vh;        /* Viewport-relative units */
+    width: 100vw;
+   }
+  }
+}
+#pageiframe #footer {
+display:none;
+}
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}     
