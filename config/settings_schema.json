@@ -240,7 +240,7 @@
     ],
     "name": "Product Preview Style"
   },
-    {
+  {
     "settings": [
       {
         "content": "Body (Homepage & Collection)",
@@ -361,7 +361,7 @@
       {
         "type": "header",
         "content": "Product Page Style"
-      },     
+      },
       {
         "type": "font_picker",
         "id": "product_page_title_font",
@@ -378,12 +378,37 @@
         "label": "Product Title Font Size",
         "default": 23
       },
+{
+        "type": "header",
+        "content": "Product Options"
+      },
       {
-        "id": "product_page_accent_color",
+        "id": "options_border_color",
         "type": "color",
-        "label": "Accent Color",
-        "info": "This colors the add to cart button and links",
-        "default": "#2BA6CB"
+        "label": "Product Options Border Color",
+        "default": "#2ba6cb"
+      },
+      {
+        "id": "show_swatches",
+        "default": false,
+        "label": "Show Color Swatches",
+        "type": "checkbox"
+      },
+      {
+        "type": "header",
+        "content": "Add to Cart Style"
+      },
+      {
+        "id": "add_background_color",
+        "type": "color",
+        "label": "Button Background Color",
+        "default": "#2ba6cb"
+      },
+      {
+        "id": "add_font_color",
+        "type": "color",
+        "label": "Button Font Color",
+        "default": "#FFFFFF"
       }
     ],
     "name": "Product Page"
@@ -523,6 +548,12 @@
         "id": "extraStyle",
         "label": "Additional Style SCSS",
         "type": "textarea"
+      },
+      {
+        "id": "extraHeader",
+        "label": "Additional in Header",
+        "type": "textarea",
+        "default": "<link href='https:\/\/fonts.googleapis.com\/css2?family=Open+Sans:wght@400;700&display=swap' rel='stylesheet'>"
       }
     ],
     "name": "Additional SCSS"
