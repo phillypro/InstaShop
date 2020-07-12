@@ -13,21 +13,6 @@ $(document).one("pagecontainershow", function(e, data) {
 
 
 /*
-/////////////////////////////////////////////         Always a fresh load for account pages
-*/
-
-$(document).on("pagecontainerbeforeload", function(event,data) {
-  var newPage = data.dataUrl;
-  if(newPage == "/account") {
-   event.preventDefault(); 
-   data.deferred.reject(); 
-   console.log(newPage);
-   //$( ":mobile-pagecontainer" ).pagecontainer( "change", $("#index")); 
-  }
-});
-
-
-/*
 /////////////////////////////////////////////       Contact Page be trippin
 */
 
@@ -123,52 +108,6 @@ $(document).on("pagecontainerbeforeshow", function (event, ui) {
   }
  
 });
-
-/*
-/////////////////////////////////////////////         remove cart updates from broswer history by storing global variable
-*/
-
-
-$(document).on("pagecontainerbeforechange", function(event, ui) {
-  if(typeof ui.prevPage !== 'undefined' && typeof ui.toPage !== 'undefined') {
-    if(ui.prevPage[0].id == 'cart' && ui.toPage[0].id == 'cart') {
-      if(typeof window.cartRefresh == 'undefined') {
-       window.cartRefresh = 0;
-      }
-      window.cartRefresh = window.cartRefresh + 1;
-    } 
-    if(ui.prevPage[0].id == 'cart' && ui.toPage[0].id !== 'cart') {
-      delete window.cartRefresh;
-    }  
-  }
-  
-  //if no previous page...lets go hom
-  
-  
-});
-
-
-$(document).one("pagecontainerbeforechange", function(event, ui) {
-  delete window.hasNoHistory;
-  if(ui.toPage[0].id == 'cart') {
-   window.hasNoHistory = true;
-    console.log(window.hasNoHistory);
-  }
-});
-
-
-function goBack() {
-  if (window.hasNoHistory !== true) { 
-  if(typeof window.cartRefresh == 'undefined') {
-    window.cartRefresh = 0;
-  }
-  var backIndex = -Math.abs(1) + -Math.abs(window.cartRefresh);
-  window.history.go(backIndex);
-  }else{
-   $( ":mobile-pagecontainer" ).pagecontainer( "change", "/", {  showLoadMsg: true, reload: true, });
-    delete window.hasNoHistory;
-  }
-}
 
 
 
