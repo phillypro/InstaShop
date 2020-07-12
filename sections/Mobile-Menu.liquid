@@ -3,39 +3,37 @@
 {% assign familyandweight = section.settings.font.family | append: section.settings.font.weight %}
 {% if loadedfonts contains familyandweight %}
 {% else %}
-  {{ section.settings.font | font_face }}  
+  {{ section.settings.font | font_face: font_display: 'swap'  }}  
 {% endif %}   
 {% assign loadedfonts = loadedfonts | append: section.settings.font.family | append: section.settings.font.weight | append: section.settings.font.style | append: '|' %}
 
- #shopify-section-{{ section.id }} .ui-panel-inner .content .content-inner .mobile-menu > ul {
-text-transform:{% if section.settings.link_uppercase == true %}uppercase{% else %}none{% endif %};
-}
 
- #shopify-section-{{ section.id }} .ui-panel-inner .content a {
-color:{{ section.settings.link_color }}
-}
-
-
-  #shopify-section-{{ section.id }} .ui-panel-inner .content .content-inner .mobile-menu ul li {
+ #shopify-section-{{ section.id }} .mobile-menu li {
       line-height:{{ section.settings.link_spacing }};
-  }
-  #shopify-section-{{ section.id }} .ui-panel-inner .content .content-inner .mobile-menu ul li a {
+{% if section.settings.link_uppercase %}
+text-transform:uppercase;
+{% endif %}
+{% if section.settings.link_bold %}
+font-weight:bold;
+{% endif %}
+}
+
+  #shopify-section-{{ section.id }} .mobile-menu a {
    color:{{ section.settings.link_color }};
     font-family: {{ section.settings.font.family }}; 
     font-style:{{ section.settings.font.style }};
-    font-style:{{ section.settings.font.weight }};
   }
   
-#shopify-section-{{ section.id }} .ui-panel-inner .content .content-inner .search .inner-addon #productsearch {
+#shopify-section-{{ section.id }} #productsearch {
     font-family: {{ section.settings.font.family }}; 
     font-style:{{ section.settings.font.style }};
-color:{{ section.settings.search_color }}; 
-border-bottom-color:{{ section.settings.search_color }};
+    color: {{ section.settings.link_color }};
+    border-bottom-color: {{ section.settings.link_color }};
+}
+#shopify-section-{{ section.id }} #productsearchform path, #shopify-section-Mobile-Menu .ui-collapsible-heading path {
+fill:{{ section.settings.link_color }};
 }
 
-#shopify-section-{{ section.id }} .ui-panel-inner .content .content-inner .search .inner-addon i {
-color:{{ section.settings.search_color }};
-}
 
 
  #shopify-section-{{ section.id }} .ui-panel-inner {
@@ -53,16 +51,15 @@ background-image:url({{ section.settings.background_image | img_url: '1024x1024'
 {% endif %}     
 }
 
-#shopify-section-{{ section.id }} .ui-panel-inner .content .content-inner .mobile-menu ul > li {
+
+#shopify-section-{{ section.id }} .mobile-menu ul > li {
 font-size:{{ section.settings.link_size }}%;
 }
 
 
-#shopify-section-{{ section.id }} .ui-panel-inner .content .content-inner .mobile-menu ul li {
-    {% if section.settings.link_border == true %}
-      border-bottom: 1px solid {{ section.settings.link_color }}42;
-    {% endif %} 
-}
+
+
+
 #shopify-section-{{ section.id }} .contactsubmit input {
 background-color:{{ section.settings.button_color }};
 }
@@ -70,7 +67,13 @@ background-color:{{ section.settings.button_color }};
 color:{{ section.settings.link_color }};
 }
 {% endstyle %}
-
+<style>
+  #shopify-section-{{ section.id }} .mobile-menu ul li {
+    {% if section.settings.link_border %}
+      border-bottom: 1px solid {{ section.settings.link_color }}42;
+    {% endif %} 
+  }
+</style>
 
 
 
@@ -81,8 +84,8 @@ color:{{ section.settings.link_color }};
 <form id="productsearchform" class="search columns" action="/search">
  <input type="hidden" name="type" value="product" />
   <div class="inner-addon right-addon">
-    <i class="glyphicon glyphicon-search"></i>
     <input id="productsearch" type="text" name="q" placeholder="{{ section.settings.search_placeholder }}" value="{{ search.terms }}"  data-role="none" autocomplete="off" />
+   <button type="submit"><svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="search" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-search fa-w-16 fa-2x"><path fill="currentColor" d="M505 442.7L405.3 343c-4.5-4.5-10.6-7-17-7H372c27.6-35.3 44-79.7 44-128C416 93.1 322.9 0 208 0S0 93.1 0 208s93.1 208 208 208c48.3 0 92.7-16.4 128-44v16.3c0 6.4 2.5 12.5 7 17l99.7 99.7c9.4 9.4 24.6 9.4 33.9 0l28.3-28.3c9.4-9.4 9.4-24.6.1-34zM208 336c-70.7 0-128-57.2-128-128 0-70.7 57.2-128 128-128 70.7 0 128 57.2 128 128 0 70.7-57.2 128-128 128z" class=""></path></svg></button>
   </div>
 </form>
   
@@ -144,7 +147,8 @@ color:{{ section.settings.link_color }};
 
            
   <div class="ui-collapsible-heading ui-collapsible-heading-collapsed">
-    <a href="#" class="ui-collapsible-heading-toggle" title="{{ link.title }}">
+    <a href="#" class="ui-collapsible-heading-toggle" title="Contact Us">
+      <svg width="7px" aria-hidden="true" focusable="false" role="presentation" class="icon icon--wide icon-chevron-down" viewBox="0 0 498.98 284.49"><defs><style>.cls-1{fill:#231f20}</style></defs><path class="cls-1" d="M80.93 271.76A35 35 0 0 1 140.68 247l189.74 189.75L520.16 247a35 35 0 1 1 49.5 49.5L355.17 511a35 35 0 0 1-49.5 0L91.18 296.5a34.89 34.89 0 0 1-10.25-24.74z" transform="translate(-80.93 -236.76)"></path></svg>
        Contact Us
     </a>
     </div>
@@ -232,9 +236,10 @@ color:{{ section.settings.link_color }};
     }
 }
 defer{{ section.id | replace: '-', '' }}(function () {
-  
-jQuery(document).on('mobileinit',function(){  
+
+
   $(function(){
+  
         $("#shopify-section-{{ section.id }}").panel({
       close: function(event, ui) {
         $('body').removeClass('popup-open');
@@ -251,7 +256,7 @@ document.documentElement.style.height = vpH.toString() + "px";
     $('.sub-collapse').collapsible();
    });
      });
-});
+
 </script> 
 {% schema %}
   {
@@ -477,215 +482,199 @@ transition-timing-function: linear;
 }
 
 #shopify-section-Mobile-Menu {
-     position:fixed;
-     height: 100%;
-      z-index: 1009; 
-  @include bp(mobile) {
-     min-width: 72vw;
-  }
-  &.ui-panel-open {
-	& #productsearchform {
-	transform: translateX(0px);
-	opacity: 1;
+	position: fixed;
+	height: 100%;
+	z-index: 1009;
+	@include bp(mobile) {
+		min-width: 72vw;
 	}
-	& .ui-panel-inner .content .content-inner .mobile-menu ul li {
-	transform: translateX(0px);
-	opacity: 1;
- 	}
-}
-&.ui-panel-closed {
-	& #productsearchform {
-	transition-delay:0s;
--webkit-transition-delay:0s;
-	transition-duration:0s;
--webkit-transition-duration:0s;
-transition-timing-function: linear;
--webkit-transition-timing-function: linear;
+	&.ui-panel-open {
+		#productsearchform {
+			transform: translateX(0px);
+			opacity: 1;
+		}
+		.mobile-menu li {
+			transform: translateX(0px);
+			opacity: 1;
+		}
 	}
-	& li {
-    transition-delay:0s;
-    -webkit-transition-delay:0s;
-	transition-duration:0s;
--webkit-transition-duration:0s;
-transition-timing-function: linear;
--webkit-transition-timing-function: linear;
- 	}
+	&.ui-panel-closed {
+		#productsearchform {
+			transition-delay: 0s;
+			-webkit-transition-delay: 0s;
+			transition-duration: 0s;
+			-webkit-transition-duration: 0s;
+			transition-timing-function: linear;
+			-webkit-transition-timing-function: linear;
+		}
+		li {
+			transition-delay: 0s;
+			-webkit-transition-delay: 0s;
+			transition-duration: 0s;
+			-webkit-transition-duration: 0s;
+			transition-timing-function: linear;
+			-webkit-transition-timing-function: linear;
+		}
+	}
+	.ui-panel-inner {
+		display: block;
+		position: fixed;
+		height: 100%;
+		overflow-y: hidden;
+		overflow-x: hidden;
+		width: 100%;
+		background-size: cover;
+		background-repeat: no-repeat;
+		padding: 0;
+	}
+	.content-inner {
+		position: absolute;
+		height: calc(100% - 0px);
+		overflow-y: scroll;
+		-webkit-overflow-scrolling: touch;
+		padding: 1em;
+		&::-webkit-scrollbar {
+			width: 0px;
+			background: transparent;
+		}
+	}
+	.search {
+		opacity: 0;
+		-webkit-transform: translateX(-65px);
+		transform: translateX(-65px);
+		-webkit-transition: opacity 0.5s ease 0.15s, -webkit-transform 0.5s ease 0.15s;
+		transition: opacity 0.5s ease 0.15s, -webkit-transform 0.5s ease 0.15s;
+		padding: 0;
+		margin-top: 20px;
+	}
+	.inner-addon {
+	}
+	#productsearch {
+		height: 2.6rem;
+		font-size: 21px;
+	}
+
+	.mobile-menu {
+		margin: 30px 0;
+	}
+	ul {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+		font-size: 31px;
+		ul {
+			font-size: 60%;
+			& li {
+				& a {
+					font-weight: inherit;
+				}
+			}
+		}
+	}
+	li {
+		font-size: inherit;
+		list-style: none;
+		opacity: 0;
+		-webkit-transform: translateX(-65px);
+		transform: translateX(-65px);
+		-webkit-transition: opacity 0.5s ease 0.5s, -webkit-transform 0.5s ease 0.5s;
+		transition: opacity 0.5s ease 0.5s, -webkit-transform 0.5s ease 0.5s;
+		@for $i from 1 to 20 {
+			&:nth-child(#{$i}) {
+				transition-delay: $i * 0.1s + 0.15s;
+				-webkit-transition-delay: $i * 0.1s + 0.15s;
+			}
+		}
+	}
+	a {
+		font-weight: inherit;
+		text-shadow: none;
+		font-size: inherit;
+		line-height: 1.8;
+	}
+	.ui-collapsible-heading {
+		svg {
+			width: 7px;
+			vertical-align: middle;
+		}
+	}
+	.contact-us {
+		padding: 0.5em 0 0.5em 1em;
+	}
+	.formwrap {
+		textarea {
+			font-size: 1rem;
+		}
+		input[type="submit"] {
+			background: #f371f6;
+			color: #fff;
+			border: none;
+			outline: none;
+			padding: 10px 20px;
+			font-size: 18px;
+			width: 100%;
+		}
+	}
+	.message {
+		font-size: 14px;
+		text-shadow: none;
+		font-weight: normal;
+		color: #fff;
+		text-transform: none;
+		margin-bottom: 20px;
+		line-height: 1.5;
+	}
+	.confirmation {
+		display: none;
+		padding: 10px 20px;
+		font-size: 14px;
+		text-shadow: none;
+		font-weight: normal;
+		text-transform: none;
+		text-align: center;
+		line-height: 1.2;
+	}
 }
-  & .ui-panel-inner {
-    position:fixed;
-    height: 100%;
-	overflow-y:hidden;
-	overflow-x:hidden;
-    width: 100%;
-    background-size:cover;
-    background-repeat:no-repeat;
-        padding: 0;
-    & .content {
-      & .content-inner {
-            position: absolute;
-    height: calc(100% - 0px );
-    overflow-y: scroll;
-    -webkit-overflow-scrolling: touch;
-            padding: 1em;
-       &::-webkit-scrollbar {
-
-     width: 0px;
-   background: transparent;
-
-}
-      &  .search {
-         opacity: 0;
--webkit-transform: translateX(-65px);
-    transform: translateX(-65px);
-  -webkit-transition: opacity 0.5s ease 0.15s, -webkit-transform 0.5s ease 0.15s;
-  transition: opacity 0.5s ease 0.15s, -webkit-transform 0.5s ease 0.15s; 
-       padding:0;
-       margin-top: 20px;  
-        & .inner-addon {
-          & .glyphicon:before {
-              vertical-align: -webkit-baseline-middle;
-             color:inherit;
-          }
-         & #productsearch {
-             height: 2.6rem;
-             font-size: 21px;
-          }
-        }
-      }
-      & .mobile-menu {
-            margin: 30px 0;
-        & ul {
-         margin:0;
-         padding:0;
-         list-style:none;
-         font-size: 31px; 
-          & li {
-               font-size: inherit;
-              list-style: none;
-    opacity: 0;
--webkit-transform: translateX(-65px);
-    transform: translateX(-65px);
-    -webkit-transition: opacity 0.5s ease 0.5s, -webkit-transform 0.5s ease 0.5s;
-    transition: opacity 0.5s ease 0.5s, -webkit-transform 0.5s ease 0.5s;
-    @for $i from 1 to 20 {
-     &:nth-child(#{$i}) { transition-delay: $i * 0.1s + 0.15s; -webkit-transition-delay: $i * 0.1s + 0.15s;}
-    }
-            & .ui-collapsible-heading {
-              & a {
-                &:before {
-                 content:'\f067';
-                  font-family:FontAwesome;
-                      font-size: 75%;
-                }
-              }
-            }
-            & .contact-us {
-                 padding: .5em 0 .5em 1em;
-              & .formwrap {
-              & .message {
-                  font-size: 14px;
-    text-shadow: none;
-    font-weight: normal;
-    text-transform: none;
-    margin-bottom: 20px;
-                    line-height: 1.5;
-              }
-              & textarea, & [type=text], [type=email] {
-               font-size: 14px;
-              }
-              & input[type=submit] {
-    color: #fff;
-    border: none;
-    outline: none;
-    padding: 10px 20px;
-    font-size: 18px;
-    width: 100%;
-              }
-             }
-              & .confirmation {
-                display:none;
-                  padding: 10px 20px;
-    font-size: 14px;
-    text-shadow: none;
-    font-weight: normal;
-    text-transform: none;
-    text-align: center;
-    line-height: 1.2;
-              }
-            }
-            & ul {
-                font-size: 60%;
-                & li {
-                  & a {
-                   font-weight:inherit;
-                  }
-                }
-            }
-            & a {
-             font-weight:inherit;
-             text-shadow:none;
-             font-size:inherit;
-             line-height: 1.8;
-            }
-          }
-        }
-      }
-    }
-    }
-  }  
-}
-
-
-/* search */
 
 #productsearchform {
-    & .inner-addon {
-        position: relative;
-        &:focus {
-            & .glyphicon:before {
-                opacity: 1;
-            }
-        }
-        #productsearch {
-    margin-bottom: 0;
-    padding: 1px 30px 1px 5px;
-    height: 2.4rem;
-    font-size: 14px;
-    background: none;
-    border-radius: 0px;
-    border: none;
-    border-bottom: 2px solid #000;
-    box-shadow: none;
-    color: #000;
-          @include bp(laptop) {
-              height: 1.6rem;
-              font-size: 14px;
-          }
-            &::-webkit-input-placeholder {
-                color: inherit;
-            }
-        }
-        & .glyphicon {
-            top: 1px;
-            right: 0px;
-            position: absolute;
-            padding: 2px;
-            pointer-events: none;
-            display: inline-block;
-            font-family: 'FontAwesome';
-            font-style: normal;
-            font-weight: 400;
-            line-height: 1;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            &:before {
-                content: '\f002';
-                opacity: 1;
-              color: inherit;
-              text-shadow:none;
-            }
-        }
-    }
+	.inner-addon {
+		position: relative;
+	}
+	button {
+		top: 30%;
+		right: 0px;
+		position: absolute;
+		&:focus {
+			outline: none;
+		}
+	}
+	svg {
+		position: relative;
+		padding: 2px;
+		pointer-events: none;
+		display: inline-block;
+		font-family: "FontAwesome";
+		font-style: normal;
+		font-weight: 400;
+		line-height: 1;
+		-webkit-font-smoothing: antialiased;
+		-moz-osx-font-smoothing: grayscale;
+		width: 16px;
+	}
+}
+#productsearch {
+	margin-bottom: 0;
+	padding: 1px 30px 1px 5px;
+	height: 2.4rem;
+	font-size: 14px;
+	background: none;
+	border-radius: 0px;
+	border: none;
+	border-bottom: 2px solid;
+	box-shadow: none;
+	&::-webkit-input-placeholder {
+		color: inherit;
+	}
 }
 
 {% endstylesheet %}
@@ -717,5 +706,5 @@ stopBodyScrolling(true);
       }
       
     });
-}                
-{% endjavascript %}    
+}                 
+{% endjavascript %}      
