@@ -65,7 +65,13 @@ width: 100%;
 {% schema %}
   {
     "name": "Products",
-    "settings": [],
+    "settings": [{
+   "id": "title",
+   "type": "text",
+   "label": "Reference Name (does not display)",
+  "default":"Products",
+  "placeholder": "Products"
+}],
 "blocks": [
   {
 "type": "Product",
