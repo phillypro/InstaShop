@@ -446,15 +446,21 @@ function openContact() {
      document.addEventListener("DOMContentLoaded", callbackFooter);
    }    
    {% endunless %}  
+  
+  
      
-   function deferFooter(methodFooter) {
-       if (window.jQuery) {
-           methodFooter();
-       } else {
-           setTimeout(function() { defer(methodFooter) }, 50);
-       }
-   }
-   deferFooter(function () {
+  function defer{{ section.id }}(method{{ section.id }}) {
+  {% unless mailchimpform %} 
+    if (window.jQuery && window.KlaviyoSubscribe) {
+    {% else %}
+     if (window.jQuery) {
+   {% endunless %}  
+        method{{ section.id }}();
+    } else {
+        setTimeout(function() { defer{{ section.id }}(method{{ section.id }}) }, 4);
+    }
+}
+defer{{ section.id }}(function () {
      
      
        var callbackFooter = {
