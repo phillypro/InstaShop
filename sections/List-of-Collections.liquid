@@ -138,7 +138,35 @@ flex-basis: 100%;
   }
 {% endschema %}
 
-{% stylesheet %}
+{% stylesheet 'scss' %}
+.collection-list {
+    display: block;
+    position: relative;
+    flex-flow: wrap;
+    flex-basis: 49%;
+    flex-grow: 1;
+    margin: 1px;
+  .img {
+   width:100%;
+  }
+  .details {
+    position: absolute;
+    bottom: 0px;
+    padding: 10px 10px 10px;
+    width:100%;
+    color: #fff;
+    background: rgba(0,0,0,0.2);
+    text-align: center;
+    svg {
+    width: 6px;
+    height: 100%;
+    margin-left: 8px;
+      path {
+       fill:#fff;
+      }
+    }
+  }
+}
 {% endstylesheet %}
 
 {% javascript %}
