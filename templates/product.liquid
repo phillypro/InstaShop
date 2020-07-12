@@ -89,11 +89,7 @@
                 </option>  
                 {% endfor %} 
               </select>
-            {% if product.variants.size >= 1 %}
-            {% for option in product.options %}
             {% include 'swatch' with option %}
-            {% endfor %}
-            {% endif %}
             </div>  
                          
                          
@@ -168,17 +164,18 @@
   </div>
 </div>  
 <script>
-// activate shopify payment buttons
   function deferYotpo(methodYotpo) {
     if (window.yotpo) {
         methodYotpo();
     } else {
-        setTimeout(function() { deferYotpo(methodYotpo) }, 50);
+        setTimeout(function() { deferYotpo(methodYotpo) }, 4);
     }
 }
 deferYotpo(function () {
-    yotpo.initWidgets();
-
+  setTimeout(function() {
+   var api = new Yotpo.API(yotpo);
+   api.refreshWidgets();
+  },4);
 });    
 </script>
 {% endif %}
@@ -401,17 +398,25 @@ var selectCallback = function(variant, selector) {
    }
   }
 
+  var pricewrapEl = formEl.parentElement.querySelector('#product-price-{{ product.id }}');
+  var priceEl = pricewrapEl.querySelector('.product-price');
 
-  // Selected a valid variant that is available.
-  if (variant.available) {
    // Enabling add to cart button.
    var addToCartButton = formEl.querySelector('#add-{{ product.id }}');
+                                     
 
    if (addToCartButton !== null) {
     addToCartButton.classList.remove('disabled');
     addToCartButton.disabled = false;
-    addToCartButton.value = '{{ add_to_cart | json }}';
-   }
+    addToCartButton.innerHTML = '{{ add_to_cart | escape }}';
+   }   
+   
+   
+  // Selected a valid variant that is available.
+  if (variant.available) {
+    
+ 
+
 
 
 
@@ -421,7 +426,7 @@ var selectCallback = function(variant, selector) {
    if (variant.inventory_management && variant.inventory_quantity <= 0) {
     var selectedVariant = formEl.querySelector('#selected-variant-{{ product.id }}');
     if (selectedVariant !== null) {
-     selectedVariant.innerHTML = '{{ product.title | json }}{% unless hide_default_title %} + ' - ' + variant.title{% endunless %}';
+     selectedVariant.innerHTML = '{{ product.title | escape | json }}{% unless hide_default_title %} + ' - ' + variant.title{% endunless %}';
     }
     if (backorderEl !== null && backorderEl !== undefined) {
      backorderEl.classList.remove('hidden');
@@ -438,29 +443,34 @@ var selectCallback = function(variant, selector) {
     backorderEl.classList.add('hidden');
    }
    if (addToCartButton !== null && addToCartButton !== undefined) {
-    addToCartButton.value = '{{ sold_out | json }}';
+    addToCartButton.innerHTML = '{{ sold_out | escape }}';
     addToCartButton.classList.add('disabled');
     addToCartButton.disabled = true;
    }
   }
 
 
-  var pricewrapEl = formEl.parentElement.querySelector('#product-price-{{ product.id }}');
-  var priceEl = pricewrapEl.querySelector('.product-price');
-  // Whether the variant is in stock or not, we can update the price and compare at price.
-  if (variant.compare_at_price > variant.price) {
+   var multiselect = formEl.querySelector('#shopify-section-Multiselect');   
+   if(!multiselect) { 
    priceEl.innerHTML = Shopify.formatMoney(variant.price, "{{ shop.money_format }}");
-   var compareEl = pricewrapEl.querySelector('.product-compare-price');
-   if (compareEl == null) {
+    }else{
+  priceEl.innerHTML = Shopify.formatMoney(variant.price, "{{ shop.money_format }}");
+  }                                        
+                                          
+  var compareEl = pricewrapEl.querySelector('.product-compare-price');
+  if (variant.compare_at_price && variant.compare_at_price > variant.price) { 
+    if (compareEl == null) {
     var compareEl = document.createElement("s");
     compareEl.classList.add('product-compare-price');
     pricewrapEl.append(compareEl);
-   }
-   compareEl.innerHTML = Shopify.formatMoney(variant.compare_at_price, "{{ shop.money_format }}");
-
-  } else {
-   priceEl.innerHTML = Shopify.formatMoney(variant.price, "{{ shop.money_format }}");
-  }
+    }
+    compareEl.innerHTML = Shopify.formatMoney(variant.compare_at_price, "{{ shop.money_format }}");
+    }else{
+     if(compareEl) {
+       compareEl.remove();
+     }                                                 
+    }
+   
 
   {% if settings.quadpay %} 
   {% assign new_money_format = shop.money_format | remove: '$' %}
@@ -470,6 +480,7 @@ var selectCallback = function(variant, selector) {
 
 
  } else {
+                                                        
   // variant doesn't exist.
   priceEl.innerHTML = '';
   if (compareEl != null) {
@@ -486,6 +497,40 @@ var selectCallback = function(variant, selector) {
  }
 
 }; 
+  
+  
+  
+// run defer for option selector  
+  
+  var callbackProduct{{ product.id }} = function(){
+  // Handler when the DOM is fully loaded
+  if(!Shopify.OptionSelectors) {
+    // add script
+    var script = document.createElement("script");
+    script.type = "text/javascript";   
+    script.src = '{{ 'option_selection.js' | asset_url }}';
+    document.getElementsByTagName("head")[0].appendChild(script);
+  }
+};
+
+if (
+    document.readyState === "complete" ||
+    (document.readyState !== "loading" && !document.documentElement.doScroll)
+) {
+  callbackProduct{{ product.id }}();
+} else {
+  document.addEventListener("DOMContentLoaded", callbackProduct{{ product.id }});
+}
+    
+function deferProduct{{ product.id }}(methodProduct{{ product.id }}) {
+    if (Shopify.OptionSelectors) {
+        methodProduct{{ product.id }}();
+    } else {
+        setTimeout(function() { deferProduct{{ product.id }}(methodProduct{{ product.id }}) }, 4);
+    }
+}
+deferProduct{{ product.id }}(function () {    
+  
 {% if settings.boldoptions %}
 new Shopify.OptionSelectors('product-select-{{ product.id }}', {
  product: {%- include 'bold-product', output: 'json' -%},
@@ -499,15 +544,20 @@ new Shopify.OptionSelectors('product-select-{{ product.id }}', {
  enableHistoryState: false
 }); 
 {% endif %}
+  
+}); 
+  
+
 
 // Add label if only one product option and it isn't 'Title'.
 {% if product.options.size == 1 and product.options.first != 'Title' %}
-$('.selector-wrapper:eq(0)').prepend('<label>{{ product.options.first }}</label>'); 
+var label = document.createElement("label");    
+label.innerHTML = '{{ product.options.first }}';
+var selectorwrapper = page.querySelectorAll('.selector-wrapper')[0];
+if(selectorwrapper) {
+selectorwrapper.prepend(label);
+}
 {% endif %}
-
-
-Shopify.Image.preload({{ product.images | json }}, 'grande');
-Shopify.Image.preload({{ product.images | json }}, '1024x1024');
 </script> 
 
 
