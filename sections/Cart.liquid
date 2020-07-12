@@ -626,7 +626,7 @@ function openShare(e) {
 {% endif %}
     
 
-{% if section.settings.collection %}
+{% if section.settings.collection != blank %}
 {% assign products_per = section.settings.products_per | plus: 0 %}  
 <div class="carousel">  
   <h2 class="text-center">{{ section.settings.collection_title }}</h2> 
