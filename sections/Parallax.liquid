@@ -448,7 +448,51 @@ defer{{ section.id }}(function() {
   }
 {% endschema %}
 
-{% stylesheet %}
+{% stylesheet 'scss' %}
+
+
+.parallax-section {
+  position:relative;
+  [data-rellax-container] {
+        display: flex;
+  flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+        padding: 0 15px;
+  }
+  img {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    z-index: 1;
+  }
+  .fill {
+    min-width: 100%;
+    min-height: 100%;
+    object-fit: cover;
+  }
+  .overlay {
+    -webkit-transform: translate3d(0, 0, 0);
+    position: absolute;
+    top:0px;
+    left:0px;
+    height: 100%;
+    width: 100%;
+    z-index: 2;
+  }
+  .parallax-element {
+  z-index:3;
+  position: relative;
+     -webkit-transform: translate3d(0,0,0);
+  	-moz-transform: translate3d(0,0,0);
+  	-ms-transform: translate3d(0,0,0);
+  }
+  .button-wrap {
+    padding:0;
+  }
+}
+
+
 {% endstylesheet %}
 
 {% javascript %}
