@@ -225,15 +225,13 @@ color:{{ section.settings.link_color }};
 </div>
 <script>
   function defer{{ section.id | replace: '-', '' }}(method{{ section.id | replace: '-', '' }}) {
-    if (window.jQuery) {
+    if (window.jQuery && window.jQuery.mobile) {
         method{{ section.id | replace: '-', '' }}();
     } else {
         setTimeout(function() { defer{{ section.id | replace: '-', '' }}(method{{ section.id | replace: '-', '' }}) }, 50);
     }
 }
 defer{{ section.id | replace: '-', '' }}(function () {
-
-  $('#shopify-section-Mobile-Menu').addClass('panel position-fixed').attr({'data-role':'panel','data-position':'left','data-position-fixed':'true', 'data-display':'overlay', 'data-theme': 'a'})
   
 jQuery(document).on('mobileinit',function(){  
   $(function(){
