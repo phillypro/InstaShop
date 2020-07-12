@@ -1,296 +1,225 @@
-{% if settings.boldoptions %} {%- include 'bold-common' -%} {% endif %} {% if cart.item_count > 0 %}
-<script>
-    var checkoutBar = document.getElementById('checkout-bar');
-    if (!checkoutBar) {
-        // create checkoutbar 
-        var checkoutbar = document.createElement('div');
-        checkoutbar.id = 'checkout-bar';
-        checkoutbar.classList.add('checkout-bar');
-        // create button 
-        var checkoutbarbutton = document.createElement('a');
-        checkoutbarbutton.id = 'checkout-bar-button';
-        checkoutbarbutton.setAttribute('href', '#');
-        // create total
-        var checkoutbartotal = document.createElement('span');
-        checkoutbartotal.id = 'checkout-bar-total';
-        // put continue and total into button
-        checkoutbarbutton.innerHTML = 'Continue';
-        checkoutbarbutton.append(checkoutbartotal);
-        checkoutbar.innerHTML = '<a href="#" onclick="goBack()" class="continue"> <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-left" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-arrow-left fa-w-14 fa-3x" style=" width: 10px; margin-right: 3px;"><path fill="currentColor" d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z" class=""></path></svg>Continue Shopping</a>';
-        checkoutbar.append(checkoutbarbutton);
-        var screen =  document.querySelector('#screen'); 
-        screen.append(checkoutbar);
-    }
-</script>
-{% style %} .cart-totals>div input[type=submit] { background:{{ section.settings.checkoutbackground }}; color:{{ section.settings.checkoutcolor }}; } #cart-total { color:{{ section.settings.totalcolor}}; } #cart .sezzle-checkout-button-wrapper .sezzle-button-text .sezzle-payment-amount { color:{{ section.settings.totalcolor}}; } 
-{% if section.settings.css != nil %}
-{% assign css = section.settings.css | replace: '&gt;','>' %}
-{{ css }}
-{% endif %}
-{% endstyle %}
-<div class="cart-header">
-    <div class="row">
-        <div class="large-12 text-center columns">
-            <!--logo-->
-            <a href="/" title="{{ shop.name }}">
-          {% if section.settings.brand_logo_svg != '' %}
-            {{ section.settings.brand_logo_svg }}
-          {% else %}
-          {% capture logo %}{{ section.settings.brand_logo | img_url: 'compact' }}{% endcapture %}
-         {% if logo contains 'no-image' %} 
+{% if settings.boldoptions %} 
+  {%- include 'bold-common' -%} 
+{% endif %} 
+{% if cart.item_count > 0 %}
 
-          <span>
-            {% if section.settings.brandname != '' %}
-            {{ section.settings.brandname }}
-            {% else %}
-             {{ shop.name }}
-            {% endif %}
-          </span>
-          {% else %}
-           <img alt="{{ shop.name}} logo" src="{{ section.settings.brand_logo | img_url: 'medium' }}" />
-          {% endif %}
-          {% endif %}
-        </a>
-            <!--End logo-->
-        </div>
-        <div class="large-12 columns">
-            <h2>
-       Your Shopping Bag
-      </h2>
-            <span>
-       {{ section.settings.message }}
-      </span>
-        </div>
-    </div>
-</div>
 
-<form id="cartform" action="/cart" method="post" data-ajax="false">
-    <div class="row">
-        <div class="large-12 columns">
-            {% assign cartitems = cart.items %} {% if settings.boldoptions or settings.boldsubscriptions %} {% for item in cartitems %} {%- include 'bold-options-hybrid-cart-item' with item -%}
-            <div cart-item="{{ item.id }}" class="product-cart-wrap">
-                <div class="thumbnail-wrap" style="background-image:url({{ item | img_url: 'large' }})">
-                </div>
-                <div class="quantity-display">
-                    {{ item.quantity }}
-                </div>
-                <div class="product-title-wrap">
+
+<div id="cart-wrap" class="container">
+  <h1 class="text-center">My Bag</h1>
+  
+  <form id="cartform" action="/cart" method="post" data-ajax="false">
+     <div class="buttons-wrapper">
+       <div class="flex-container align-right">
+       <div class="checkout-button">
+         <input class="btn" id="checkout" type="submit" name="checkout" value="Checkout" />
+       </div>
+       {% if additional_checkout_buttons %}
+       <div id="additional-checkout-buttons" class="inactive">
+        {{ content_for_additional_checkout_buttons }}
+       </div>
+       <div class="checkout-expander">
+         <div class="more"><a href="#" aria-label="Expand Payment Options">More Payment Options <svg width="12" aria-hidden="true" focusable="false" role="presentation" class="icon icon--wide icon-chevron-down" viewBox="0 0 498.98 284.49"><path class="cls-1" d="M80.93 271.76A35 35 0 0 1 140.68 247l189.74 189.75L520.16 247a35 35 0 1 1 49.5 49.5L355.17 511a35 35 0 0 1-49.5 0L91.18 296.5a34.89 34.89 0 0 1-10.25-24.74z" transform="translate(-80.93 -236.76)"></path></svg></a></div>
+         <div class="less"><a href="#" aria-label="Collapse Payment Options">Less Payment Options <svg width="12" aria-hidden="true" focusable="false" role="presentation" class="icon icon--wide icon-chevron-down" viewBox="0 0 498.98 284.49" style="transform:rotate(180deg);"><path class="cls-1" d="M80.93 271.76A35 35 0 0 1 140.68 247l189.74 189.75L520.16 247a35 35 0 1 1 49.5 49.5L355.17 511a35 35 0 0 1-49.5 0L91.18 296.5a34.89 34.89 0 0 1-10.25-24.74z" transform="translate(-80.93 -236.76)"></path></svg></a></div>
+       </div>
+       {% endif %}
+       <div class="continue-button">
+         <a href="/">Continue Shopping</a>
+       </div>
+       </div>
+     </div>
+    
+    
+    <table>
+      <thead class="small--hide">
+        <tr class="top-labels">
+          <th class="text-left">Item</th>
+          <th>Remove</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        
+        
+       {% assign cartitems = cart.items %} 
+        {% for item in cartitems %} 
+        <tr class="item {{ item.handle }}" data-variant-id="{{ item.id }}" data-variant-quantity="{{ item.quantity }}" line="{{ forloop.index0 | plus: 1 }}">
+          <td class="details">
+            <table>
+              <tbody>
+                <tr>
+                  <td class="image large-4 small-12">
+                    <img src="{{ item | img_url: 'large' }}" />
+                  </td>
+                  <td class="title text-left large-8 small-12 ">
                     <a href="{{ item.url }}">
-             {{ item.product.title }} 
-             {% assign item_variant = item.variant %}
-            {% if item_variant.option1 and item_variant.option1 != 'Default Title' %}{{ item_variant.option1 }}{% endif %}
-            {% if item_variant.option2 %}<span>{{ item_variant.option2 }}</span>{% endif %}
-	            <div class="attributes">
-                    {% unless settings.boldsubscriptions %}
-                      {% assign propertySize = item.properties | size %}
-                      {% if propertySize > 0 %}
-                      {% for p in item.properties %}
-                      {%- if p.first.first == '_' -%}{%- continue -%}{%- endif -%}
-                      {% assign first_character_in_key = p.first | truncate: 1, '' %}
-                      {% unless p.last == blank or first_character_in_key == '_' %}
-                      {{ p.first }}:
-                      {% if p.last contains '/uploads/' %}
-                      <a href="{{ p.last }}">{{ p.last | split: '/' | last }}</a> {% else %} {{ p.last }} {% endif %}
-                    <br/> {% endunless %} {% endfor %} {% endif %}
-                    <!-- Bold:POv2 -->
-                    {% else %}
-                    <span class="bold_ro_desc" data-product-id="{{item.id}}-{{ forloop.index0 }}"></span>
-                    <span class="bold_load_cart_item_properties"></span>
-                    {% endunless %}
-                </div>
-                </a>
-            </div>
-            <div class="quantity-wrap">
-                <div>
-                    <input type="number" name="updates[]" id="updates_{{ item.id }}" class="quantity input-number" min="0" max="99" value="{{ item.quantity }}" />
-                </div>
-                <a href="#" product-id="{{ item.id }}" class="remove"></a>
-            </div>
-            <div class="price-wrap">
-                <span>
-          <span> 
-	   <span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_item_price" style="display:none !important;"></span>{% unless settings.boldsubscriptions %}{% include 'price' with item.price %}{% else %}{% include 'price' with item.final_price %}{% endunless %}
-                </span>
-                <div>
-                </div>
-                </span>
-            </div>
-        </div>
-        {% endfor %} {% else %} {% for item in cartitems reversed %}
-        <div cart-item="{{ item.id }}" class="product-cart-wrap">
-            <div class="thumbnail-wrap" style="background-image:url({{ item | img_url: 'large' }})">
-            </div>
-            <div class="quantity-display">
-                {{ item.quantity }}
-            </div>
-            <div class="product-title-wrap">
-                <a href="{{ item.url }}">
-             {{ item.product.title }} 
-             {% assign item_variant = item.variant %}
-             {% if item_variant.option1 and item_variant.option1 != 'Default Title' %}{{ item_variant.option1 }}{% endif %}
-            {% if item_variant.option2 %}<span>{{ item_variant.option2 }}</span>{% endif %}
-         </a>
-            </div>
-            <div class="quantity-wrap">
-                <div>
-                    <input type="number" name="updates[]" id="updates_{{ item.id }}" class="quantity input-number" min="0" max="99" value="{{ item.quantity }}" />
-                </div>
-                <a href="#" product-id="{{ item.id }}" class="remove"></a>
-            </div>
-            <div class="price-wrap">
-                <span>
-          <span> 
-           {% assign price = item.price | money | split: '.' %}{{ price.first }}
-           </span>
-                <div>
-                </div>
-                </span>
-            </div>
-        </div>
-        {% endfor %} {% endif %}
-
-    </div>
-    </div>
-    <div class="row align-justify">
-        <div class="large-12 small-12">
-
-            <!-- get all cart items into an array -->
-            {% for item in cart.items %} {% if settings.boldoptions %} {%- comment -%}Bold:PO 2.0 - Hybrid Input{%- endcomment -%} {%- if item.properties._boldBuilderId and item.properties._boldVariantIds == null -%}
-            <input type="hidden" name="updates[]" id="updates_{{- item.key -}}" class="bold_hidden_input cart__product-qty" value="{{- item.quantity -}}" min="0" data-id="{{- item.key -}}"> {%- continue -%} {%- endif -%} {% endif %} {% if forloop.last == true %} {% assign cartitems = cartitems | append: item.product.handle %} {% else %} {% assign cartitems = cartitems | append: item.product.handle | append: ',' %} {% endif %} {% endfor %} {% assign cartitems = cartitems | split: ',' %}
-
-            <!-- see if anythings available -->
-            {% assign available = '' %} {% for block in section.blocks %} {% case block.type %} {% when 'Upsell' %} {% assign compare = all_products[block.settings.upsell_info] %} {% if cartitems contains compare.handle %} {% else %} {% assign available = available | append: compare.handle %} {% endif %} {% endcase %} {% endfor %} {% if available != '' %}
-            <div class="frequently-bought-wrap">
-                <h2>{{ section.settings.frequently-bought-title }}
-</h2>
-
-                <div class="swiper-container frequently-swiper">
-                    <!-- Additional required wrapper -->
-                    <div class="swiper-wrapper">
-                        {% assign i = 0 %} {% for block in section.blocks %} {% case block.type %} {% when 'Upsell' %} {% assign upsell = all_products[block.settings.upsell_info] %} {% if cartitems contains upsell.handle %} {% else %}
-
-                        <div class="swiper-slide">
-                            <div class="row">
-                                <div class="columns">
-                                    <a href="#{{ upsell.handle }}{{ i }}" data-rel="popup" data-transition="slideup" data-position-to="window" class="frequently-bought">
-                                        <div>
-                                            <div class="flex-video">
-                                                <div>
-                                                    <img src="{{ upsell.featured_image | product_img_url: 'medium' }}" />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <h2>{{ upsell.title }}</h2>
-                                            <span>{% assign price = upsell.price | money | split: '.' %}{{ price.first }}</span>
-                                        </div>
-                                        <span>view</span>
-
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-                        {% endif %} {% assign i = i | plus: 1 %} {% endcase %} {% endfor %}
-                    </div>
-                </div>
-            </div>
-
-            <div id="frequently-bought-popups">
-                {% assign i = 0 %} {% for block in section.blocks %} {% case block.type %} {% when 'Upsell' %} {% assign upsell = all_products[block.settings.upsell_info] %} {% if cartitems contains upsell.handle %} {% else %}
-                <div class="popupwrap" data-role="popup" id="{{ upsell.handle }}{{ i }}" data-dismissible="false">
-                    <a class="close" href="#" data-rel="back">
-                        <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="times" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 34 364 420">
-                            <path fill="currentColor" d="M242.72 256l100.07-100.07c12.28-12.28 12.28-32.19 0-44.48l-22.24-22.24c-12.28-12.28-32.19-12.28-44.48 0L176 189.28 75.93 89.21c-12.28-12.28-32.19-12.28-44.48 0L9.21 111.45c-12.28 12.28-12.28 32.19 0 44.48L109.28 256 9.21 356.07c-12.28 12.28-12.28 32.19 0 44.48l22.24 22.24c12.28 12.28 32.2 12.28 44.48 0L176 322.72l100.07 100.07c12.28 12.28 32.2 12.28 44.48 0l22.24-22.24c12.28-12.28 12.28-32.19 0-44.48L242.72 256z" class=""></path>
-                        </svg>
+                      <p class="text">
+                        {{ item.product.title }} 
+                          {% assign item_variant = item.variant %}
+                          {% if item_variant.option1 and item_variant.option1 != 'Default Title' %} - {{ item_variant.option1 }}{% endif %}{% if item_variant.option3 %} {{ item_variant.option2 }}{% endif %}
+                      </p>
                     </a>
-                    <div class="featured-image">
-                        <img src="{{ upsell.featured_image | product_img_url: 'large' }}" />
+                    <div class="wrap">
+                      <div class="plus-minus-container cart-page quantity">
+                        <input type="button" value="-" class="minus">
+                        <input type="text" name="updates[]" value="{{ item.quantity }}" title="Qty" class="quantity theCartPageQuantity">
+                        <input type="button" value="+" class="plus">
+                      </div>
+                      <b class="cart-price">
+                        <span class="money">
+                          {% unless settings.boldsubscriptions %}
+                            {% include 'price' with item.price %}
+                          {% else %}
+                             {% include 'price' with item.final_price %}
+                          {% endunless %}
+                        </span>
+                      </b>
+                      {% if item_variant.option1 and item_variant.option1 != 'Default Title' %}
+                      <div class="cart-main-option-ddl">
+                         <select class="main-option-title" tabindex="-1">
+                           {% unless item_variant.option2 %}
+                           <option selected>{{ item_variant.option1 }}</option>   
+                           {% else %}
+                            {% unless item_variant.option3 %}
+                             <option selected>{{ item_variant.option2 }}</option>   
+                            {% else %}
+                             <option selected>{{ item_variant.option3 }}</option>   
+                            {% endunless %}
+                           {% endunless %}
+                         </select>
+                        <select id="product-variant-{{ item.id }}-main-option-cart" class="product-main-option">
+                            {% unless item_variant.option2 %}
+                              {% for variant in item.product.variants %}
+                                  {% assign temp = variant.option1 %} 
+                                  {% unless variant_option1 contains temp %}
+                                     <option {% if item_variant.option1 == variant.option1 %} selected {% endif %} {% unless variant.available %} disabled {% endunless %} value="{{ variant.id }}">{{ item.product.options[0] }}: {{ variant.option1 }} - {{ variant.price | money }}</option>
+                                     {% assign variant_option1 = variant_option1 | append:temp %} 
+                                  {% endunless %} 
+                              {% endfor %}
+                              {% assign variant_option1 = '' %}
+                            {% else %}
+                             {% unless item_variant.option3 %}
+                              {% for variant in item.product.variants %}
+                                  {% assign temp = variant.option2 %} 
+                                  {% unless variant_option2 contains temp %}
+                                      <option {% if item_variant.option2 == variant.option2 %} selected {% endif %} {% unless variant.available %} disabled {% endunless %} value="{{ variant.id }}">{{ item.product.options[1] }}: {{ variant.option2 }} - {{ variant.price | money }}</option>
+                                     {% assign variant_option2 = variant_option2 | append:temp %} 
+                                  {% endunless %} 
+                              {% endfor %}         
+                              {% assign variant_option2 = '' %}
+                              {% else %}
+                               {% for variant in item.product.variants %}
+                                  {% assign temp = variant.option3 %} 
+                                  {% unless variant_option3 contains temp %}
+                                      <option {% if item_variant.option3 == variant.option3 %} selected {% endif %} {% unless variant.available %} disabled {% endunless %} value="{{ variant.id }}">{{ item.product.options[2] }}: {{ variant.option3 }} - {{ variant.price | money }}</option>
+                                     {% assign variant_option3 = variant_option3 | append:temp %} 
+                                  {% endunless %} 
+                              {% endfor %}         
+                              {% assign variant_option3 = '' %}
+                          
+                              {% endunless %} 
+                            {% endunless %}
+                        </select>
+                        <input class="quantity-update-button" type="button" value="UPDATE {% unless item_variant.option2 %}{{ item.product.options[0] }}{% else %}{{ item.product.options[1] }}{% endunless %}">
+                      </div>
+                      {% endif %}
                     </div>
-                    <div>
-                        <div>
-                            <h2>{{ upsell.title }}</h2>
-                            <span>{{ upsell.price | money }}</span>
-                        </div>
-                        <div>
-                            {{ block.settings.upsell_details }}
-                        </div>
-                        <div class="quantity-wrap">
-                            <div class="input-group">
-                                <span class="input-group-button">
-              <button type="button" class="btn btn-danger btn-number"  data-type="minus">
-                <span class="glyphicon glyphicon-minus">-</span>
-                                </button>
-                                </span>
-                                <input type="number" name="quantity" class="quantity input-number input-group-field" value="1" min="1" max="10" />
-                                <span class="input-group-button">
-              <button type="button" class="btn btn-success btn-number" data-type="plus">
-                  <span class="glyphicon glyphicon-plus">+</span>
-                                </button>
-                                </span>
-                            </div>
-                            <a data-rel="back" href="#" variant-id="{{ upsell.variants[0].id }}" class="frequently-add" id="frequently-bought-button">ADD<span id="frequently-bought-total" price="{{ upsell.price | money }}">{% capture newprice %}{{ upsell.price | money  }}{% endcapture %}{{ newprice | strip }}</span></a>
-                        </div>
-                    </div>
-                </div>
-
-                {% endif %} {% assign i = i | plus: 1 %} {% endcase %} {% endfor %}
-            </div>
-            {% endif %}
-
-            <input autocomplete="off" type="hidden" name="discount" />
-
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+          <td class="remove laarge-2">
+            <a class="remove-from-cart " href="#">
+            <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="13" height="13" viewBox="0 0 20 20">
+              <path fill="#000000" d="M10.707 10.5l5.646-5.646c0.195-0.195 0.195-0.512 0-0.707s-0.512-0.195-0.707 0l-5.646 5.646-5.646-5.646c-0.195-0.195-0.512-0.195-0.707 0s-0.195 0.512 0 0.707l5.646 5.646-5.646 5.646c-0.195 0.195-0.195 0.512 0 0.707 0.098 0.098 0.226 0.146 0.354 0.146s0.256-0.049 0.354-0.146l5.646-5.646 5.646 5.646c0.098 0.098 0.226 0.146 0.354 0.146s0.256-0.049 0.354-0.146c0.195-0.195 0.195-0.512 0-0.707l-5.646-5.646z"></path>
+            </svg>
+            </a>
+          </td>
+          <td class="total-price large-2 small--hide">
+           <b>
+             <span class="money">
+               {{ item.original_line_price | money }}
+             </span>
+            </b>
+          </td>
+        </tr>
+        {% endfor %} 
+        
+        
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="6" class="small--text-right">
+            Subtotal 
+            <b>
+              <span id="cart-subtotal" class="money">
+               {% if settings.boldsubscriptions or boldoptions %}<span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_total" style="display:none !important;"></span>{% endif %}{{ cart.total_price | money }}
+              </span>
+            </b>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+    
+    
+    
+    
+  </form>
+   {% if settings.quadpay %} {% comment %}
+     <!-- Insert QuadPay Widget -->{% endcomment %}
+      <div class="quadpay" style="min-height:20px;">
+       <quadpay-widget amount={{ cart.total_price | divided_by: 100.00 }} alignment="right"></quadpay-widget>
         </div>
-        <div class="large-12 small-12 columns cart-totals">
-            <ul>
-                {% if section.settings.advanced_klaviyo_list != '' and section.settings.advanced-discount != '' %}
-                <li class="top">
-                    <h2>Promo</h2>
-                    <a href="#advanced-abandoned-cart" data-rel="popup" data-transition="pop" onclick="triggerklaviyo();">Get discount</a>
-                    <div id="advanced-abandoned-cart" class="advanced-popup-wrap" data-role="popup">
-                        <div class="advanced-popup" style="background-color:{{ section.settings.advanced_background_color }};">
-                            <h4>
-      {{ section.settings.advanced-header }}
-    </h4>
-                            <div>
-                                <form></form>
-                                <form id="email_signup" class="klaviyoform" action="//manage.kmail-lists.com/subscriptions/subscribe" data-ajax-submit="//manage.kmail-lists.com/ajax/subscriptions/subscribe" method="GET" target="_blank" novalidate="novalidate">
-                                    <input type="hidden" name="g" value="{{ section.settings.advanced_klaviyo_list }}">
-                                    <input type="hidden" name="code" value="{{ section.settings.advanced-discount }}">
-                                    <input type="email" value="" name="email" id="k_id_email" placeholder="Your@email.com">
-                                    <button type="submit" class="klaviyo_submit_button">Unlock</button>
-                                </form>
-                                <div>
-                                    will apply at checkout
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </li>
-                {% endif %}
-                <li>
-                    <h2>Total</h2>
-                    <span id="cart-total">{% if settings.boldsubscriptions or boldoptions %}<span class="Bold-theme-hook-DO-NOT-DELETE bold_cart_total" style="display:none !important;"></span>{% endif %}{% assign price = cart.total_price | money | split: '.' %}{{ price.first }}</span>
-                </li>
+   {% endif %} 
+  
+{% if settings.afterpay %}  
+{% style %}
+  @media (max-width: 600px) {  
+   .afterpay-paragraph {
+    font-size: 10px;
+    margin-top: 0px;
+   }
+   .afterpay-logo {
+      width: 75px !important;
+   }
+  }
+{% endstyle %}
+<!-- Begin Shopify-Afterpay JavaScript Snippet (v1.0.7) -->
+<script type="text/javascript">
+// Overrides:
+// var afterpay_min = 0.04;            // As per your Afterpay contract.
+// var afterpay_max = 2000.00;         // As per your Afterpay contract.
+// var afterpay_cbt_enabled = false;   // As per your Afterpay contract; change to true to display Cross-Border Trade artwork (for AU/NZ).
+// var afterpay_logo_theme = 'colour'; // Can be 'colour', 'black' or 'white'.
+// var afterpay_product_selector = '#product-price-selector';
+// var afterpay_cart_integration_enabled = true;
+// var afterpay_cart_static_selector = '#cart-subtotal-selector';
 
-                {% if settings.quadpay %} {% comment %}
-                <!-- Insert QuadPay Widget -->{% endcomment %}
-                <div class="quadpay" style="min-height:20px;">
-                    <quadpay-widget amount={{ cart.total_price | divided_by: 100.00 }} alignment="right"></quadpay-widget>
-                </div>
-                {% endif %} {% unless section.settings.reserve == 'off' %}
-                <div class="cart-reserve">
-                    <div>🔥 Items in your cart are in high demand. But we have reserved your order.</div>
-                    <div class="time-wrap">Your order is reserved for <span time-left="{{ section.settings.reserve }}" id="reserve-cart-timer"></span> minutes!</div>
-                </div>
-                {% endunless %} {% if section.settings.terms %} {% style %} .cart-totals .agbwrap label input:checked { background:{{ section.settings.checkoutbackground }}; } .cart-totals .agbwrap label input { color:{{ section.settings.checkoutcolor }}; } .cart-totals .agbwrap label input:checked::after { background:{{ section.settings.checkoutbackground }}; } {% endstyle %}
+// Non-editable fields:
+var afterpay_shop_currency = {{ shop.currency | json }};
+var afterpay_cart_currency = {{ cart.currency.iso_code | json }};
+var afterpay_shop_money_format = {{ shop.money_format | json }};
+var afterpay_shop_permanent_domain = {{ shop.permanent_domain | json }};
+var afterpay_theme_name = {{ theme.name | json }};
+var afterpay_product = {{ product | json }};
+var afterpay_current_variant = {{ product.selected_or_first_available_variant | json }};
+var afterpay_cart_total_price = {{ cart.total_price | json }};
+var afterpay_js_snippet_version = '1.0.7';
+</script>
+<script async type="text/javascript" src="https://static.afterpay.com/shopify-afterpay-javascript.js"></script>
+<!-- End Shopify-Afterpay JavaScript Snippet (v1.0.7) -->
+{% endif %}   
+  
+  
+   {% if section.settings.terms %} {% style %} .cart-totals .agbwrap label input:checked { background:{{ section.settings.checkoutbackground }}; } .cart-totals .agbwrap label input { color:{{ section.settings.checkoutcolor }}; } .cart-totals .agbwrap label input:checked::after { background:{{ section.settings.checkoutbackground }}; } {% endstyle %}
                 {% assign policy = shop.terms_of_service %}
                 <div class="agbwrap">
                     <label class="ag" for="agree-agb">
                         <a class="agburl" data-fancybox data-src="#hidden-content" href="javascript:;">By clicking this box I accept the {{ policy.title }}.</a>
                         <input type="checkbox" id="agree-agb" />
                     </label>
-                    <span id="notchecked">Please read and accept the{{ policy.title }} to proceed with your order.</span>
+                    <span id="notchecked">Please read and accept the {{ policy.title }} to proceed with your order.</span>
                 </div>
                 <div style="display: none;" id="hidden-content">
                    {{ policy.body }}
@@ -314,54 +243,290 @@
                             } else {
                                 e.preventDefault();
                                 errorHTML.style.display = 'block';
+function scrollIt(e,n=200,t="linear",o){const i={linear:e=>e,easeInQuad:e=>e*e,easeOutQuad:e=>e*(2-e),easeInOutQuad:e=>e<.5?2*e*e:(4-2*e)*e-1,easeInCubic:e=>e*e*e,easeOutCubic:e=>--e*e*e+1,easeInOutCubic:e=>e<.5?4*e*e*e:(e-1)*(2*e-2)*(2*e-2)+1,easeInQuart:e=>e*e*e*e,easeOutQuart:e=>1- --e*e*e*e,easeInOutQuart:e=>e<.5?8*e*e*e*e:1-8*--e*e*e*e,easeInQuint:e=>e*e*e*e*e,easeOutQuint:e=>1+--e*e*e*e*e,easeInOutQuint:e=>e<.5?16*e*e*e*e*e:1+16*--e*e*e*e*e},a=window.pageYOffset,u="now"in window.performance?performance.now():(new Date).getTime(),c=Math.max(document.body.scrollHeight,document.body.offsetHeight,document.documentElement.clientHeight,document.documentElement.scrollHeight,document.documentElement.offsetHeight),m=window.innerHeight||document.documentElement.clientHeight||document.getElementsByTagName("body")[0].clientHeight,d="number"==typeof e?e:e.offsetTop,r=Math.round(c-d<m?c-m:d);if("requestAnimationFrame"in window==!1)return window.scroll(0,r),void(o&&o());!function e(){const c="now"in window.performance?performance.now():(new Date).getTime(),m=Math.min(1,(c-u)/n),d=i[t](m);window.scroll(0,Math.ceil(d*(r-a)+a)),window.pageYOffset!==r?requestAnimationFrame(e):o&&o()}()}
+scrollIt(document.querySelector('.agbwrap'),600,'easeOutQuad');
                             }
                         }
                     }, 300);
                 </script>
-                {% endif %}
+      {% endif %}
+  
   {% if section.settings.notes %}
-                 <label for="CartNote">Special instructions</label>
-                   <textarea name="note" id="CartNote">{{ cart.note }}</textarea>
-               {% endif %}
-            </ul>
-            <div>
-                <input id="checkoutnow" type="submit" name="checkout" value="Continue" />
-            </div>
+       <div class="cartNote">
+        <label for="CartNote">Special instructions</label>
+        <textarea name="note" id="CartNote">{{ cart.note }}</textarea>
+       </div>   
+  {% endif %}
+  
+  
+  
+{% if section.settings.sharing %}
+{% capture cartUrl %}{% for item in cartitems %}{{ item.id }}:{{ item.quantity }}{% unless forloop.last %},{% endunless %}{% endfor %}{% endcapture %}    
+<div class="hide">
+	<div id="sharing-popup">
+      	<h2>SHARE THIS ITEM</h2>
+        <ul class="social-meta">
+          <li>
+            <a class="facebook-share" href="https://www.facebook.com/sharer/sharer.php?u={{ shop.secure_url }}/cart/{{ cartUrl }}" target="_blank" alt="Share on Facebook" title="Share on Facebook">
+             <svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="facebook-f" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512" class="svg-inline--fa fa-facebook-f fa-w-10 fa-2x"><path fill="currentColor" d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z" class=""></path></svg>
+            </a>
+          </li>
+          <li>
+            <a class="twitter-share" href="https://twitter.com/share?url={{ shop.secure_url }}/cart/{{ cartUrl }}" target="_blank" alt="Share on Twitter" title="Share on Twitter">
+              <svg aria-hidden="true" focusable="false" data-prefix="fab" data-icon="twitter" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-twitter fa-w-16 fa-2x"><path fill="currentColor" d="M459.37 151.716c.325 4.548.325 9.097.325 13.645 0 138.72-105.583 298.558-298.558 298.558-59.452 0-114.68-17.219-161.137-47.106 8.447.974 16.568 1.299 25.34 1.299 49.055 0 94.213-16.568 130.274-44.832-46.132-.975-84.792-31.188-98.112-72.772 6.498.974 12.995 1.624 19.818 1.624 9.421 0 18.843-1.3 27.614-3.573-48.081-9.747-84.143-51.98-84.143-102.985v-1.299c13.969 7.797 30.214 12.67 47.431 13.319-28.264-18.843-46.781-51.005-46.781-87.391 0-19.492 5.197-37.36 14.294-52.954 51.655 63.675 129.3 105.258 216.365 109.807-1.624-7.797-2.599-15.918-2.599-24.04 0-57.828 46.782-104.934 104.934-104.934 30.213 0 57.502 12.67 76.67 33.137 23.715-4.548 46.456-13.32 66.599-25.34-7.798 24.366-24.366 44.833-46.132 57.827 21.117-2.273 41.584-8.122 60.426-16.243-14.292 20.791-32.161 39.308-52.628 54.253z" class=""></path></svg>
+            </a>
+          </li>
+          <li>
+            <a class="mail-share small--show" href="mailto:?&amp;body={{ shop.secure_url }}/cart/{{ cartUrl }}" alt="Share on Facebook" title="Share on Facebook">
+              <svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="envelope" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" class="svg-inline--fa fa-envelope fa-w-16 fa-2x"><path fill="currentColor" d="M464 64H48C21.49 64 0 85.49 0 112v288c0 26.51 21.49 48 48 48h416c26.51 0 48-21.49 48-48V112c0-26.51-21.49-48-48-48zm0 48v40.805c-22.422 18.259-58.168 46.651-134.587 106.49-16.841 13.247-50.201 45.072-73.413 44.701-23.208.375-56.579-31.459-73.413-44.701C106.18 199.465 70.425 171.067 48 152.805V112h416zM48 400V214.398c22.914 18.251 55.409 43.862 104.938 82.646 21.857 17.205 60.134 55.186 103.062 54.955 42.717.231 80.509-37.199 103.053-54.947 49.528-38.783 82.032-64.401 104.947-82.653V400H48z" class=""></path></svg>
+            </a>
+          </li>
+      </ul>
+      	<div class="copy-url initialized">
+      		<div>COPY URL</div><div class="url">{{ shop.secure_url }}/cart/{{ cartUrl }}</div>
+          	<div>
+              <a href="#" onclick="return false;" class="copy-button" data-clipboard-target=".copy-url .url">
+              	<svg aria-hidden="true" focusable="false" data-prefix="far" data-icon="copy" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="svg-inline--fa fa-copy fa-w-14 fa-2x"><path fill="currentColor" d="M433.941 65.941l-51.882-51.882A48 48 0 0 0 348.118 0H176c-26.51 0-48 21.49-48 48v48H48c-26.51 0-48 21.49-48 48v320c0 26.51 21.49 48 48 48h224c26.51 0 48-21.49 48-48v-48h80c26.51 0 48-21.49 48-48V99.882a48 48 0 0 0-14.059-33.941zM266 464H54a6 6 0 0 1-6-6V150a6 6 0 0 1 6-6h74v224c0 26.51 21.49 48 48 48h96v42a6 6 0 0 1-6 6zm128-96H182a6 6 0 0 1-6-6V54a6 6 0 0 1 6-6h106v88c0 13.255 10.745 24 24 24h88v202a6 6 0 0 1-6 6zm6-256h-64V48h9.632c1.591 0 3.117.632 4.243 1.757l48.368 48.368a6 6 0 0 1 1.757 4.243V112z" class=""></path></svg>
+                <span class="copy-text">COPY</span>
+              </a>
+          	</div>
         </div>
-    </div>
+     </div>
+</div>  
+  <div id="sharing">
+      <a href="javascript:void(0);" class="share-icon share-cart">Share your cart</a>
+  </div>
+  {% endif %} 
+  
+  <div class="continue-button mobile"><a href="/">Continue Shopping</a></div>
+</div>
 
-</form>
-
+{% style %}
+#cart-wrap select {
+background-image:url({{ 'select.png' | asset_url }});
+}
+#cart-wrap #sharing .share-icon {
+background-image: url({{'share-icon.svg' | asset_url }}),none;
+}
+{% endstyle %}
 <script>
-    var callbackCart = function() {
-        // Handler when the DOM is fully loaded
-        if (!window.Swiper) {
-            // add script
-            var script = document.createElement("script");
-            script.type = "text/javascript";
-            script.src = 'https://cdn.jsdelivr.net/npm/swiper@{{ settings.swiperjsversion }}/js/swiper.min.js';
-            document.getElementsByTagName("head")[0].appendChild(script);
-            // add style
-            var style = document.createElement("link");
-            style.type = "text/css";
-            style.rel = "stylesheet";
-            style.href = 'https://cdn.jsdelivr.net/npm/swiper@{{ settings.swiperjsversion }}/css/swiper.min.css';
-            document.getElementsByTagName("head")[0].appendChild(style);
+
+if (window.Shopify && Shopify.StorefrontExpressButtons) {
+    Shopify.StorefrontExpressButtons.initialize();
+}
+  
+  
+  
+var cartCount = document.querySelector('.cart-count');  
+cartCount.innerHTML = '{{ cart.item_count }}';  
+{% if cart.item_count < 1 %}
+ cartCount.classList.add('hidden-count'); 
+{% else %}
+ cartCount.classList.remove('hidden-count'); 
+{% endif %}
+  
+ 
+  
+  
+{% if additional_checkout_buttons %}  
+
+var additionalButtons = document.querySelector('#additional-checkout-buttons');
+
+var handleAB = function(mutationsList, observer) {
+    for (let mutation of mutationsList) {
+        if (mutation.type === 'childList') {
+            abObserver.disconnect();
+            var oneButtonTest = additionalButtons.querySelectorAll('div[data-shopify-buttoncontainer] > div').length;   
+            if (oneButtonTest > 0) {
+                var expanders = document.querySelectorAll('.checkout-expander a');
+                [].forEach.call(expanders, function(expander) {
+                    setTimeout(function() {
+                        var additionalwrap = expander.closest('.checkout-expander').parentElement.querySelector('#additional-checkout-buttons');
+                        var maxHeight = oneButtonTest * 62;
+                        additionalwrap.style.maxHeight = maxHeight + 'px';
+                        expander.removeEventListener('click', expand);
+                        expander.addEventListener('click', expand);
+                    },50);
+                });
+            } else {        
+                abObserver.observe(additionalButtons, {
+                    attributes: true,
+                    childList: true,
+                    subtree: true
+                });
+            }
         }
-        if (!window.Hammer) {
-            // add script
-            var script = document.createElement("script");
-            script.type = "text/javascript";
-            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/hammer.js/{{ settings.hammerjsversion }}/hammer.min.js';
-            document.getElementsByTagName("head")[0].appendChild(script);
-        }
-      if(!window.jQuery.fancybox) {
+    }
+};
+var abObserver = new MutationObserver(handleAB);
+abObserver.observe(additionalButtons, {
+    attributes: true,
+    childList: true,
+    subtree: true
+});
+
+function expand(e) {
+    var expanderWrap = e.currentTarget.closest('.checkout-expander');
+    var additionalwrap = expanderWrap.parentElement.querySelector('#additional-checkout-buttons');
+
+    if (expanderWrap.classList.contains('active')) {
+        expanderWrap.classList.remove('active');
+        additionalwrap.classList.add('inactive');
+    } else {
+        expanderWrap.classList.add('active');
+        additionalwrap.classList.remove('inactive');
+    }
+
+}
+{% endif %}
+ 
+// deal with updates and changes
+var selects =  document.querySelectorAll('.product-main-option');
+  [].forEach.call(selects, function(select) {
+
+select.addEventListener('focus', (event) => {
+  event.currentTarget.previousElementSibling.classList.add('outline');
+}, true);
+
+select.addEventListener('blur', (event) => {
+  event.currentTarget.previousElementSibling.classList.remove('outline'); 
+}, true);
+    
+select.addEventListener('change', (event) => {
+  event.currentTarget.nextElementSibling.classList.add('active');
+}, true);        
+})
+ 
+  
+ 
+  function defer{{ section.id }}(method{{ section.id }}) {
+    if (window.jQuery && $.mobile) {
+        method{{ section.id }}();
+    } else {
+        setTimeout(function() { defer{{ section.id }}(method{{ section.id }}) }, 4);
+    }
+}
+defer{{ section.id }}(function () {  
+// handle removes  
+var removeButtons = document.querySelectorAll('.remove-from-cart');
+[].forEach.call(removeButtons, function(removeButton) {
+
+removeButton.addEventListener('click', (event) => {
+  
+
+ $( ":mobile-pagecontainer" ).pagecontainer( "change", "/cart/change?line=" + event.currentTarget.closest('.item').getAttribute('line') + "&quantity=0", {  showLoadMsg: true, reload: true, transition: "fade", changeHash: "false", dataUrl: '/cart' });
+
+}, true);    
+}) 
+
+document.body.addEventListener("pagecontainerbeforeshow", function(event,ui) {
+  console.log('go');
+})
+
+$(document).one("pagecontainerbeforeshow", function(event, ui) {
+console.log('test');
+var currCartPage = ui.toPage[0];
+// handle quantity
+var quantityButtons = currCartPage.querySelectorAll('.quantity input[type="button"]');  
+[].forEach.call(quantityButtons, function(quantityButton) {  
+  quantityButton.removeEventListener('click', updateQuantity);  
+  quantityButton.addEventListener('click', updateQuantity);      
+});
+  
+function updateQuantity(e) {
+    e.preventDefault();
+    
+    var type = e.currentTarget.classList[0];
+    var input = e.currentTarget.parentElement.querySelector("input[type='text']");
+    var line = e.currentTarget.closest('.item').getAttribute('line');
+    var currentVal = parseInt(input.value);
+      if (type == 'minus') {
+           input.value = currentVal - 1;
+      } else if (type == 'plus') {
+            input.value = currentVal + 1;
+      }
+       $( ":mobile-pagecontainer" ).pagecontainer( "change", "/cart/change?line=" + line + "&quantity=" + input.value, {  showLoadMsg: true, reload: true, transition: "fade", changeHash: "false", dataUrl: '/cart' });
+  
+}
+  
+  
+// update variant option  
+var updateButtons =  currCartPage.querySelectorAll('.quantity-update-button');
+  [].forEach.call(updateButtons, function(updateButton) {  
+   updateButton.removeEventListener('click', updateVariant);  
+   updateButton.addEventListener('click', updateVariant);
+})  
+  
+function updateVariant(e) {
+  if(e.target.nodeName  == 'INPUT') { 
+  
+  var originItem = e.target.closest('.item');  
+  var originLine = originItem.getAttribute('line');
+  var originVariantId = originItem.getAttribute('data-variant-id');  
+  var originVariantQuantity = originItem.getAttribute('data-variant-quantity');
+  
+    
+  var productOptionSelect = originItem.querySelector('.product-main-option');  
+  var newVariantId = productOptionSelect.options[productOptionSelect.selectedIndex].value;
+
+    
+  // get current cart order
+  cartOrder = new Array();
+  
+  var cartItems =  currCartPage.querySelectorAll('#cart-wrap .item');
+  [].forEach.call(cartItems, function(cartItem) {  
+    cartObject = {variantId: cartItem.getAttribute('data-variant-id'), quantity: cartItem.getAttribute('data-variant-quantity')};
+    cartOrder.push(cartObject);
+  });
+    
+  // replace oldVariant in array
+  cartOrder[(originLine - 1)].variantId = newVariantId;
+    var updateString = '?';
+    cartOrder.reverse().forEach(function(oldCartItem, i) {
+      if(i !== 0) {
+       updateString += '&';  
+      }   
+      updateString += 'updates[' + oldCartItem.variantId + ']=' + oldCartItem.quantity;
+    }); 
+   
+  jQuery.ajax({
+                type: 'POST',
+                url: '/cart/clear.js',
+                async: false,
+                cache: false,
+                dataType: 'json',
+                success: function() {
+                   // create a url string for update 
+                 $( ":mobile-pagecontainer" ).pagecontainer( "change", "/cart/update" + updateString, {  showLoadMsg: true, reload: true, transition: "fade", changeHash: "false", dataUrl: '/cart' });
+                }
+   });  
+
+  }
+}   
+});    
+  
+});  
+  
+{% if section.settings.sharing %} 
+
+  
+ var callback{{ section.id }}Sharing = function(){
+  // Handler when the DOM is fully loaded
+   if(!window.ClipboardJS) {
+    var script = document.createElement("script");
+    script.type = "text/javascript";   
+    script.src = 'https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js';
+    document.getElementsByTagName("head")[0].appendChild(script);
+   }
+  if(!window.jQuery.fancybox) {
     // add script
     var script = document.createElement("script");
     script.type = "text/javascript";   
     script.src = 'https://cdnjs.cloudflare.com/ajax/libs/fancybox/{{ settings.fancybox3version }}/jquery.fancybox.min.js';
     document.getElementsByTagName("head")[0].appendChild(script);  
-
+    setTimeout(function() {
+ 
+    })
     // add style
     var style = document.createElement("link");
     style.type = "text/css";  
@@ -369,122 +534,295 @@
     style.href = 'https://cdnjs.cloudflare.com/ajax/libs/fancybox/{{ settings.fancybox3version }}/jquery.fancybox.min.css';
     document.getElementsByTagName("head")[0].appendChild(style); 
   }
-    };
+};
 
-    if (
-        document.readyState === "complete" ||
-        (document.readyState !== "loading" && !document.documentElement.doScroll)
-    ) {
-        callbackCart();
+if (
+    document.readyState === "complete" ||
+    (document.readyState !== "loading" && !document.documentElement.doScroll)
+) {
+  callback{{ section.id }}Sharing();
+} else {
+  document.addEventListener("DOMContentLoaded", callback{{ section.id }}Sharing);
+}
+    
+  
+function defer{{ section.id }}Sharing(method{{ section.id }}Sharing) {
+    if (window.ClipboardJS && window.jQuery.fancybox) {
+      method{{ section.id }}Sharing();
     } else {
-        document.addEventListener("DOMContentLoaded", callbackCart);
+      setTimeout(function() { defer{{ section.id }}Sharing(method{{ section.id }}Sharing) }, 4);
     }
+}
+defer{{ section.id }}Sharing(function () {  
 
-    function deferCart(methodCart) {
-        if (window.Swiper && window.jQuery && window.Hammer && window.jQuery.fancybox) {
-            methodCart();
-        } else {
-            setTimeout(function() {
-                deferCart(methodCart)
-            }, 50);
+  setTimeout(function() {
+    fancyboxSettings = {
+         touch: false,
+        afterLoad: function() {
+            $("html").addClass("fancybox-lock")
+        },
+        afterShow: function() {
+        //    openPopupBtn = document.activeElement, $(".fancybox-inner").attr("tabindex", 0).focus(), setTimeout((function() {
+          //      $.fancybox.update()
+          //  }), 200)
+         var copy = new ClipboardJS('.copy-button');
+        copy.on('success', function(event) {
+		  event.clearSelection();
+      $(event.trigger).find('.copy-text').html('COPIED');
+      window.setTimeout(function() {
+        $(event.trigger).find('.copy-text').html('COPY');
+      }, 2000);
+    });  
+        },
+        afterClose: function() {
+         //  $(openPopupBtn)[0] === $(".copy-cart-button")[0] && (openPopupBtn = $("#close-cart-focus")), $(openPopupBtn).attr("tabindex", 0).focus()
+           $("html").removeClass("fancybox-lock")
         }
-    }
-    deferCart(function() {
+    };  
 
-    });
-</script>
+var currCartPage = $.mobile.activePage[0];
+// handle quantity
+var shareCart = currCartPage.querySelector('#sharing a');  
+  shareCart.removeEventListener('click', openShare);  
+  shareCart.addEventListener('click', openShare);      
+   
+function openShare(e) {
+   e.preventDefault();
+   var conf = {};
+   $.extend(conf, fancyboxSettings, {src: '#sharing-popup'});
+   $.fancybox.open(conf);
+   return false;
+}
+  
 
-{% else %}
-<div class="row align-center">
-    <div class="large-6 medium-6 small-6 column text-center">
-        <div class="mascot">
-        </div>
-    </div>
-</div>
-<div class="row">
-    <div class="large-12 text-center column page-title">
-        <h1 class="gamma">Your Cart is empty</h1>
-        <h3 class="delta"><div>What are you waiting for?</div> <a href="/">Get started here</a></h3>
-    </div>
-</div>
+  });   
+   
+
+  
+  
+});
 {% endif %}
 
 
+</script>
+{% else %}
+
+
+<div class="empty text-center">
+<svg width="52pt" height="52pt" viewBox="0 0 52 52" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<g class="circle">
+<path fill="rgba(105, 105, 105, 0.4)" opacity="1.00" d=" M 24.26 0.00 L 27.30 0.00 C 40.22 0.47 51.44 11.64 52.00 24.55 L 52.00 27.09 C 51.69 33.10 49.31 38.94 45.31 43.44 C 44.38 36.32 44.00 29.12 42.82 22.03 C 42.57 19.12 39.19 19.32 37.05 19.30 C 29.39 19.47 21.71 19.11 14.05 19.46 C 11.60 19.32 10.99 22.02 10.82 23.92 C 9.99 31.03 9.31 38.15 8.49 45.26 C 3.54 40.66 0.43 34.20 0.00 27.45 L 0.00 24.42 C 0.63 11.70 11.56 0.75 24.26 0.00 Z"></path>
+<path fill="rgba(105, 105, 105, 0.4)" opacity="1.00" d=" M 16.91 24.84 C 17.94 23.81 19.03 22.84 20.17 21.95 C 23.14 24.24 21.69 28.14 22.72 31.24 C 24.31 34.59 29.66 34.61 31.26 31.27 C 32.32 28.13 30.84 24.15 33.93 21.87 C 34.87 22.66 35.77 23.50 36.64 24.37 C 34.82 28.64 34.95 34.88 29.64 36.53 C 24.02 38.76 18.31 33.36 18.87 27.67 C 18.22 26.72 17.57 25.78 16.91 24.84 Z"></path>
+</g>
+<g class="bag">
+<path opacity="1.00" d=" M 10.82 23.92 C 10.99 22.02 11.60 19.32 14.05 19.46 C 21.71 19.11 29.39 19.47 37.05 19.30 C 39.19 19.32 42.57 19.12 42.82 22.03 C 44.00 29.12 44.38 36.32 45.31 43.44 C 40.76 48.45 34.27 51.51 27.53 52.00 L 24.77 52.00 C 18.78 51.65 12.98 49.25 8.49 45.26 C 9.31 38.15 9.99 31.03 10.82 23.92 M 16.91 24.84 C 17.57 25.78 18.22 26.72 18.87 27.67 C 18.31 33.36 24.02 38.76 29.64 36.53 C 34.95 34.88 34.82 28.64 36.64 24.37 C 35.77 23.50 34.87 22.66 33.93 21.87 C 30.84 24.15 32.32 28.13 31.26 31.27 C 29.66 34.61 24.31 34.59 22.72 31.24 C 21.69 28.14 23.14 24.24 20.17 21.95 C 19.03 22.84 17.94 23.81 16.91 24.84 Z"></path>
+</g>
+</svg>
+      <br>
+      <a href="/collections/all">- Your shopping cart is empty. Click here to start shopping! -</a>
+</div>
+
+
+{% endif %}
     
+
+{% if section.settings.collection %}
+{% assign products_per = section.settings.products_per | plus: 0 %}  
+<div class="carousel">  
+  <h2 class="text-center">{{ section.settings.collection_title }}</h2> 
+<div class="swiper-button-prev"></div>   
+<div class="swiper-container">
+ <ul class="swiper-wrapper">
+   {% for product in collections[section.settings.collection].products %}
+   <li itemscope itemtype="http://schema.org/Product" data-id="{{ product.id }}" class="text-center product swiper-slide {% unless product.available %} sold-out{% endunless %}{% if on_sale %} on-sale {% endif %}">
+     <a href="{{ product.url | within: collection }}" {% if settings.disableproductajax %}rel="external"{% endif %}>
+       
+        <div class="image {% if settings.product_image_hover != 'none' and settings.product_image_size != 'none' and product.images.size > 1  %} imgswitch {% case settings.product_image_hover %}{% when 'fade' %}fade{% when 'scroll' %}scroll{% endcase %}{% endif %}">
+         <div class="inner">
+         {% if product.featured_image %}<img class="{% unless settings.product_image_hover != 'none' and settings.product_image_size != 'none' and product.images.size > 1  %}hvr-grow{% endunless %} lazyload" data-sizes="auto" data-src="{{ product.featured_image | img_url: '1024x1024' }}" />{% endif %}
+         </div>
+         {% if settings.product_image_hover != 'none' and settings.product_image_size != 'none' and product.images.size > 1  %}
+         <div class="inner">
+            <img class="lazyload" data-sizes="auto" data-src="{{ product.images[1] | product_img_url: 'large' }}" />
+         </div>
+         {% endif %}
+       </div>
+       
+        <h3><span>{{ product.title }}</span></h3>
+
+        <p class="h1 medium-down--left">
+          {% if product.price_max > product.price %}
+           <span class="currPrice">{% include 'price' with product.price_min %}</span> {% if on_sale %}<span class="oldPrice"> {{ product.compare_at_price | money }} </span>{% endif %}
+        {% else %}
+           <span class="currPrice">{% include 'price' with product.price %}</span>   {% if on_sale %}<span class="oldPrice"> {{ product.compare_at_price | money }}</span> {% endif %}
+        {% endif %}
+        {% unless product.available %}
+          <span class="product-price__sold-out">{{ 'products.product.sold_out' | t }}</span>
+        {% endunless %}  
+       </p>
+       
+          {% if on_sale %}
+          <div class="salew">
+            <span class="sale-tag medium-down--right{% if settings.product_reviews_enable %} has-reviews{% endif %}">
+              {% assign compare_price = product.compare_at_price %}
+              {% assign product_price = product.price %}
+              {% include 'price-sale' %}
+            </span>
+         </div>
+          {% endif %}
+         
+        {% if section.settings.desc %}
+         <div class="desc">
+           {{ product.description | truncate: 300, ", ..." }}
+         </div>
+         {% endif %}       
+       
+     </a>
+      <a href="{{ product.url }}" class="buynow" {% if settings.disableproductajax %}rel="external"{% endif %}>{{ buynowtext }}</a>
+   </li>
+   {% endfor %}
+ </ul>
+</div>
+<div class="swiper-button-next"></div>   
+</div>
+
+<script>
+  var callback{{ section.id | replace: '-', '_' }}Upsell = function(){
+  // Handler when the DOM is fully loaded
+  if(!window.Swiper) {
+    // add script
+    var script = document.createElement("script");
+    script.type = "text/javascript";   
+    script.src = 'https://cdn.jsdelivr.net/npm/swiper@{{ settings.swiperjsversion }}/js/swiper.min.js';
+    document.getElementsByTagName("head")[0].appendChild(script);
+    // add style
+    var style = document.createElement("link");
+    style.type = "text/css";  
+    style.rel = "stylesheet";
+    style.href = 'https://cdn.jsdelivr.net/npm/swiper@{{ settings.swiperjsversion }}/css/swiper.min.css';
+    document.getElementsByTagName("head")[0].appendChild(style);
+  }
+};
+
+if (
+    document.readyState === "complete" ||
+    (document.readyState !== "loading" && !document.documentElement.doScroll)
+) {
+  callback{{ section.id | replace: '-', '_' }}Upsell();
+} else {
+  document.addEventListener("DOMContentLoaded", callback{{ section.id | replace: '-', '_' }}Upsell);
+}
+
+  
+function defer{{ section.id }}(method{{ section.id }}) {
+    if (window.jQuery && $.mobile) {
+        method{{ section.id }}();
+    } else {
+        setTimeout(function() { defer{{ section.id }}(method{{ section.id }}) }, 4);
+    }
+}
+defer{{ section.id }}(function () {    
+  $(document).one("pagecontainerbeforeshow", function(event, ui) {
+  
+  
+  var currCartPage = ui.toPage[0];
+
+function defer{{ section.id | replace: '-', '_' }}Upsell(method{{ section.id | replace: '-', '_' }}Upsell) {
+    if (window.Swiper) {
+        method{{ section.id | replace: '-', '_' }}Upsell();
+    } else {
+        setTimeout(function() { defer{{ section.id | replace: '-', '_' }}Upsell(method{{ section.id | replace: '-', '_' }}Upsell) }, 4);
+    }
+}
+defer{{ section.id | replace: '-', '_' }}Upsell(function () {  
+  
+
+
+   
+      var container = currCartPage.querySelector('.swiper-container');        
+                                                                                
+                                              
+      var swiper = new Swiper((container), {         
+      effect: 'slide',  
+      speed: 1200,
+  {% if products_per == 2 %}
+      slidesPerView: 2,
+  {% elsif products_per == 3 %}      
+      slidesPerView: 3, 
+  {% elsif products_per == 4 %}      
+      slidesPerView: 4, 
+    {% elsif products_per >= 5 %}      
+      slidesPerView: 5,  
+  {% endif %}
+      spaceBetween: 10,
+      loop: true,    
+      direction: 'horizontal',
+      navigation: {
+        nextEl: document.getElementById('shopify-section-{{ section.id }}').querySelector('.swiper-button-next'),
+        prevEl: document.getElementById('shopify-section-{{ section.id }}').querySelector('.swiper-button-prev'),
+      },
+  breakpoints: {
+    1301: {
+  {% if products_per == 2 %}
+      slidesPerView: 2,
+  {% elsif products_per == 3 %}      
+      slidesPerView: 3, 
+  {% elsif products_per == 4 %}      
+      slidesPerView: 4, 
+    {% elsif products_per >= 5 %}      
+      slidesPerView: 5,  
+  {% endif %}
+    },    
+    1300: {                                      
+  {% if products_per == 2 %}
+      slidesPerView: 2,
+  {% elsif products_per == 3 %}      
+      slidesPerView: 2, 
+  {% elsif products_per == 4 %}      
+      slidesPerView: 3, 
+    {% elsif products_per >= 5 %}      
+      slidesPerView: 4,  
+  {% endif %}                                        
+     
+    },                                        
+    1100: {
+  {% if products_per == 2 %}
+      slidesPerView: 2,
+  {% elsif products_per == 3 %}      
+      slidesPerView: 2, 
+  {% elsif products_per == 4 %}      
+      slidesPerView: 3, 
+    {% elsif products_per >= 5 %}      
+      slidesPerView: 3,  
+  {% endif %}         
+      spaceBetween: 2,
+    },
+    480: {
+      slidesPerView: 2,
+    },
+    320: {
+      slidesPerView: 2,
+    },
+  }
+      });   
+
+});     
+      
+    });
+});      
+</script>
+{% endif %}
+
 
 {% schema %}
   {
     "name": "Cart",
-    "settings": [
-{
-"type":"header",
-"content":"Colors"
-},
-{
-       "id": "checkoutbackground",
-       "type": "color",
-       "label": "Checkout Button Background",
-       "default": "#299F3D"
-},
-{
-       "id": "checkoutcolor",
-       "type": "color",
-       "label": "Checkout Button Color",
-       "default": "#FFFFFF"
-},
-{
-       "id": "totalcolor",
-       "type": "color",
-       "label": "Price Total Color",
-       "default": "#299F3D"
-},
-{
-   "type":      "header",
-   "content":   "Brand Name / Brand Logo"
-},      
-{
-       "id": "brandname",
-       "type": "text",
-       "label": "Brand Name"
+    "settings": [      {
+        "id": "sharing",
+        "default": true,
+        "label": "Enable Share Your Cart",
+        "type": "checkbox"
       },
- {
-     "type": "font_picker",
-     "id": "font",
-     "label": "Font",
-     "default": "work_sans_n6"
-   },
-      {
-       "id": "brand_logo",
-       "type": "image_picker",
-       "label": "Brand Logo"
-      },
-      {
-       "id": "brand_logo_svg",
-       "type": "html",
-       "label": "Brand Logo SVG (Optional)"
-      },
-{
-"type":"header",
-"content":"Additional Messaging"
-},
-{
-"type": "text",
-"id": "message",
-"label": "Welcome Message",
-"default": "Your day is about to get better"
-},
-{
-   "type":      "radio",
-   "id":        "reserve",
-   "label":     "Show Cart Reserved for 10 mins",
-   "options": [
-     { "value": "off", "label": "Don't Show" },
-     { "value": "1", "label": "1 min" },
-     { "value": "3", "label": "3 mins" },
-     { "value": "5", "label": "5 mins" }
-   ],
-   "default":   "off"
-},
 {
   "id": "terms",
   "default": false,
@@ -500,82 +838,38 @@
    "type": "checkbox"
 },
 {
-"type":"header",
-"content":"Upsell Settings"
+   "type":      "header",
+   "content":   "Upsell"
 },
 {
-        "id": "frequently-bought-title",
-        "type": "text",
-        "label": "Title",
-"default": "Frequently bought together"
+       "id": "collection_title",
+       "type": "text",
+       "label": "Collection Title",
+       "default": "Suggested Add-ons"
 },
 {
-"type":"header",
-"content":"Advanced Abandoned Cart (Klaviyo Only)"
+       "id": "collection",
+       "type": "collection",
+       "label": "Collection"
 },
 {
-        "id": "advanced_klaviyo_list",
-        "type": "text",
-        "label": "Klaviyo List Id (ex: m4stTTd)"
-      },
-      {
-        "type": "color",
-        "id": "advanced_background_color",
-        "label": "Background Color",
-        "default": "#B350B4"
-      },
-      {
-        "type": "color",
-        "id": "advanced_button_color",
-        "label": "Button Color",
-        "default": "#3ACE9A"
-      },
-      {
-        "id": "advanced-header",
-        "type": "text",
-        "label": "Header",
-"default": "Unlock Your Discount"
-      },
-     {
-        "id": "advanced-discount",
-        "type": "text",
-        "label": "Discount Code"
-      },
-{
- "type": "header",
- "content": "Additional Custom CSS"
-},
-{
-        "id": "css",
-        "type": "html",
-        "label": "Custom CSS"
+   "type": "select",
+   "id": "products_per",
+   "options": [
+      { "value": "2", "label": "2 Products"},
+      { "value": "3", "label": "3 Products"},
+      { "value": "4", "label": "4 Products"},
+      { "value": "5", "label": "5 Products"}
+   ],
+   "default": "4",
+   "label": "Show how many at a time?"
 }], 
-  "blocks": [
-    {
-     "type": "Upsell",
-     "name": "Upsell",
-     "settings" : [
-      {
-       "id": "upsell_info",
-       "type": "product",
-       "label": "Upsell"
-      },
-      {
-       "id": "upsell_details",
-       "type": "textarea",
-       "label": "Small Description"
-      }
-     ]
-    }
-   ]
+  "blocks": []
   }
 {% endschema %}
 
 {% stylesheet 'scss' %}
 
-
-
-// responsive sizes
 @mixin bp($point) {
   
   $bp-small: "(max-width: 350px)";
@@ -626,456 +920,347 @@
 }
 
 
-@mixin keyframes($animationName) {
-  @-webkit-keyframes #{$animationName} {
-    @content;
-  }
-  @-moz-keyframes #{$animationName} {
-    @content;
-  }
-  @-o-keyframes #{$animationName} {
-    @content;
-  }
-  @keyframes #{$animationName} {
-    @content;
-  }
+@font-face {
+	font-family: 'Proxima Nova';
+	src: url("https://cdn.jsdelivr.net/gh/phillypro/Theme/fonts/ProximaNova-Bold.eot");
+	src: url("https://cdn.jsdelivr.net/gh/phillypro/Theme/fonts/ProximaNova-Bold.eot?#iefix") format("embedded-opentype"), url("https://cdn.jsdelivr.net/gh/phillypro/Theme/fonts/ProximaNova-Bold.woff2") format("woff2"), url("https://cdn.jsdelivr.net/gh/phillypro/Theme/fonts/ProximaNova-Bold.woff") format("woff"), url("https://cdn.jsdelivr.net/gh/phillypro/Theme/fonts/ProximaNova-Bold.ttf") format("truetype");
+	font-weight: bold;
+	font-style: normal;
+   font-display: swap;
 }
-@mixin animate($name, $duration, $iteration, $direction) {
-  -webkit-animation-duration: $duration;
-     -moz-animation-duration: $duration;
-       -o-animation-duration: $duration;
-          animation-duration: $duration;
-  -webkit-animation-iteration-count: $iteration;
-     -moz-animation-iteration-count: $iteration;
-       -o-animation-iteration-count: $iteration;
-          animation-iteration-count: $iteration;
-  -webkit-animation-name: $name;
-     -moz-animation-name: $name;
-       -o-animation-name: $name;
-          animation-name: $name;
-  -webkit-animation-direction: $direction;
-     -moz-animation-direction: $direction;
-       -o-animation-direction: $direction;
-          animation-direction: $direction;
+
+@font-face {
+	font-family: 'Proxima Nova';
+	src: url("https://cdn.jsdelivr.net/gh/phillypro/Theme/fonts/ProximaNova-Regular.eot");
+	src: url("https://cdn.jsdelivr.net/gh/phillypro/Theme/fonts/ProximaNova-Regular.eot?#iefix") format("embedded-opentype"), url("https://cdn.jsdelivr.net/gh/phillypro/Theme/fonts/ProximaNova-Regular.woff2") format("woff2"), url("https://cdn.jsdelivr.net/gh/phillypro/Theme/fonts/ProximaNova-Regular.woff") format("woff"), url("https://cdn.jsdelivr.net/gh/phillypro/Theme/fonts/ProximaNova-Regular.ttf") format("truetype");
+	font-weight: 600;
+	font-style: normal;
+   font-display: swap;
+}
+
+@font-face {
+	font-family: 'Proxima Nova';
+	src: url("https://cdn.jsdelivr.net/gh/phillypro/Theme/fonts/ProximaNova-Regular.eot");
+	src: url("https://cdn.jsdelivr.net/gh/phillypro/Theme/fonts/ProximaNova-Regular.eot?#iefix") format("embedded-opentype"), url("https://cdn.jsdelivr.net/gh/phillypro/Theme/fonts/ProximaNova-Regular.woff2") format("woff2"), url("https://cdn.jsdelivr.net/gh/phillypro/Theme/fonts/ProximaNova-Regular.woff") format("woff"), url("https://cdn.jsdelivr.net/gh/phillypro/Theme/fonts/ProximaNova-Regular.ttf") format("truetype");
+	font-weight: normal;
+	font-style: normal;
+   font-display: swap;   
 }
 
 
-/* Cart Page/Panel  ----------------------------------------------------------------------------------------------------------------------------*/
 
-
-
-@include keyframes(controls) {
-  0% {
-   transform: translateX(-50%);
-  }
-  100% {
-   transform: translateX(0%);
-  }
-}
-@mixin controls {
-  @include animate(controls, 0.3s, 1, normal);
-}
-
-
-body.cart header {
-
-  display:none;
-}
-
-#cart[data-role='page'] {
-padding-top:0 !important;
-}
-
-#cart[data-role='page'] .footer {
-    display: none;
-}
-
-#cart[data-role='page'] .row {
-       max-width: 71.5rem;
-}
-
-#cart[data-role='page'] {
-
-}
-#cart[data-role='page'] .mascot {
-
-
-          margin-top: 40px; 
+#cart-wrap {
+  font-family: 'Proxima Nova', -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",Arial,sans-serif;
+    letter-spacing: 0.08em;
+margin: 40px auto 20px auto;
+ & > h1 {
+   font-family: 'Proxima Nova', -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",Arial,sans-serif;
+   text-transform: uppercase;
+    font-weight: normal;
+       margin-bottom: 10px;
+ }
+ & input, & textarea {
+    font-family: 'Proxima Nova', -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",Arial,sans-serif;
+ }
+ & .buttons-wrapper {
+       margin-bottom: 25px;
+   & .flex-container {
+        text-align: center;
+        flex-direction: column;
+        justify-content: space-around;
      
-   & .a2, & .a {
-    fill: rgba(58, 58, 58, 0.19);
-    opacity: 1 !important;
-   }
-}
-
-
-.template-cart {
-  &.animate {
-    & .product-cart-wrap {
-      transform: translateX(-50%);
-     @include controls;
-     animation-fill-mode: forwards; 
-     @for $i from 1 to 10 {
-       &:nth-child(#{$i}) {
-        -webkit-animation-delay:(#{$i* 200ms + 300}); 
-        animation-delay:(#{$i* 200ms + 300}); 
-       }
-      }
     }
   }
-  & .cart-header {
-        padding: 15px 0 25px;
-    & > .row:nth-child(1) {
-      & .columns:nth-child(1) {
-         text-align:center;
-         padding:0 15px;
-            flex: unset;  
-         & a {
-          &:before {
+div[data-shopify-buttoncontainer] {
+margin: 0 !important;
+justify-content: space-between;
+align-items: center;
 
-        font-family: FontAwesome;
-    content: '\f104';
-    display: inline-block;
-    font-size: 100%;
-    vertical-align: top;
-    width: 13px;
-    color: rgba(0, 0, 0, 0.14);
-    line-height: 17px;
-    margin-right: 3px;
-             display:none;
-          }
-     	 & svg, & img {
-      		max-width: 177px;
-      	    height:auto;
-              max-width: 45px;
-           & path {
-           }
-    	  }
-         }
-      }
-      & .columns:nth-child(2) {
-     
-
-              margin: 0; 
-              padding: 0 10px;
-              text-align: right;
-
-        & a {
-        	display:none;
-
-          	 display:block;
-
-          & svg {
-          	 max-width: 30px;
-             height: auto;
-          }
-        }
-        & h2 {
-        font-family: 'Open Sans';      
-             font-size: 17px;
-                opacity: 0.2;
-                margin: 0;
-            line-height: 1;
-   
-        }
-        & span {
-            font-family: 'Open Sans', sans-serif;
-  			color: rgba(0, 0, 0, 0.37);
-            font-size: 15px; 
-            	display:none;
-        }
-      } 
-    }
-  }
-    & form {
-    padding-bottom: 135px;
-    & > .row {
-      & > .columns:nth-child(1) {
-      	padding:0;
-      }
-    }
+  & > div {
+     display: inline-block;
+     margin-top: 8px !important;
+     margin-right: 0 !important;
+     margin-left: 0 !important;
+    -webkit-flex-basis: unset !important; 
+    -ms-flex-preferred-size: unset !important;
+    flex-basis: unset !important;
+     max-width:100% !Important;
+      width: 100% !Important;
   }
 }
-
-/* product wrap */
-
-.product-cart-wrap {
-  display:flex;
-   position:relative;
-    font-weight: 600;
-    font-family: 'Open Sans', sans-serif;
-    
-
-     margin-bottom: 0px;
-     box-shadow: none;
-    -webkit-box-shadow: none;  
-         font-size: 14px;
-         padding: 0px 0;
-
-  &.is-animating {
--webkit-transition: transform 0.2s linear;
--moz-transition:  transform 0.2s linear;
--o-transition:  transform 0.2s linear;
-transition:  transform 0.2s linear;
-  }
-    & .quantity-display {
-      padding: 8px 5px;
-      width: 9%;
-      text-align: center;
+  .checkout-button {
+    input {
+    width: 100%;
+    font-size: 14px;   
+          padding: 12px 45px;
+    height: 42px;
+    @include bp(mobile) {
+    height: 54px;
     }
-    & .thumbnail-wrap {
-      width: 15%;
-      max-width: 15%;
-      background-size:cover;
-      position: relative;
-    height: 0;
-    padding-bottom: 12%;
+      
+    }
+  }
+  #additional-checkout-buttons {
     overflow: hidden;
-
-      	display:none;
-
-    } 
-    & .product-title-wrap {
-  
-      position:relative;
-      display: flex;
-      flex-direction: column;
-
-         width: 80%;
-         max-width: 80%;
-        justify-content: unset;
-            padding: 8px 5px;
-
-      &:before {
-          content: '';
+    @include transition(max-height,0.3s);
+    &.inactive {
+       max-height: 0px !important;
+      
+    }
+  }
+  .checkout-expander {
+    margin: 20px auto 0;
+      .less {
+       display:none;
+      }
+    &.active {
+      .more {
+       display:none;
+      }
+      .less {
+       display:inline-block;
+      }
+    }
+    a {
+     font-weight:normal;
+     font-size: 14px;
+    }
+  }
+  .continue-button {
+    align-self: center;
+     display:none;
+    & a {
+     font-weight: 400;
+     font-size: 13px;
+    }
+    &.mobile {
+     text-align:center;
+        margin-top: 25px;
+       display:block;
+      
+    }
+  }
+  th {
+    background: #ffffff;
+    padding: 7px 0;
+    letter-spacing: 0.15em;
+    font-weight: 700;
+    color: #000000;
+    font-size: 11px;
+    text-transform: uppercase;
+    &.text-left {
+    	padding-left: 25px;
+    }
+  }
+  tfoot td {
+    text-align: right;
+    padding: 14px 0px 5px 14px;
+    font-size: 15px;
+    letter-spacing: 1.04px;
+        background:none;
+    
+  }
+  .item {
+    position: relative;
+    background: #f6f6f6;
+    border-top: 1px solid rgba(0,0,0,0);
+    &:nth-child(even) {
+      background: #ffffff;
+      }
+    img {
     display: block;
-    height: 100%;
-    width: 25px;
-    position: absolute;
-    left: -10px;
-    top: 0px;
-    background: #fff;
-    z-index: 4;
-    overflow: hidden;
-    border-radius: 360px;
-  
-        	display:none;
-     
-      }
-      & a {
-          font-weight:600;
-        & span {
-            display: block;
-   			font-size: 90%;
-  			color: rgba(0, 0, 0, 0.18);
- 			margin-top: 4px;
-        }
-      }
+          padding:5px;
+          max-width: 80px;
     }
-    & .quantity-wrap {
-      display:flex;
-      flex-grow: 1;
-      justify-content: center;
+  }
+  .details {
 
-         order: 3;
-         position: absolute;
-         width: 50%;
-        right:0px;
-        top: 0px;
-        height: 100%;
-        background: #00CC99;
-        align-items: stretch; 
-        transform: translateX(100%);
-        -webkit-transform: translateX(100%);
-      
-      & > div {
-        display:flex;
-        align-items: center;
-        justify-content: center;
-        padding: 0 20px;  
-      & input {
-            width: 60px;
-            margin: 0;
-       
-             background: none;
-   			 border: 1px solid rgba(255, 255, 255, 0.39);
-    		 color: #fff;
-   			 font-size: 139%;
-            text-align: center;
+
+      width: 90%;
     
-       } 
-      }
-      & .remove {
-      
-        	    flex-grow: 1;
-    background: #d6434b;
-    color: #fff;
-    font-size: 25px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-          cursor:pointer;
-        
-        &:before {
-            content: 'Remove';
-            font-size: 11px;
-            display:inline-block;
-        }
-      }
-    }
-    & .price-wrap {
-      display:flex;
-      flex-grow: 1;
-      justify-content: center;
-      font-weight: 600;
-      font-size: 20px;
-  
-    align-items: unset;
-    font-size: 100%;
-    padding: 0px 0px 0 10px;
-    align-self: normal;
-
-
-      & > span {
-        display: flex;
-        & span {
-      
-              padding: 8px 0;
-     
-        }
-        & > div {
-     
-              align-items: center;
-    display: flex;
-    background: #f5f5f5;
-    margin-left: 13px;
-        & svg {
-     max-width: 18px;
-    height: auto;
-    margin: 0px 3px 0 3px;
-          & path {
-              fill: rgba(0, 0, 0, 0.27);
-          }
-        }
-        }
-      }
-      & sup {
-      	  font-size: 63%;
-          margin-left: 2px;
-      }
-    }
-   &.open {
-   
-        transform: translateX(-50%);
-        -webkit-transform: translateX(-50%);
-     
-   }
-}
-
-.cart-totals {
-  font-family: 'Open Sans',sans-serif;
-
-      margin-top: 0px;
-    padding-bottom: 50px ;
-  
-  & ul {
-  margin:0;
-  list-style:none;
-    & li, & .shopify-section li {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    color: rgba(0, 0, 0, 0.26); 
-    padding: 10px 0px 10px; 
-    font-weight: bold;   
-    line-height: 1;  
- 
-        font-size: 14px; 
-      
-      &.top, &:last-of-type:not(.top) {
-
- 
-            padding: 15px 0px 15px;
-    margin: 5px 0px;
-          font-size: 95%;
-        
-       & h2 {
-         font-weight: bold;
-         color:#000;
-         font-size: 100%;
-       }
-       & a {
-        color: #00CC99;
-        text-transform: uppercase;
-        font-weight: bold;
-         font-size: 100%;
-       }
-       & span {
-   
-      font-weight: 600; 
-    line-height: 1;
-         font-weight: bold;
-      
-              font-size: 100%;
-               
-               color: #000000;
-          
-         &#sezzle-price {
-          display:none;
-         }
-        }
-      }
-      &:nth-child(1) {
-      border-bottom: 1px solid rgba(0, 0, 0, 0.11);
-      }
-      &:last-of-type:not(.top) {
-      border-top: 1px solid rgba(0, 0, 0, 0.11);
-      }
-      & h2 {
-    font-size: 110%;
-    line-height: 1;
-    margin: 0;
-    font-weight: 600;
-    color: rgba(0, 0, 0, 0.26);     
-      }
-      & > span {
-         color: #000;  
-        & > span {
-            text-decoration: line-through;
-               color: rgba(0, 0, 0, 0.26);
-               margin-right:15px;
-        }
-      }
+  }
+  .image {
+  	width: 30%;
+  }
+  .title {
+   width:70%;
+   letter-spacing: 0.05em;
+         padding: 10px 5px;
+    & p {
+      margin: 0;
+      display: inline-block;
+      font-size: 13px;
     }
   }
-& .cart-reserve {
-text-align:right;
-margin: 0 0 25px 0;
-  & > div:nth-child(1) {
-      font-size: 15px;
-  }
-  & > div:nth-child(2) {
-      background: #FEF4D0;
-    border: 1px solid #EBD29A;
-    font-weight: bold;
+  .total-price {
     font-size: 14px;
-    text-align: center;
-    display: inline-block;
-    padding: 10px 25px;
+  }
+  #sharing {
     margin-top: 5px;
+    margin-left: 5px;
+    text-align: left;
+    .share-icon {
+    background-repeat: no-repeat;
+    background-size: 18px 20px;
+    background-position: center 0;
+    padding-top: 22px;
+    font-size: 12px;
+    width: auto;
+    min-width: 18px;
+    height: auto;
+    color: #2D2D2D;
+    display: inline-block;
+    letter-spacing: 1.4px;
+    margin-top: 30px;  
+       font-weight: 400;   
+   }
   }
 }
-& .agbwrap {
-      text-align:right;
-    margin: 0 0 25px;
-        
-              text-align: center;
-          
-        & label {
-      align-items: center;
+.wrap {
+  & .cart-page {
+    display: inline-flex;
+    align-items: center;
+        margin: 20px 0 0 8px;
+
+  }
+  & .plus, & .minus {
+    background: white;
+    border: 1px solid #c3c3c3;
+    border-radius: 100%;
+    margin: 0px 10px;
+    padding: 0px 0 0px 0;
+    height: 23px;
+    width: 23px;
+    font-size: 17px;
+    line-height: 0px;
+    position: relative;
+    cursor:pointer;
+    &:focus {
+     outline:none;
+    }
+  }
+  & .theSideCartQuantity {
+    background-color: inherit;
+    width: 12px;
+    border: none;
+    padding: 0px;
+    text-align: center;
+    position: relative;
+    font-size: 13px;
+  }
+ & .theCartPageQuantity {
+    background-color: inherit;
+    width: 12px;
+    height: auto;
+    border: none;
+    padding: 0px;
+    margin: 0;
+    text-align: center;
+    position: relative;
+    line-height: normal;
+    outline: none;
+    border: none;
+    box-shadow: none;
+   font-size: 13px;
+  }
+  & .cart-price {
+    font-weight: 400;
+    position: relative;
+    margin: 10px 0 0 20px;
+    vertical-align: middle;
+        font-size: 21px;
+        display: block;
+
+    
+  }
+  & .cart-main-option-ddl {
+  position: relative;
+
+        margin-top: 10px;
+    
+  }
+  .main-option-title {
+    position: absolute;
+    top: 0;
+    margin-top: 0;
+    outline:none;
+
+        width: 60px;
+    
+    &.outline {
+     outline:red solid 2px;
+    }
+  }
+  .product-main-option {
+    position: relative;
+    opacity: 0;
+    filter: alpha(opacity=0);
+    display: inline-block;
+
+        width:60px;
+    
+  }
+  select {
+     font-family: 'Proxima Nova', -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",Arial,sans-serif;
+    font-size: 12px;
+    display: block;
+    background-color:#fff;
+    background-repeat:no-repeat;
+    background-position:96% center;
+    background-size: auto 50%;
+    box-sizing: border-box;
+    border: 1px solid #eee;
+    min-width: 1px;
+    color: #000000;
+    box-shadow: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    line-height:normal;
+
+        padding: 4px 5px;
+  
+  } 
+  .quantity-update-button {
+    border: 1px solid #c3c3c3;
+    color: #c3c3c3;
+    padding: 4px 8px;
+    text-decoration: underline;
+    display: inline-block;
+    line-height: normal;
+    position: absolute;
+
+    text-transform:uppercase;
+
+    border-radius: unset;
+        cursor: default;
+
+    left: 64px;
+    font-size: 11px;
+    
+    &:focus {
+     outline:none;
+    }
+    &.active {
+    color:black;
+          cursor: pointer;
+    }
+  }
+}
+
+
+.agbwrap {
+    text-align:right;
+    margin: 0px 0 0px;
+    padding: 25px 0 25px;
+      text-align: center;
+    label.ag {
+    align-items: center;
     display: flex;
-	line-height: 40px;
-	& input {
+    line-height: 40px;
+    max-width: 400px;
+    margin: 0 0 0 auto;
+	input {
 		-webkit-appearance: none;
 		-moz-appearance: none;
 		-ms-appearance: none;
@@ -1096,7 +1281,6 @@ margin: 0 0 25px 0;
 		outline: none;
 		position: relative;
 		z-index: 1000;
-    
             margin: 0 0 0 0;
                   -webkit-animation: pulse2 2s ease-out 0s infinite;    
              animation: pulse2 2s ease-out 0s infinite;   
@@ -1105,22 +1289,23 @@ margin: 0 0 25px 0;
 			background: #9faab7;
 		}
 		&:checked {
-          
+                background:#000;
                   -webkit-animation: none; 
             -webkit-animation: none; 
-      
 			&::before {
 				height: 40px;
 				width: 40px;
 				position: absolute;
-                font-family:'FontAwesome';
-				content: '\f00c';
-				display: inline-block;
-				font-size: 26.66667px;
-				text-align: center;
+				content: '';         
+background-image: url("data:image/svg+xml,%3Csvg aria-hidden='true' focusable='false' data-prefix='fas' data-icon='check' role='img' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' class='svg-inline--fa fa-check fa-w-16 fa-2x'%3E%3Cpath fill='%23ffffff' d='M173.898 439.404l-166.4-166.4c-9.997-9.997-9.997-26.206 0-36.204l36.203-36.204c9.997-9.998 26.207-9.998 36.204 0L192 312.69 432.095 72.596c9.997-9.997 26.207-9.997 36.204 0l36.203 36.204c9.997 9.997 9.997 26.206 0 36.204l-294.4 294.401c-9.998 9.997-26.207 9.997-36.204-.001z' class=''%3E%3C/path%3E%3C/svg%3E");				display: inline-block;
+				background-size: 70% 70%;
+    background-repeat: no-repeat;
+    background-position: center;
+              text-align: center;
 				line-height: 40px;
 			}
 			&::after {
+                background:#000;
 				-webkit-animation: click-wave 0.65s;
 				-moz-animation: click-wave 0.65s;
 				animation: click-wave 0.65s;
@@ -1132,413 +1317,166 @@ margin: 0 0 25px 0;
 		}
 	}
 }   
-& #notchecked {
+#notchecked {
     margin-top: 20px;
     display: none;
     color: red;
     text-align: right;
+    font-size: 12px;
 }
-        & .agburl {
-    font-size: 15px;
+.agburl {
     display: inline;
     line-height: 1.2;
     text-align: right;
     margin-right: 20px;
-          flex: 1;
-     
-     }
-    }
-   & label[for="CartNote"] {
-    text-align:right;
-  }
-  & > div {
-    margin-top: 20px;
-    text-align:right;
-
-    	display:none;
-    
-    & input[type=submit] {
-    font-family: 'Open Sans',sans-serif;
-    cursor:pointer;
-    border: none;
-      font-size: 18px;    
-    font-weight: bold;
-    padding: 20px 40px;
-       min-width: 75%;   
-    }
-  }
-}
-    @keyframes pulse2{
-        0% {
-          transform: scale(1);
-              background: #9faab7;
-        }
-        50% {
-        transform: scale(1.2);
-           background: rgba(64, 224, 208, 0.48);
-        }
-        100% {
-        transform: scale(1);
-              background: #9faab7;
-        }
-      }
-
-
-
-/* frequently bought */
-
-.frequently-bought-wrap {
-      margin-top: 10px;
-  position:relative;
-  background:#FAFAFA;
-  padding: 10px 0px;  
-  
-  & > h2 {
-
-    font-family: 'Open Sans',sans-serif;
-    font-weight: 600;
-        padding: 0 20px;
-         font-size: 14px;
-           margin: 5px 0;
-
-    & span {
-/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#325dc2+0,1c96a2+100 */
-background: rgb(50,93,194); /* Old browsers */
-background: -moz-linear-gradient(left, rgba(50,93,194,1) 0%, rgba(28,150,162,1) 100%); /* FF3.6-15 */
-background: -webkit-linear-gradient(left, rgba(50,93,194,1) 0%,rgba(28,150,162,1) 100%); /* Chrome10-25,Safari5.1-6 */
-background: linear-gradient(to right, rgba(50,93,194,1) 0%,rgba(28,150,162,1) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#325dc2', endColorstr='#1c96a2',GradientType=1 ); /* IE6-9 */
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-          font-family: 'Open Sans';
-    text-transform: uppercase;
-    display: block;
-    font-size: 130%;
-    }
-  }
-  & .swiper-slide {
-  
-   }
-}
-
-
-.frequently-bought {
-    font-weight:normal;
-    display: flex;
-    align-items: center;
-    background: #fff;
-
-
-
-  margin: 10px 0 10px 0px;
-   box-shadow: 1px 1px 15px rgba(0, 0, 0, 0.12);
-    border: none;
-  
-  
-  & > div:nth-child(1) {
-        width: 33%;
-    & .flex-video {
-      margin-bottom: 0;
-      padding-bottom: 100%;
-      & div {
-          height: 100%;
-    display: flex;
-    position: absolute;
-    justify-content: center;
-    align-items: center;  
-      & img {
-     	max-width: 100%;
-      }
-      }
-    }
-  }
-  & > div:nth-child(2) {
-
- 
-      display: flex;
-    flex-flow: column;
-    justify-content: center;  
- 
-       padding: 10px 5px 10px 12px;
-    width: 33%;
-    font-size: 15px;
-    min-height: 75px;
-
-    
-    & h2 {
-    font-family: 'OswaldMedium', sans-serif;
-    margin: 0 0 2px 0;
+    flex: 1;
+    font-size: 13px;
     font-weight: normal;
-   
-          font-size: 90%;
-      
-    }
-    & span {
-     display:block;
-     font-family:'Open Sans', sans-serif;
-          font-weight: 600;
-          font-size: 91%;
-    }
-  }
-  & > span {
-    flex-grow: 1;
-    justify-content: center;
-    text-align: center;
-    align-self: stretch;
-    display: flex;
-    align-items: center;
-    border-left: 1px solid rgba(0, 0, 0, 0.13);
-    color: #e662ac;
-    width: 30%;
-    font-family: 'Open Sans', sans-serif;
-
-          font-size: 16px;
-     margin:10px 0px 10px 5px;
-    
-  }
-}
-
-body.hasitem.cart {
-  & .checkout-bar {
-      transform: translateY(0);
-      -webkit-transform: translateY(0);
-  }
-}
-
-.checkout-bar {
-    position: fixed;
-    overflow: hidden;
-    z-index: 1001;
-    bottom: 0;
-    padding: 20px 20px 25px 20px;
-    width: 100%;
-    text-align: center;
-    background:#fff;
-    box-shadow: 0px 0px 19px rgba(0, 0, 0, 0.18); 
-      transform: translateY(100%);
-      -webkit-transform: translateY(100%);
-    @include transition(all,0.3s);
-    & a {
-    background: #00a953;
-    color: #fff;
-    font-family: 'Open Sans', sans-serif;
-    border-radius: 20px;
-    padding: 13px 30px;
-    width: 100%;
-    display: inline-block;
-    text-transform: uppercase;
-    font-size: 15px;
-            position: relative;
-      font-weight:600;
-      & span {
-          position: absolute;
-          right: 25px;
-        font-weight:normal;
-      }
-     &.continue {
-    background: #fff;
-    border: 1px solid rgba(0,0,0,0.1);
-    margin-bottom: 15px;
-    color: rgba(0,0,0,0.78);
-     }
-    }
-}
-
-.ui-popup-container.slideup, .ui-popup-container.slideup .ui-popup.popupwrap {
-  background:#fff;
-    height: 100%;
-    width: 100%;
-    max-width:100% !important;
-    position: absolute;
-    top: 0;
-    left:0;
-    border:none;
-    box-shadow:none;
-   
-}
-
-.popupwrap {
-   display:block;
   
-  & .close {  
-
-
- 
-    border-radius: 100%;
-    position: absolute;
-    font-size: 24px;
-    line-height: 1;
- 
-    background: none;  
-    border:none;
-    color:#000;
-    text-shadow:none;
-    box-shadow:none;
-    -webkit-box-shadow:none;
-    -moz-box-shadow:none;
-    padding:0;
-    top: 10px;
-    left: 12px;
-    
-    & svg {
-    width: 18px;
-    height: auto;
-    line-height: 1;
-     & path {
-       fill: #bdbdbd;
-	 }
-	}
+ }
 }
-  & .featured-image {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  }
-  & > div:nth-child(3) {
 
-    display:block;
-    width:100%;
-   
-     & > div:nth-child(1) {
-        margin-top: 20px;
-        text-align: center;
-    & h2 {
-          font-size: 17px;
-          font-weight: bold;
-          margin-bottom: 2px;
-    }
-    & span {
-        font-size: 14px;
-   		display: block;
-    text-shadow: none;
-          color: #6b6b6b;
-    }
-  }
-  & > div:nth-child(2) {
-    padding: 10px 20px;
-    max-width: 87%;
-    margin: 0 auto;
-    font-size: 12px;
-    line-height: 1.5;
-    text-align: center;
-    font-family: 'Open Sans';
-        color: #6b6b6b;
-  }
-  & > div:nth-child(3) {
-    
-    z-index: 1001;
-    position:relative;
-    bottom: 0;
-    padding: 20px 20px 25px 20px;
-    width: 100%;
-    display: flex; 
+.cartNote {
+margin: 10px 0 0 0;
+label[for="CartNote"] {
+    text-align:right;
+      font-size: 13px;
+}
+#CartNote {
+max-width: 470px;
+margin: 10px 0 0 auto;
+}
+}
 
-    position: fixed;
-    
-    & a {
-    background: #00CC99;
-    color: #fff;
-    font-family: 'Open Sans', sans-serif;
-    border-radius: 20px;
-    padding: 15px 30px;
-    width: 100%;
-    display: inline-block;
-    text-transform: uppercase;
-       font-size: 12px;
-    position: relative;
-    font-weight: 600;
+
+
+#sharing-popup {
+    font-family: 'Proxima Nova', -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",Arial,sans-serif;
+    font-size: 13px;
     text-align: center;
-    cursor:pointer;
-      & span {
-    text-shadow: none;
-       margin-left: 5px; 
-        & sup {
-            top: 0;
-            font-size: 100%;
-          &:before {
-           content:'.';
-            display:inline-block;
-          }
-        }
-      }
-   }
-    & .input-group {
-          margin-right: 10px;
-          background: #F6F6F8;
-    border-radius: 20px;
-          width: auto;
-        margin-bottom: 0;
-      & .btn-number {
-             padding: 10px 18px;
-        &:focus {
-        	outline:none;
-        }
-      }
-      & .input-number {
-            font-weight: bold;
-    background:none;
-    text-align: center;
-     width: 30px;
+    font-weight: 500;
+    min-width: 200px;
+    max-width: 320px;
+  overflow: visible;
+      padding: 8px;
+ 
+  h2 {
+    font-size: 16px;
     padding: 0;
-    border: none;
-    box-shadow: none;
+    margin-bottom: 20px;
+  }
+  .social-meta {
+    margin: 0;
+    padding:0;
+    list-style: none;
+    li {
+     margin-left: 5px;
+     display: inline-block;
+    font-size: 13px;
+    font-weight: 400;
+    font-style: normal;
+    letter-spacing: 0.08em;
+    line-height: 1.7em;
+    }
+    svg {
+        height: 13px;
+    }
+ }
+ .copy-url {
+    margin-top: 20px;
+   div {
+    margin-bottom: 8px;
+   }
+   .url {
+    word-wrap: break-word;
+    border: 1px solid #ccc;
+    display: block;
+    padding: 8px;
+    font-size: 13px;
+   }
+   svg {
+    display: inline;
+    height: 14px;
+   }
+ }
+}
+.fancybox-lock .fancybox-overlay {
+    overflow: auto;
+    overflow-y: scroll;
+}
+.fancybox-lock {
+  .fancybox-close-small {
+    position: absolute;
+    top: -34px !important;
+    right: -7px !important;
+    padding: 0 !important;
+    height:auto;
+    width:auto;
+    cursor: pointer;
+    z-index: 8040;
+    background-size: 20px;
+    background-position: center;
+    svg {
+       width: 28px;
+       height: 28px;
+       path {
+       fill:#fff;
       }
     }
-  }
-  }
+}
 }
 
+.empty {
 
+padding: 0 30px;
 
-/* Advanced Abandoned Cart Popup */
+   margin: 100px auto;
 
-#advanced-abandoned-cart {
-overflow:hidden;
-border:none;
-  & .advanced-popup {
-    font-family:'Open Sans', sans-serif;
-    color:#fff;
-    text-shadow:none;
-    & h4 {
-    font-family: inherit;
-    font-weight: 600;
-    font-size: 100%;
-    text-align: center;
-    padding: 10px 20px;
-    background: rgba(0, 0, 0, 0.14);
-    margin-bottom: 10px;    
-    }
-    & > div {
-    	padding:0 15px;
-      text-align: center;
-      & > form {
-       	display:flex;
-        & input {
-          margin-bottom:0px;
-             border-radius: 3px 0px 0px 3px;
-    -webkit-border-radius: 3px 0px 0px 3px;  
-         border:none; 
-        }
-        & button {
-            background: #3ACE9A;
-    color: #fff;
-    padding: 0 20px;
-    font-weight: 600;
-    border-radius: 0px 3px 3px 0px;
-    -webkit-border-radius: 0px 3px 3px 0px;   
-          cursor:pointer;
-        }
-      }
-      & > div {
-       padding:15px 10px;
-            font-size: 80%;
-      }
-    }
-  }
+svg {
+max-width: 35px;
+height: auto;
+}
+.circle path {
+    fill: #f8f8f8;
+}
+.bag path {
+fill: #000;
+}
+}
+#shopify-section-Cart .empty a {
+font-weight:normal;
+    font-size: 14px;
+    margin: 10px 0 0 0;
+    display: inline-block;
 }
 
+#shopify-section-Cart {
+.carousel {
+position: relative;
+padding:0 25px;
+    margin-bottom: 30px;
+h2 {
+    font-family: 'Proxima Nova', sans-serif;
+    font-weight: normal;
+    font-size: 19px;
+}
+ul {
+margin:0;
+padding:0;
+}
+& .swiper-button-next, & .swiper-button-prev {
+color:#000;
+}
+& .swiper-button-next:after, & .swiper-button-prev:after {
 
-/* END Cart Page-------------------------------------------------------------------------------------------------------------------------*/
+    font-size: 19px;
+
+}
+}
+}
+
 {% endstylesheet %}
 
-{% javascript %}    
+{% javascript %}      
 
-{% endjavascript %}                                                
+{% endjavascript %}                                                                                                                         
