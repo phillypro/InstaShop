@@ -17,16 +17,31 @@ $(function(){
 });
 
 
-/*
+
+
+
+
 $(document).on("pagecreate", '#index', function (event, ui) {
+  console.log(window);
+function deferSR(methodSR) {
+    if (window.ScrollReveal) {
+        methodSR();
+    } else {
+        setTimeout(function() { deferSR(methodSR) }, 4);
+    }
+}
+deferSR(function () {  
+  
 sr();
-});
-               
 function sr() {
-     ScrollReveal().reveal('.headline-inner, .product, .button-wrap', {  container: '#swiper_Frame', viewFactor: 0.2,	distance: '50px', duration: 800,  easing: 'ease-out'}); 
-}               
+  ScrollReveal().reveal('.headline-inner, .product, .button-wrap', {  container: '#swiper_Frame', viewFactor: 0.2,	distance: '50px', duration: 800,  easing: 'ease-out'}); 
+}   
+   
+  
+});
+ });              
+             
      
-*/
 
 
 
