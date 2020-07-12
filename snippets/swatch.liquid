@@ -1,99 +1,459 @@
-{% comment %}
-  Set the extension of your color files below. Use 'png', 'jpeg', 'jpg' or 'gif'.
-{% endcomment %}
+{% capture cssColors %}AliceBlue,AntiqueWhite,Aqua,Aquamarine,Azure,Beige,Bisque,Black,BlanchedAlmond,Blue,BlueViolet,Brown,BurlyWood,CadetBlue,Chartreuse,Chocolate,Coral,CornflowerBlue,Cornsilk,Crimson,Cyan,DarkBlue,DarkCyan,DarkGoldenRod,DarkGray,DarkGrey,DarkGreen,DarkKhaki,DarkMagenta,DarkOliveGreen,DarkOrange,DarkOrchid,DarkRed,DarkSalmon,DarkSeaGreen,DarkSlateBlue,DarkSlateGray,DarkSlateGrey,DarkTurquoise,DarkViolet,DeepPink,DeepSkyBlue,DimGray,DimGrey,DodgerBlue,FireBrick,FloralWhite,ForestGreen,Fuchsia,Gainsboro,GhostWhite,Gold,GoldenRod,Gray,Grey,Green,GreenYellow,HoneyDew,HotPink,IndianRed,Indigo,Ivory,Khaki,Lavender,LavenderBlush,LawnGreen,LemonChiffon,LightBlue,LightCoral,LightCyan,LightGoldenRodYellow,LightGray,LightGrey,LightGreen,LightPink,LightSalmon,LightSeaGreen,LightSkyBlue,LightSlateGray,LightSlateGrey,LightSteelBlue,LightYellow,Lime,LimeGreen,Linen,Magenta,Maroon,MediumAquaMarine,MediumBlue,MediumOrchid,MediumPurple,MediumSeaGreen,MediumSlateBlue,MediumSpringGreen,MediumTurquoise,MediumVioletRed,MidnightBlue,MintCream,MistyRose,Moccasin,NavajoWhite,Navy,OldLace,Olive,OliveDrab,Orange,OrangeRed,Orchid,PaleGoldenRod,PaleGreen,PaleTurquoise,PaleVioletRed,PapayaWhip,PeachPuff,Peru,Pink,Plum,PowderBlue,Purple,RebeccaPurple,Red,RosyBrown,RoyalBlue,SaddleBrown,Salmon,SandyBrown,SeaGreen,SeaShell,Sienna,Silver,SkyBlue,SlateBlue,SlateGray,SlateGrey,Snow,SpringGreen,SteelBlue,Tan,Teal,Thistle,Tomato,Turquoise,Violet,Wheat,White,WhiteSmoke,Yellow,YellowGreen{% endcapture %}
+{% assign cssColors = cssColors | downcase | split: ","  %}
 
-{% assign file_extension = 'png' %}
+{% if product.variants.size >= 1 %}
+<div id="swatches_{{ product.id }}" class="swatches_wrap ">
+   {% for option in product.options %}
+   {% if forloop.index0 == 0 %}
+   <script>
+      var multiselectwrap = document.querySelector('#swatches_{{ product.id }}');
+      var form = multiselectwrap.closest('form');
 
-{% if swatch == blank %}
-<div class="swatch error">
-  <p>You must include the snippet swatch.liquid with the name of a product option.</p> 
-  <p>Use: <code>{% raw %}{% include 'swatch' with 'name of your product option here' %}{% endraw %}</code></p>
-  <p>Example: <code>{% raw %}{% include 'swatch' with 'Color' %}{% endraw %}</code></p>
-</div>
-{% else %}
-
-{% assign found_option = false %}
-{% assign is_color = false %}
-{% assign option_index = 0 %}
-
-{% for option in product.options %}
-  {% if option == swatch %}
-    {% assign found_option = true %}
-    {% assign option_index = forloop.index0 %}
-    <style>
-      label[for="product-select-option-{{ option_index }}"] { display: none; }
-      #product-select-option-{{ option_index }} { display: none; }
       
-      {% unless section.id == blank %}
-      label[for="product-select-{{ section.id }}-option-{{ option_index }}"] { display: none; }
-      #product-select-{{ section.id }}-option-{{ option_index }} { display: none; }
-        #shopify-section-{{ section.id }} .selector-wrapper:nth-child({{ option_index | plus: 1 }}) {
+      
+      
+      
+       var siblings = n => [...n.parentElement.children].filter(c=> c!=n && c.classList.contains('option-wrap'))
+       var siblings2 = n => [...n.parentElement.children].filter(c=> c!=n && c.classList.contains('swatch-element'))
+       
+      
+   </script>
+
+   {% endif %}
+   {% assign found_option = false %}
+   {% assign is_color = false %}
+   {% assign option_index = 0 %}
+   {% assign lastoption = product.options.size | minus: 1 %}
+   {% if option %}
+   {% assign found_option = true %}
+   {% assign option_index = forloop.index0 %}  
+   <style>
+      #product-{{ product.id }} .selector-wrapper,  #product-select-{{ product.id }} {
        display:none;
       }
-      #shopify-section-{{ section.id }} #product-select-{{ section.id }} {
-       display:none;
-      }
-      {% endunless %}
-      
-      #product-select-option-{{ option_index }} + .custom-style-select-box { display: none !important; }
-      
-      #product-{{ product.id }} .selector-wrapper:nth-child({{ option_index | plus: 1 }}) {
-       display:none;
-      }
-    </style>
-    {% assign downcased_option = swatch | downcase %}
-    {% if downcased_option contains 'color' or downcased_option contains 'colour' %}
-      {% assign is_color = true %}
-    {% endif %}
-  {% endif %}
-{% endfor %}
-
-{% unless found_option %}
-<div class="swatch error">
-  <p>You included the snippet swatch.liquid with the name of a product option — <code>'{{ swatch }}'</code> — that does not belong to your product.</p>
-  <p>Use <code>{% raw %}{% include 'swatch' with 'name of your product option here' %}{% endraw %}</code></p>
-  <p>Example: <code>{% raw %}{% include 'swatch' with 'Color' %}{% endraw %}</code></p>
-  <p><strong>This is case-sensitive!</strong> Do not put in <code>'color'</code> if your product option name is <code>'Color'</code>.</p>
-</div>
-{% else %}
-
-{% if option != 'Title' %}
-<div class="swatch clearfix" data-option-index="{{ option_index }}">
-  <div class="header">Choose Your {{ swatch }}</div>
-  <div class="swatch-group align-middle">
-  {% assign values = '' %}
-  {% for variant in product.variants %}
-    {% assign value = variant.options[option_index] %}
-    {% unless values contains value %}
+   </style>
+   {% assign downcased_option = option | downcase %}
+   {% if downcased_option contains 'color' or downcased_option contains 'colour' %}
+   {% assign is_color = true %}
+   {% endif %}
+   {% endif %}
+   {% if option_index == 0 %}
+   <div class="swatch clearfix {% if option_index == lastoption %}last_swatch{% endif %}" data-option-index="{{ option_index }}">
+     <div class="option-wrap first">
+       <div class="header">Choose your {{ option }}</div>
+      {% assign values = '' %}
+      {% assign value = variant.options[option_index] %}
+      {% for variant in product.variants %}
+      {% assign value = variant.option1 %}
+      {% unless values contains value %}
       {% assign values = values | join: ',' %}
       {% assign values = values | append: ',' | append: value %} 
-      {% assign values = values | split: ',' %}
-      <div data-value="{{ value | escape }}" class="swatch-element {{ value | handle }} {% if variant.available %}available{% else %}soldout{% endif %}">
-
-        <input image="{% unless variant.image.src %}{{ product.featured_image | product_img_url: '1024x1024' }}{% else %}{{ variant.image.src | product_img_url: '1024x1024' }}{% endunless %}" id="{% if template == 'index' %}frontpage-{% endif %}{{ product.id }}-swatch-{{ option_index }}-{{ value | handle }}" type="radio" name="option-{{ option_index }}" value="{{ value | escape }}"{% if forloop.first %} checked{% endif %} {% unless variant.available %}disabled{% endunless %} />
-        {% if is_color %}
-        <label for="{% if template == 'index' %}frontpage-{% endif %}{{ product.id }}-swatch-{{ option_index }}-{{ value | handle }}">
-          {{ value }}
-          <img class="crossed-out" src="{{ 'soldout.png' | asset_url }}" />
-        </label>
-        {% else %}
-        <label for="{% if template == 'index' %}frontpage-{% endif %}{{ product.id }}-swatch-{{ option_index }}-{{ value | handle }}">
-          {{ value }}
-          <img class="crossed-out" src="{{ 'soldout.png' | asset_url }}" />
-        </label>
+      {% assign values = values | split: ',' %} 
+       
+        {% if is_color  %}
+         <!-- check for image -->
+         {% capture image %}{{ value | handle | append: '.jpg' |  img_url: 'medium' }}{% endcapture %}      
+         {% if image contains 'no-image' %}{% assign is_image = false %}{% else %}{% assign is_image = true %}{% endif %}
+         <!-- check for cssColor -->
+         {% assign currentColor = variant.option1 | handle %}
+         {% if cssColors contains currentColor %}{% assign is_cssColor = true %}{% else %}{% assign is_cssColor = false %}{% endif %}
         {% endif %}
+      <div id="{{ product.handle }}-{{ value | remove: ' ' }}" data-value="{{ value | handle }}" class="swatch-element {% if settings.show_swatches and is_color and is_cssColor or is_image %}color image {% endif %} value-{{ value | handle }} {% if variant.available %}available{% else %} {% if option_index == lastoption %}soldout{% endif %} {% endif %} {% if forloop.first %}active{% endif %} ">
+         <!-- if product options only 1 lets give em all the options...if more lets make another wrapper -->
+
+         <input id="swatch-{{ option_index }}-{{ value | handle }}" data-value="{{ value | handle }}" type="radio" class="radio" name="id-{{ option_index }}" value="{{ variant.option1 }}" {% if forloop.first %} checked{% endif %}>
+        
+        
+     
+        
+        
+         <label class="{% if settings.show_swatches and is_color and is_cssColor or is_image  %}color{% endif %}" for="swatch-{{ option_index }}-{{ value | handle }}">
+           {% if settings.show_swatches and is_color and is_cssColor or is_image  %} 
+           <span class="image" {% if is_image == false %}style="background-color:{{ variant.option1 | handle }};"{% endif %}>
+             <span>
+              {% if is_image %}<img src="{{ value | handle | append: '.jpg' |  img_url: 'medium' }}" />{% endif %}
+             </span>
+           </span>
+           {% endif %}
+           
+           
+           <span class="swatch-title">{{ variant.option1 }}</span>
+        </label>
+
+         
       </div>
-    {% endunless %}
-    {% if variant.available %}
-    <script>
-      jQuery('#frontpage-{{ product.id }} .swatch[data-option-index="{{ option_index }}"] .{{ value | handle }}').removeClass('soldout').addClass('available').find(':radio').removeAttr('disabled');
-      jQuery('#{{ product.id }} .swatch[data-option-index="{{ option_index }}"] .{{ value | handle }}').removeClass('soldout').addClass('available').find(':radio').removeAttr('disabled');
-    </script>
-    {% endif %}
-  {% endfor %}
-  </div>  
+       
+      {% if variant.available and option_index != lastoption %}
+      <script>
+         var el = form.querySelector('.swatch[data-option-index="{{ option_index }}"] .value-{{ value | handle }}');
+         var input = el.querySelector('input');                                   
+         //remove soldout add available 
+         el.classList.remove("soldout");
+      </script>
+      {% endif %}
+       
+      {% endunless %}
+      {% endfor %} 
+
+    
+      <script> 
+         quantitycheckboxes  = form.querySelectorAll('.swatch[data-option-index="0"] input');
+         if (quantitycheckboxes) {
+         quantitycheckboxes.forEach(function(quantitycheckbox) { 
+         
+              quantitycheckbox.addEventListener( 'click', function(e) { 
+                                    var swatchelement = this.parentElement;
+                
+                                  // one time animation before active
+                if(!swatchelement.classList.contains('active')) {
+                 swatchelement.classList.add('popgrow'); 
+                 "webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend".split(" ").map(name => swatchelement.removeEventListener(name, popgrow, false));                    
+                 "webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend".split(" ").map(name => swatchelement.addEventListener(name, popgrow, false)); 
+                  function popgrow(e) {
+                    // remove class
+                    swatchelement.classList.remove('popgrow');
+                   // make it one time
+                   "webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend".split(" ").map(name => swatchelement.removeEventListener(name, popgrow, false));  
+                  }
+                }
+                
+                     if(this.checked == true) {
+                      console.log(this);
+                     swatchelement.classList.add('active');
+                       if(this.classList.contains('radio')) {
+                         var sibs = siblings2(swatchelement);
+                         sibs.forEach(element => element.classList.remove('active')); 
+                       }
+                     }else{
+                     swatchelement.classList.remove('active');
+                     }
+              });
+              
+         });  
+         }
+        
+      </script>
+   
+   </div>
+  </div>
+   {% endif %}
+   {% if product.options.size > 1 %} 
+   {% if option_index == 1 %}
+   <div class="swatch clearfix {% if option_index == lastoption %}last_swatch{% endif %}" data-option-index="{{ option_index }}">
+      {% assign values = '' %}
+      {% assign value = variant.options[option_index] %}
+      {% for variant in product.variants %}
+      {% assign value = variant.options[0] %}
+      {% unless values contains value %}   
+      <div id="option-{{ product.handle }}-{{ product.id }}-{{ value | handle }}" class="option-wrap {% if product.selected_or_first_available_variant.option1 == value and option_index == lastoption %}first {% endif %}"  {% unless product.selected_or_first_available_variant.option1 == value %}style="display:none;"{% endunless %}> 
+      <div class="header">Choose your {{ option }} {% unless option_index == lastoption %} / {{ value | title }} {% endunless %}</div>
+      <div class="option-wrap">
+         {% assign optionloop = 0 %} 
+         <!-- loop out all the options for this div PERIOD! -->
+         {% assign values1 = '' %}
+         {% for variant1 in product.variants %}
+         {% assign value1 = variant1.option2 %}
+         {% unless values1 contains value1 %}      
+         {% if variant1.option1 == value %}  
+        
+        
+         {% if is_color  %}
+         <!-- check for image -->
+         {% capture image %}{{ value1 | handle | append: '.jpg' |  img_url: 'medium' }}{% endcapture %}      
+         {% if image contains 'no-image' %}{% assign is_image = false %}{% else %}{% assign is_image = true %}{% endif %}
+         <!-- check for cssColor -->
+         {% assign currentColor = variant.option1 | handle %}
+         {% if cssColors contains currentColor %}{% assign is_cssColor = true %}{% else %}{% assign is_cssColor = false %}{% endif %}
+        {% endif %}
+   
+         <div id="element-{{ product.handle }}-{{ value | handle }}-{{ value1 | handle }}" data-value="{{ value | handle }}-{{ value1 | handle }}" class="swatch-element {% if settings.show_swatches and is_color and is_cssColor or is_image  %}color image{% endif %} value-{{ value | handle }}-{{ value1 | handle }} {% if variant1.available %}available{% else %}{% if option_index == lastoption %}soldout{% endif %}{% endif %} {% if optionloop == 0 %}{% unless option_index == lastoption %}active{% endunless %}{% endif %}">
+      
+            <input id="swatch-{{ product.handle }}-{{ value | handle }}-{{ value1 | handle }}" data-value="{{ value | handle }}-{{ value1 | handle }}" type="radio" class="checkbox" name="id-{{ option_index }}" value="{{ variant1.option2 }}" variant-price="{{ variant1.price }}">
+           
+         <label class="{% if settings.show_swatches and is_color and is_cssColor or is_image  %}color{% endif %}"  for="swatch-{{ product.handle }}-{{ value | handle }}-{{ value1 | handle }}">
+           {% if settings.show_swatches and is_color and is_cssColor or is_image  %}
+           <span class="image" {% if is_image == false %}style="background-color:{{ variant1.option2 | handle }};"{% endif %}>
+             <span>
+              {% if is_image %}<img src="{{ value1 | handle | append: '.jpg'  |  img_url: 'medium' }}" />{% endif %}
+             </span>
+           </span>
+           {% endif %}
+           <span class="swatch-title">{{ variant1.option2 }}</span> 
+           </label>
+
+            
+            
+
+         </div>
+         {% if variant1.available %}
+         <script>
+            var el = document.querySelector('#element-{{ product.handle }}-{{ value | handle }}-{{ value1 | handle }}');
+            var input = el.querySelector('input');                                   
+            //remove soldout add available 
+            el.classList.remove("soldout");
+         </script>
+         {% endif %}
+         {% assign values1 = values1 | join: ',' %}
+         {% assign values1 = values1 | append: ',' | append: value1 %} 
+         {% assign values1 = values1 | split: ',' %}
+         {% assign optionloop = optionloop | plus: 1 %}
+         {% endif %}    
+         {% endunless %}
+         {% endfor %}
+         {% assign values = values | join: ',' %}
+         {% assign values = values | append: ',' | append: value %} 
+         {% assign values = values | split: ',' %}
+      </div>
+   </div>
+   {% endunless %}
+   {% endfor %} 
+   <script>
+      // make visibility it reliant on first option
+           
+             var checkboxes = form.querySelectorAll('.swatch[data-option-index="0"] input');
+             
+         checkboxes.forEach(function(checkbox) {  
+      
+             checkbox.addEventListener( 'click', function() { 
+              if(this.checked) {
+               var el = document.querySelector('#option-{{ product.handle }}-{{ product.id }}-' + this.getAttribute('data-value')); 
+              // Checkbox is checked..
+               el.style.display = "flex";
+                                       
+               var brothers_n_sisters = siblings(el);
+                // if last option lets clear all checkboxes
+               {% if option_index == lastoption %}  
+               brothers_n_sisters.forEach(element => [element.style.display = "none",element.querySelectorAll('.swatch-element').forEach(element2 => [element2.classList.remove('active'),element2.querySelector('input.checkbox').checked = false])]); 
+               {% else %} 
+               brothers_n_sisters.forEach(element => element.style.display = "none");
+               {% endif %} 
+               }
+              });
+         });
+     
+     
+         
+      
+         
+         quantitycheckboxes  = form.querySelectorAll('.swatch[data-option-index="1"] input');
+         if (quantitycheckboxes) {
+         quantitycheckboxes.forEach(function(quantitycheckbox) { 
+      
+              quantitycheckbox.addEventListener( 'click', function(e) { 
+                                  var swatchelement = this.parentElement;
+              
+                                  // one time animation before active
+                if(!swatchelement.classList.contains('active')) {
+                 swatchelement.classList.add('popgrow'); 
+                 "webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend".split(" ").map(name => swatchelement.removeEventListener(name, popgrow, false));                    
+                 "webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend".split(" ").map(name => swatchelement.addEventListener(name, popgrow, false)); 
+                  function popgrow(e) {
+                    // remove class
+                    swatchelement.classList.remove('popgrow');
+                   // make it one time
+                   "webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend".split(" ").map(name => swatchelement.removeEventListener(name, popgrow, false));  
+                  }
+                }
+                     if(this.checked == true) {
+                     swatchelement.classList.add('active');
+                       if(this.type == "radio") {
+                         var sibs = siblings2(swatchelement);
+                         sibs.forEach(element => element.classList.remove('active')); 
+                       }
+                     }else{
+                     swatchelement.classList.remove('active');
+                     }
+              });
+         });  
+         }
+   </script>  
 </div>
 {% endif %}
-{% endunless %}
+{% if option_index == 2 %}
+<div class="swatch clearfix {% if option_index == lastoption %}last_swatch{% endif %}" data-option-index="{{ option_index }}">
+   <!-- loop out the first option and wrap -->
+   {% assign values2 = '' %}  
+   {% for variant2 in product.variants %}
+   {% assign value2 = variant2.option1 %}
+   {% unless values2 contains value2 %}
+   <!-- this is the first option -->
+   {% if variant2.option1 == value2 %} 
+   <div id="option-{{ product.handle }}-{{ product.id }}-{{ option_index }}-{{ value2 | handle }}" class="option-wrap"  {% unless product.selected_or_first_available_variant.option1 == value2 %}style="display:none;"{% endunless %}> 
+   <!-- loop out the second option and wrap -->
+   {% assign values3 = '' %}  
+   {% for variant3 in product.variants %}
+   {% assign value3 = variant3.option2 %}
+   {% unless values3 contains value3 %}     
+   <!-- this is the second option -->
+   {% if variant3.option2 == value3 %} 
+   <div id="option-{{ product.handle }}-{{ product.id }}-{{ option_index }}-{{ value2 | handle }}-{{ value3 | handle }}" class="option-wrap {% if product.selected_or_first_available_variant.option1 == value2 and product.selected_or_first_available_variant.option2 == value3 and option_index == lastoption %}first{% endif %}"  {% unless product.selected_or_first_available_variant.option2 == value3 %}style="display:none;"{% endunless %}> 
+   <div class="header">{{ option }}  / {{ value2 | title }} / {{ value3 | title }}</div>
+   <!-- loop out the first option and wrap -->
+   {% assign values4 = '' %}  
+   {% for variant4 in product.variants %}
+   {% assign value4 = variant4.option3 %}
+   {% unless values4 contains value4 %}
+   {% if variant4.option3 == value4 and variant4.option2 == value3  and variant4.option1 == value2 %}  
+     
+     
+         {% if is_color  %}
+         <!-- check for image -->
+         {% capture image %}{{ value1 | handle | append: '.jpg' |  img_url: 'medium' }}{% endcapture %}      
+         {% if image contains 'no-image' %}{% assign is_image = false %}{% else %}{% assign is_image = true %}{% endif %}
+         <!-- check for cssColor -->
+         {% assign currentColor = variant.option1 | handle %}
+         {% if cssColors contains currentColor %}{% assign is_cssColor = true %}{% else %}{% assign is_cssColor = false %}{% endif %}
+        {% endif %}  
 
+   <div id="element-{{ product.handle }}-{{ value2 | handle }}-{{ value3 | handle }}-{{ value4 | handle }}" class="swatch-element  {% if settings.show_swatches and is_color and is_cssColor or is_image  %}color image {% endif %} value-{{ value | handle }}-{{ value1 | handle }} {% if variant1.available %}available{% else %}soldout{% endif %}">
+
+      <input id="swatch-{{ product.handle }}-{{ value2 | handle }}-{{ value3 | handle }}-{{ value4 | handle }}" data-value="{{ value2 | handle }}-{{ value3 | handle }}-{{ value4 | handle }}" type="radio" class="checkbox" name="id-{{ option_index }}" value="{{ variant4.option3 }}" variant-price="{{ variant4.price }}">
+           <label class=" {% if settings.show_swatches and is_color and is_cssColor or is_image  %}color{% endif %}" for="swatch-{{ product.handle }}-{{ value2 | handle }}-{{ value3 | handle }}-{{ value4 | handle }}">
+          {% if settings.show_swatches and is_color and is_cssColor or is_image  %}
+           <span class="image" {% if is_image == false %}style="background:{{ variant4.option3 | handle }};{% endif %}">
+             <span>
+              {% if is_image %}<img src="{{ value4 | handle | append: '.jpg'  |  file_img_url: 'medium' }}" />{% endif %}
+             </span>
+           </span>
+           {% endif %}
+             <span class="swatch-title">{{ variant4.option3 }}</span> 
+           </label>
+
+      
+   </div>
+   {% if variant4.available %}
+   <script>
+      var el = document.querySelector('#element-{{ product.handle }}-{{ value2 | handle }}-{{ value3 | handle }}-{{ value4 | handle }}');
+       var input = el.querySelector('input');                                   
+         //remove soldout add available 
+       el.classList.remove("soldout");
+        el.classList.add("available");
+   </script>
+   {% endif %}
+   {% assign values4 = values4 | join: ',' %}
+   {% assign values4 = values4 | append: ',' | append: value4 %} 
+   {% assign values4 = values4 | split: ',' %}
+   {% assign optionloop = optionloop | plus: 1 %}
+   {% endif %}    
+   {% endunless %}
+   {% endfor %}
+</div>
+{% assign values3 = values3 | join: ',' %}
+{% assign values3 = values3 | append: ',' | append: value3 %} 
+{% assign values3 = values3 | split: ',' %}
 {% endif %}
+<script>
+   // make visibility it reliant on first option
+     var checkbox = document.querySelector("#swatch-{{ product.handle }}-{{ value2 | handle }}-{{ value3 | handle }}");
+          checkbox.addEventListener( 'click', function() { 
+           if(this.checked) {
+            var el = document.querySelector('#option-{{ product.handle }}-{{ product.id }}-{{ option_index }}-{{ value2 | handle }}-{{ value3 | handle }}'); 
+           // Checkbox is checked..    
+   
+            el.style.display = "flex";
+            var brothers_n_sisters = siblings(el);
+             // if last option lets clear all checkboxes
+            {% if option_index == lastoption %}  
+
+            brothers_n_sisters.forEach(element => [element.style.display = "none",element.querySelectorAll('input').forEach(element2 => [element2.checked = false, element2.parentElement.classList.remove('active')] )]); 
+            {% else %} 
+            brothers_n_sisters.forEach(element => [element.style.display = "none"]);
+            {% endif %} 
+            }
+           });
+</script>
+{% endunless %}     
+{% endfor %} 
+<!-- END second loop --> 
+</div>
+{% assign values2 = values2 | join: ',' %}
+{% assign values2 = values2 | append: ',' | append: value2 %} 
+{% assign values2 = values2 | split: ',' %}
+{% endif %} 
+{% endunless %}
+{% endfor %}
+<script>
+   var checkboxes = form.querySelectorAll('.swatch[data-option-index="0"] input');
+   checkboxes.forEach(function(checkbox) { 
+    checkbox.addEventListener( 'click', function() { 
+     if(this.checked) {
+       var checkbox1 = this;
+       // 2nd level deep
+      
+      var eltop = document.querySelector('#option-{{ product.handle }}-{{ product.id }}-{{ option_index }}-' + checkbox1.getAttribute('data-value')); 
+      eltop.style.display = "flex";
+      var brothers_n_sisters = siblings(eltop);
+
+      brothers_n_sisters.forEach(element => [element.style.display = "none", element.querySelectorAll('input.checkbox').forEach(element2 => [element2.checked = false, element2.setAttribute('quantity', 1), element2.parentElement.querySelector('.quantity').getElementsByTagName('span')[0].innerHTML = 0,element2.parentElement.classList.remove('active')] ) ]);
+
+       
+      
+        // 3rd level deep
+        var wrap = document.querySelector('#option-{{ product.handle }}-{{ product.id }}-' + checkbox1.getAttribute('data-value'));                                
+        var checkbox2 = wrap.querySelector(":checked");
+                                 
+          if(checkbox2.checked) {     
+              var elmiddle = document.querySelector('#option-{{ product.handle }}-{{ product.id }}-2-' + checkbox2.getAttribute('data-value') ); 
+              // Checkbox is checked..
+              elmiddle.style.display = "flex";
+                                                  
+           };
+                                                    
+                                                    
+                                                    
+                                                    
+       }
+     });
+    });
+       
+       
+   
+         quantitycheckboxes  = form.querySelectorAll('.swatch[data-option-index="2"] input');
+         if (quantitycheckboxes) {
+         quantitycheckboxes.forEach(function(quantitycheckbox) { 
+              
+              quantitycheckbox.addEventListener( 'click', function(e) { 
+                     var swatchelement = this.parentElement;
+           
+                                  // one time animation before active
+                if(!swatchelement.classList.contains('active')) {
+                 swatchelement.classList.add('popgrow'); 
+                 "webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend".split(" ").map(name => swatchelement.removeEventListener(name, popgrow, false));                    
+                 "webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend".split(" ").map(name => swatchelement.addEventListener(name, popgrow, false)); 
+                  function popgrow(e) {
+                    // remove class
+                    swatchelement.classList.remove('popgrow');
+                   // make it one time
+                   "webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend".split(" ").map(name => swatchelement.removeEventListener(name, popgrow, false));  
+                  }
+                }
+                // End Handle
+                
+                
+                    if(this.checked == true) {
+                     swatchelement.classList.add('active');
+                       if(this.classList.contains('radio')) {
+                         var sibs = siblings2(swatchelement);
+                         sibs.forEach(element => element.classList.remove('active')); 
+                       }
+                     }else{
+
+                     swatchelement.classList.remove('active');
+    
+                     }
+              });
+         });  
+         }
+      
+       
+       
+       
+</script>
+</div>
+{% endif %}
+{% endif %}  
+{% endfor %}
+</div>
+<!-- End #Multiselect_product.id -->
+{% endif %}
+
