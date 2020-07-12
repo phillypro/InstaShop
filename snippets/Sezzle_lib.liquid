@@ -1,0 +1,109 @@
+{% style %}
+li.product .salew {
+  display:none;
+}
+.sezzle-checkout-button-wrapper {
+    padding: 0 0 0px;  
+}
+.sezzle-product-page-widget, .sezzle-shopify-info-button {
+      overflow: hidden;
+}
+.sezzle-button-text {
+max-width:100% !important;  
+}
+.sezzle-payment-amount {
+      font-size: 120% !important;
+  font-weight: 700 !important;
+}  
+@media (max-width: 600px) {  
+.sezzle-product-preview-widget .sezzle-button-text {  
+font-size: 10px !important;  
+}
+.product-details .sezzle-button-text.sezzle-left  {
+text-align:center;
+}
+#cartform .sezzle-button-text {
+    font-size: 10px !important;
+    letter-spacing: 0.5px;
+}
+#cartform .szl-light-image {
+    height: 15px!important;
+}
+.sezzle-cart-page-widget {
+margin:0 !important;
+}
+}
+
+{% endstyle %}
+<script type="text/javascript">
+document.sezzleConfig = {
+	"configGroups": [
+		{
+			"targetXPath": ".product-price",
+            "widgetType": "product-page",
+            "marginTop": 10,
+			"fontWeight": 400,
+              "fontSize": 15
+		},
+      	{
+		 	"targetXPath": ".product/.h1/.currPrice",
+            "widgetType": "product-preview",
+			"fontWeight": 400,
+            "fontSize": 15
+		},
+		{
+			"targetXPath": "#cart-subtotal",
+            renderToPath: '../../../../../',
+            "widgetType": "cart",
+            "marginTop": 20,
+            "marginBottom": 0,
+			"alignment": "right",
+            "fontSize": 15
+		}
+	],
+	"supportedCountryCodes": [
+		"US",
+		"IN",
+		"CA"
+	]
+}
+</script>
+<script src="https://widget.sezzle.com/v1/javascript/price-widget?uuid={{ settings.sezzlemerchantid }}"></script>
+<script>
+  setTimeout(function() {  
+$(document).on("pagebeforecreate", function(e, data) {
+  var pageClasses = Array.from(e.target.classList);
+  var classes = ['template-index','collection-page', 'template-product', 'template-cart'];
+  if(diff(pageClasses, classes)) {
+removeJS('widget.sezzle.com');
+var szl = document.querySelector('iframe[name="szl"]');
+if(szl) {
+szl.remove();   
+}           
+}
+});
+}, 800);
+
+var diff = function(arr, arr2) {
+    var ret = [];
+    for(var i in arr) {   
+        if(arr2.indexOf(arr[i]) > -1){
+            ret.push(arr[i]);
+        }
+    }
+  if(ret.length == 0) {
+    return false;
+  }else{
+   return true
+  }
+};  
+  
+
+function removeJS(filename){
+ var tags = document.getElementsByTagName('script');
+ for (var i = tags.length; i >= 0; i--){ //search backwards within nodelist for matching elements to remove
+  if (tags[i] && tags[i].getAttribute('src') != null && tags[i].getAttribute('src').indexOf(filename) != -1)
+   tags[i].parentNode.removeChild(tags[i]); //remove element by calling parentNode.removeChild()
+ }
+}   
+</script> 
