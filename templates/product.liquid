@@ -450,13 +450,10 @@ var selectCallback = function(variant, selector) {
   }
 
 
-   var multiselect = formEl.querySelector('#shopify-section-Multiselect');   
+  var multiselect = formEl.querySelector('#shopify-section-Multiselect');   
+
    if(!multiselect) { 
-   priceEl.innerHTML = Shopify.formatMoney(variant.price, "{{ shop.money_format }}");
-    }else{
-  priceEl.innerHTML = Shopify.formatMoney(variant.price, "{{ shop.money_format }}");
-  }                                        
-                                          
+   priceEl.innerHTML = Shopify.formatMoney(variant.price, "{{ shop.money_format }}");                                   
   var compareEl = pricewrapEl.querySelector('.product-compare-price');
   if (variant.compare_at_price && variant.compare_at_price > variant.price) { 
     if (compareEl == null) {
@@ -470,6 +467,8 @@ var selectCallback = function(variant, selector) {
        compareEl.remove();
      }                                                 
     }
+   
+   }
    
 
   {% if settings.quadpay %} 
