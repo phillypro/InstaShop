@@ -16,7 +16,43 @@
        var siblings = n => [...n.parentElement.children].filter(c=> c!=n && c.classList.contains('option-wrap'))
        var siblings2 = n => [...n.parentElement.children].filter(c=> c!=n && c.classList.contains('swatch-element'))
        
+    {% if settings.show_swatches %}
+
+       
+  
+       setTimeout(function() { 
+       {% for option in product.options_with_values %} 
+        {% assign downcased_option2 = option.name | downcase %}
+         {% assign option_index2 = forloop.index0 %} 
+         {% if downcased_option2 contains 'color' or downcased_option contains 'colour' %}
+           {% for color in option.values %}
+            var imageUrl = '{{ color | handle | append: '.jpg' |  file_img_url: 'medium' }}';
+            imageExists(imageUrl, function(exists) {
+              if(exists) {
+               var swatches = form.querySelectorAll('.{{ color | handle }}');
+               [].forEach.call(swatches, function(swatch) {
+                  swatch.src =  swatch.getAttribute('data-src'); 
+                });                                                           
+              }
+             });
+           {% endfor %}
+        {% endif %}
+      {% endfor %} 
       
+       },4);  
+        
+        
+       function imageExists(url, callback) {
+        var img = new Image();
+       img.onload = function() { callback(true); };
+       img.onerror = function() { callback(false); };
+       img.src = url;
+       }
+ 
+     
+
+    {% endif %}
+     
    </script>
 
    {% endif %}
@@ -51,27 +87,24 @@
       {% assign values = values | split: ',' %} 
        
         {% if is_color  %}
-         <!-- check for image -->
-         {% capture image %}{{ value | handle | append: '.jpg' |  img_url: 'medium' }}{% endcapture %}      
-         {% if image contains 'no-image' %}{% assign is_image = false %}{% else %}{% assign is_image = true %}{% endif %}
          <!-- check for cssColor -->
          {% assign currentColor = variant.option1 | handle %}
          {% if cssColors contains currentColor %}{% assign is_cssColor = true %}{% else %}{% assign is_cssColor = false %}{% endif %}
         {% endif %}
-      <div id="{{ product.handle }}-{{ value | remove: ' ' }}" data-value="{{ value | handle }}" class="swatch-element {% if settings.show_swatches and is_color and is_cssColor or is_image %}color image {% endif %} value-{{ value | handle }} {% if variant.available %}available{% else %} {% if option_index == lastoption %}soldout{% endif %} {% endif %} {% if forloop.first %}active{% endif %} ">
+      <div id="{{ product.handle }}-{{ value | remove: ' ' }}" data-value="{{ value | handle }}" class="swatch-element {% if settings.show_swatches and is_color %}color image {% endif %} value-{{ value | handle }} {% if variant.available %}available{% else %} {% if option_index == lastoption %}soldout{% endif %} {% endif %} {% if forloop.first %}active{% endif %} ">
          <!-- if product options only 1 lets give em all the options...if more lets make another wrapper -->
 
-         <input id="swatch-{{ option_index }}-{{ value | handle }}" data-value="{{ value | handle }}" type="radio" class="radio" name="id-{{ option_index }}" value="{{ variant.option1 }}" {% if forloop.first %} checked{% endif %}>
+         <input id="swatch-{{ option_index }}-{{ value | handle }}" data-value="{{ value | handle }}" type="radio" class="radio" name="id-{{ option_index }}" value="{{ variant.option1 }}" {% if forloop.first %} checked{% endif %} image="{% unless variant.image.src %}{{ product.featured_image | product_img_url: '1024x1024' }}{% else %}{{ variant.image.src | product_img_url: '1024x1024' }}{% endunless %}">
         
         
      
         
         
-         <label class="{% if settings.show_swatches and is_color and is_cssColor or is_image  %}color{% endif %}" for="swatch-{{ option_index }}-{{ value | handle }}">
-           {% if settings.show_swatches and is_color and is_cssColor or is_image  %} 
-           <span class="image" {% if is_image == false %}style="background-color:{{ variant.option1 | handle }};"{% endif %}>
+         <label class="{% if settings.show_swatches and is_color %}color{% endif %}" for="swatch-{{ option_index }}-{{ value | handle }}">
+           {% if settings.show_swatches and is_color  %} 
+           <span class="image" {% if is_cssColor %}style="background-color:{{ variant.option1 | handle }};"{% endif %}>
              <span>
-              {% if is_image %}<img src="{{ value | handle | append: '.jpg' |  img_url: 'medium' }}" />{% endif %}
+             <img class="{{ value | handle }}" data-src="{{ value | handle | append: '.jpg' |  file_img_url: 'medium' }}" />
              </span>
            </span>
            {% endif %}
@@ -158,23 +191,20 @@
         
         
          {% if is_color  %}
-         <!-- check for image -->
-         {% capture image %}{{ value1 | handle | append: '.jpg' |  img_url: 'medium' }}{% endcapture %}      
-         {% if image contains 'no-image' %}{% assign is_image = false %}{% else %}{% assign is_image = true %}{% endif %}
          <!-- check for cssColor -->
-         {% assign currentColor = variant.option1 | handle %}
+         {% assign currentColor = variant1.option2 | handle %}
          {% if cssColors contains currentColor %}{% assign is_cssColor = true %}{% else %}{% assign is_cssColor = false %}{% endif %}
         {% endif %}
-   
-         <div id="element-{{ product.handle }}-{{ value | handle }}-{{ value1 | handle }}" data-value="{{ value | handle }}-{{ value1 | handle }}" class="swatch-element {% if settings.show_swatches and is_color and is_cssColor or is_image  %}color image{% endif %} value-{{ value | handle }}-{{ value1 | handle }} {% if variant1.available %}available{% else %}{% if option_index == lastoption %}soldout{% endif %}{% endif %} {% if optionloop == 0 %}{% unless option_index == lastoption %}active{% endunless %}{% endif %}">
       
-            <input id="swatch-{{ product.handle }}-{{ value | handle }}-{{ value1 | handle }}" data-value="{{ value | handle }}-{{ value1 | handle }}" type="radio" class="checkbox" name="id-{{ option_index }}" value="{{ variant1.option2 }}" variant-price="{{ variant1.price }}">
-           
-         <label class="{% if settings.show_swatches and is_color and is_cssColor or is_image  %}color{% endif %}"  for="swatch-{{ product.handle }}-{{ value | handle }}-{{ value1 | handle }}">
-           {% if settings.show_swatches and is_color and is_cssColor or is_image  %}
-           <span class="image" {% if is_image == false %}style="background-color:{{ variant1.option2 | handle }};"{% endif %}>
-             <span>
-              {% if is_image %}<img src="{{ value1 | handle | append: '.jpg'  |  img_url: 'medium' }}" />{% endif %}
+         <div id="element-{{ product.handle }}-{{ value | handle }}-{{ value1 | handle }}" data-value="{{ value | handle }}-{{ value1 | handle }}" class="swatch-element {% if settings.show_swatches and is_color %}color image{% endif %} value-{{ value | handle }}-{{ value1 | handle }} {% if variant1.available %}available{% else %}{% if option_index == lastoption %}soldout{% endif %}{% endif %} {% if optionloop == 0 %}{% unless option_index == lastoption %}active{% endunless %}{% endif %}">
+      
+            <input id="swatch-{{ product.handle }}-{{ value | handle }}-{{ value1 | handle }}" data-value="{{ value | handle }}-{{ value1 | handle }}" type="radio" class="checkbox" name="id-{{ option_index }}" value="{{ variant1.option2 }}" variant-price="{{ variant1.price }}" {% if product.selected_or_first_available_variant.option2 == value %} checked  {% endif %} image="{% unless variant1.image.src %}{{ product.featured_image | product_img_url: '1024x1024' }}{% else %}{{ variant1.image.src | product_img_url: '1024x1024' }}{% endunless %}">
+       
+         <label class="{% if settings.show_swatches and is_color %}color{% endif %}"  for="swatch-{{ product.handle }}-{{ value | handle }}-{{ value1 | handle }}">
+           {% if settings.show_swatches and is_color %}
+           <span class="image">
+             <span {% if is_cssColor %}style="background-color:{{ variant1.option2 | handle }};"{% endif %}>
+              <img class="{{ value1 | handle }}" data-src="{{ value1 | handle | append: '.jpg'  |   file_img_url: 'medium' }}" />
              </span>
            </span>
            {% endif %}
@@ -297,22 +327,19 @@
      
      
          {% if is_color  %}
-         <!-- check for image -->
-         {% capture image %}{{ value1 | handle | append: '.jpg' |  img_url: 'medium' }}{% endcapture %}      
-         {% if image contains 'no-image' %}{% assign is_image = false %}{% else %}{% assign is_image = true %}{% endif %}
          <!-- check for cssColor -->
-         {% assign currentColor = variant.option1 | handle %}
+         {% assign currentColor = variant4.option3 | handle %}
          {% if cssColors contains currentColor %}{% assign is_cssColor = true %}{% else %}{% assign is_cssColor = false %}{% endif %}
         {% endif %}  
 
-   <div id="element-{{ product.handle }}-{{ value2 | handle }}-{{ value3 | handle }}-{{ value4 | handle }}" class="swatch-element  {% if settings.show_swatches and is_color and is_cssColor or is_image  %}color image {% endif %} value-{{ value | handle }}-{{ value1 | handle }} {% if variant1.available %}available{% else %}soldout{% endif %}">
+   <div id="element-{{ product.handle }}-{{ value2 | handle }}-{{ value3 | handle }}-{{ value4 | handle }}" class="swatch-element  {% if settings.show_swatches and is_color %}color image {% endif %} value-{{ value | handle }}-{{ value1 | handle }} {% if variant1.available %}available{% else %}soldout{% endif %}">
 
-      <input id="swatch-{{ product.handle }}-{{ value2 | handle }}-{{ value3 | handle }}-{{ value4 | handle }}" data-value="{{ value2 | handle }}-{{ value3 | handle }}-{{ value4 | handle }}" type="radio" class="checkbox" name="id-{{ option_index }}" value="{{ variant4.option3 }}" variant-price="{{ variant4.price }}">
-           <label class=" {% if settings.show_swatches and is_color and is_cssColor or is_image  %}color{% endif %}" for="swatch-{{ product.handle }}-{{ value2 | handle }}-{{ value3 | handle }}-{{ value4 | handle }}">
-          {% if settings.show_swatches and is_color and is_cssColor or is_image  %}
-           <span class="image" {% if is_image == false %}style="background:{{ variant4.option3 | handle }};{% endif %}">
+      <input id="swatch-{{ product.handle }}-{{ value2 | handle }}-{{ value3 | handle }}-{{ value4 | handle }}" data-value="{{ value2 | handle }}-{{ value3 | handle }}-{{ value4 | handle }}" type="radio" class="checkbox" name="id-{{ option_index }}" value="{{ variant4.option3 }}" variant-price="{{ variant4.price }}" {% if product.selected_or_first_available_variant4.option3 %} checked {% endif %}  image="{% unless variant4.image.src %}{{ product.featured_image | product_img_url: '1024x1024' }}{% else %}{{ variant4.image.src | product_img_url: '1024x1024' }}{% endunless %}">
+           <label class=" {% if settings.show_swatches and is_color %}color{% endif %}" for="swatch-{{ product.handle }}-{{ value2 | handle }}-{{ value3 | handle }}-{{ value4 | handle }}">
+          {% if settings.show_swatches and is_color %}
+           <span class="image" {% if is_cssColor %}style="background:{{ variant4.option3 | handle }};{% endif %}">
              <span>
-              {% if is_image %}<img src="{{ value4 | handle | append: '.jpg'  |  file_img_url: 'medium' }}" />{% endif %}
+             <img class="{{ value4 | handle }}" data-src="{{ value4 | handle | append: '.jpg'  |  file_img_url: 'medium' }}" />
              </span>
            </span>
            {% endif %}
