@@ -1,3 +1,6 @@
+{% for block in section.blocks %}
+{% case block.type %}
+{% when 'Multiselect' %}
 {{ 'https://cdn.jsdelivr.net/gh/phillypro/Shopify-Multiselect/multiselect-11.min.js' | script_tag }}
 {% comment %}
 {{ 'https://cdn.jsdelivr.net/gh/phillypro/Shopify-Multiselect/multiselect-1.min.js' | script_tag }}
@@ -6,9 +9,6 @@
 {{ 'https://cdn.jsdelivr.net/gh/phillypro/Shopify-Multiselect/multiselect-3.min.js' | script_tag }}
 {% endcomment %}
 {{ 'https://cdn.jsdelivr.net/gh/phillypro/Shopify-Multiselect/multiselect-2.min.js' | script_tag }}
-{% for block in section.blocks %}
-{% case block.type %}
-{% when 'Multiselect' %}
 {% if product.handle == block.settings.product %}
 {% if product.variants.size >= 1 %}
 <div id="Multiselect_{{ product.id }}" class="multiselect_wrap {% if section.settings.animate %} animate {% endif %}">
