@@ -301,6 +301,14 @@ function story(ev) {
   function handleStories(event) {
   var currentStoryEl = event.currentTarget;
   var $this = $(currentStoryEl);
+    
+  // if its empty kick back out
+    if(currentStoryEl.getAttribute('media') == '') {
+      return false;
+    }
+    
+    
+    
   // its loading add the fader
   currentStoryEl.classList.add('fade');
   var isvideo = currentStoryEl.classList.contains('video');
@@ -527,6 +535,12 @@ function closepopup() {
       $('#popup').find('video').each(function() {
         $(this).get(0).pause();
       });
+      $('#popup').find('img').each(function() {
+        $(this).off('timeupdate');
+        this.time = 0;
+        clearInterval(this.timer)
+      });
+  
      $('#popup').addClass('transitout').removeClass('transition');
      setTimeout(function() {  
          $('#popup').removeClass('transitout').removeClass('active');
