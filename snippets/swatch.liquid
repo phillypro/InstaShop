@@ -151,7 +151,6 @@
                 }
                 
                      if(this.checked == true) {
-                      console.log(this);
                      swatchelement.classList.add('active');
                        if(this.classList.contains('radio')) {
                          var sibs = siblings2(swatchelement);
@@ -178,7 +177,7 @@
       {% for variant in product.variants %}
       {% assign value = variant.options[0] %}
       {% unless values contains value %}   
-      <div id="option-{{ product.handle }}-{{ product.id }}-{{ value | handle }}" class="option-wrap {% if product.selected_or_first_available_variant.option1 == value and option_index == lastoption %}first {% endif %}"  {% unless product.selected_or_first_available_variant.option1 == value %}style="display:none;"{% endunless %}> 
+      <div id="option-{{ product.handle }}-{{ product.id }}-{{ value | handle }}" data-value="{{ value | handle }}" class="option-wrap {% if product.selected_or_first_available_variant.option1 == value and option_index == lastoption %}first {% endif %}"  {% unless product.selected_or_first_available_variant.option1 == value %}style="display:none;"{% endunless %}> 
       <div class="header">Choose your {{ option }} {% unless option_index == lastoption %} / {{ value | title }} {% endunless %}</div>
       <div class="option-wrap">
          {% assign optionloop = 0 %} 
@@ -196,9 +195,9 @@
          {% if cssColors contains currentColor %}{% assign is_cssColor = true %}{% else %}{% assign is_cssColor = false %}{% endif %}
         {% endif %}
       
-         <div id="element-{{ product.handle }}-{{ value | handle }}-{{ value1 | handle }}" data-value="{{ value | handle }}-{{ value1 | handle }}" class="swatch-element {% if settings.show_swatches and is_color %}color image{% endif %} value-{{ value | handle }}-{{ value1 | handle }} {% if variant1.available %}available{% else %}{% if option_index == lastoption %}soldout{% endif %}{% endif %} {% if optionloop == 0 %}{% unless option_index == lastoption %}active{% endunless %}{% endif %}">
-      
-            <input id="swatch-{{ product.handle }}-{{ value | handle }}-{{ value1 | handle }}" data-value="{{ value | handle }}-{{ value1 | handle }}" type="radio" class="checkbox" name="id-{{ option_index }}" value="{{ variant1.option2 }}" variant-price="{{ variant1.price }}" {% if product.selected_or_first_available_variant.option2 == value %} checked  {% endif %} image="{% unless variant1.image.src %}{{ product.featured_image | product_img_url: '1024x1024' }}{% else %}{{ variant1.image.src | product_img_url: '1024x1024' }}{% endunless %}">
+         <div id="element-{{ product.handle }}-{{ value | handle }}-{{ value1 | handle }}" data-value="{{ value1 | handle }}" class="swatch-element {% if settings.show_swatches and is_color %}color image{% endif %} value-{{ value | handle }}-{{ value1 | handle }} {% if variant1.available %}available{% else %}{% if option_index == lastoption %}soldout{% endif %}{% endif %} {% if optionloop == 0 %}{% unless option_index == lastoption %}active{% endunless %}{% endif %}">
+     
+            <input id="swatch-{{ product.handle }}-{{ value | handle }}-{{ value1 | handle }}" data-value="{{ value | handle }}-{{ value1 | handle }}" type="radio" class="checkbox" name="id-{{ value | handle }}-{{ option_index }}" value="{{ variant1.option2 }}" variant-price="{{ variant1.price }}" {% if product.selected_or_first_available_variant.option2 == variant1.option2 %} checked  {% endif %} image="{% unless variant1.image.src %}{{ product.featured_image | product_img_url: '1024x1024' }}{% else %}{{ variant1.image.src | product_img_url: '1024x1024' }}{% endunless %}">
        
          <label class="{% if settings.show_swatches and is_color %}color{% endif %}"  for="swatch-{{ product.handle }}-{{ value | handle }}-{{ value1 | handle }}">
            {% if settings.show_swatches and is_color %}
@@ -240,7 +239,7 @@
    <script>
       // make visibility it reliant on first option
            
-             var checkboxes = form.querySelectorAll('.swatch[data-option-index="0"] input');
+         var checkboxes = form.querySelectorAll('.swatch[data-option-index="0"] input');
              
          checkboxes.forEach(function(checkbox) {  
       
@@ -308,7 +307,7 @@
    {% unless values2 contains value2 %}
    <!-- this is the first option -->
    {% if variant2.option1 == value2 %} 
-   <div id="option-{{ product.handle }}-{{ product.id }}-{{ option_index }}-{{ value2 | handle }}" class="option-wrap"  {% unless product.selected_or_first_available_variant.option1 == value2 %}style="display:none;"{% endunless %}> 
+   <div id="option-{{ product.handle }}-{{ product.id }}-{{ option_index }}-{{ value2 | handle }}" class="option-wrap" data-value-1="{{ value2 | handle }}"  {% unless product.selected_or_first_available_variant.option1 == value2 %}style="display:none;"{% endunless %}> 
    <!-- loop out the second option and wrap -->
    {% assign values3 = '' %}  
    {% for variant3 in product.variants %}
@@ -316,7 +315,8 @@
    {% unless values3 contains value3 %}     
    <!-- this is the second option -->
    {% if variant3.option2 == value3 %} 
-   <div id="option-{{ product.handle }}-{{ product.id }}-{{ option_index }}-{{ value2 | handle }}-{{ value3 | handle }}" class="option-wrap {% if product.selected_or_first_available_variant.option1 == value2 and product.selected_or_first_available_variant.option2 == value3 and option_index == lastoption %}first{% endif %}"  {% unless product.selected_or_first_available_variant.option2 == value3 %}style="display:none;"{% endunless %}> 
+
+   <div id="option-{{ product.handle }}-{{ product.id }}-{{ option_index }}-{{ value2 | handle }}-{{ value3 | handle }}" data-value-2="{{ value3 | handle }}" class="option-wrap"  {% unless product.selected_or_first_available_variant.option2 == value3 %}style="display:none;"{% endunless %}> 
    <div class="header">{{ option }}  / {{ value2 | title }} / {{ value3 | title }}</div>
    <!-- loop out the first option and wrap -->
    {% assign values4 = '' %}  
@@ -332,9 +332,9 @@
          {% if cssColors contains currentColor %}{% assign is_cssColor = true %}{% else %}{% assign is_cssColor = false %}{% endif %}
         {% endif %}  
 
-   <div id="element-{{ product.handle }}-{{ value2 | handle }}-{{ value3 | handle }}-{{ value4 | handle }}" class="swatch-element  {% if settings.show_swatches and is_color %}color image {% endif %} value-{{ value | handle }}-{{ value1 | handle }} {% if variant1.available %}available{% else %}soldout{% endif %}">
+   <div id="element-{{ product.handle }}-{{ value2 | handle }}-{{ value3 | handle }}-{{ value4 | handle }}" data-value="{{ value4 | escape }}" class="swatch-element  {% if settings.show_swatches and is_color %}color image {% endif %} value-{{ value | handle }}-{{ value1 | handle }} {% if variant1.available %}available{% else %}soldout{% endif %} {% if product.selected_or_first_available_variant.option3 == variant4.option3 and variant4.option1 == value2 and variant4.option2 == value3  %}active{% endif %}">
 
-      <input id="swatch-{{ product.handle }}-{{ value2 | handle }}-{{ value3 | handle }}-{{ value4 | handle }}" data-value="{{ value2 | handle }}-{{ value3 | handle }}-{{ value4 | handle }}" type="radio" class="checkbox" name="id-{{ option_index }}" value="{{ variant4.option3 }}" variant-price="{{ variant4.price }}" {% if product.selected_or_first_available_variant4.option3 %} checked {% endif %}  image="{% unless variant4.image.src %}{{ product.featured_image | product_img_url: '1024x1024' }}{% else %}{{ variant4.image.src | product_img_url: '1024x1024' }}{% endunless %}">
+      <input id="swatch-{{ product.handle }}-{{ value2 | handle }}-{{ value3 | handle }}-{{ value4 | handle }}" data-value="{{ value2 | handle }}-{{ value3 | handle }}-{{ value4 | handle }}" type="radio" class="checkbox" name="id-{{ value2 | handle }}-{{ value3 | handle }}-{{ option_index }}" value="{{ variant4.option3 | escape }}" variant-price="{{ variant4.price }}" {% if product.selected_or_first_available_variant.option3 == variant4.option3 and variant4.option1 == value2 and variant4.option2 == value3  %} checked {% endif %}  image="{% unless variant4.image.src %}{{ product.featured_image | product_img_url: '1024x1024' }}{% else %}{{ variant4.image.src | product_img_url: '1024x1024' }}{% endunless %}">
            <label class=" {% if settings.show_swatches and is_color %}color{% endif %}" for="swatch-{{ product.handle }}-{{ value2 | handle }}-{{ value3 | handle }}-{{ value4 | handle }}">
           {% if settings.show_swatches and is_color %}
            <span class="image" {% if is_cssColor %}style="background:{{ variant4.option3 | handle }};{% endif %}">
@@ -381,8 +381,7 @@
             var brothers_n_sisters = siblings(el);
              // if last option lets clear all checkboxes
             {% if option_index == lastoption %}  
-
-            brothers_n_sisters.forEach(element => [element.style.display = "none",element.querySelectorAll('input').forEach(element2 => [element2.checked = false, element2.parentElement.classList.remove('active')] )]); 
+            brothers_n_sisters.forEach(element => [element.style.display = "none",element.querySelectorAll('input').forEach(element2 => [ element2.parentElement.classList.remove('active')] )]); 
             {% else %} 
             brothers_n_sisters.forEach(element => [element.style.display = "none"]);
             {% endif %} 
@@ -410,15 +409,12 @@
       var eltop = document.querySelector('#option-{{ product.handle }}-{{ product.id }}-{{ option_index }}-' + checkbox1.getAttribute('data-value')); 
       eltop.style.display = "flex";
       var brothers_n_sisters = siblings(eltop);
-
-      brothers_n_sisters.forEach(element => [element.style.display = "none", element.querySelectorAll('input.checkbox').forEach(element2 => [element2.checked = false, element2.setAttribute('quantity', 1), element2.parentElement.querySelector('.quantity').getElementsByTagName('span')[0].innerHTML = 0,element2.parentElement.classList.remove('active')] ) ]);
-
+      brothers_n_sisters.forEach(element => [element.style.display = "none", element.querySelectorAll('input.checkbox').forEach(element2 => [ element2.parentElement.classList.remove('active')] ) ]);
        
       
         // 3rd level deep
-        var wrap = document.querySelector('#option-{{ product.handle }}-{{ product.id }}-' + checkbox1.getAttribute('data-value'));                                
-        var checkbox2 = wrap.querySelector(":checked");
-                                 
+        var wrap = document.querySelector('#option-{{ product.handle }}-{{ product.id }}-' + checkbox1.getAttribute('data-value'));                                                
+        var checkbox2 = wrap.querySelector(":checked");         
           if(checkbox2.checked) {     
               var elmiddle = document.querySelector('#option-{{ product.handle }}-{{ product.id }}-2-' + checkbox2.getAttribute('data-value') ); 
               // Checkbox is checked..
@@ -457,16 +453,14 @@
                 // End Handle
                 
                 
-                    if(this.checked == true) {
+                     if(this.checked == true) {
                      swatchelement.classList.add('active');
-                       if(this.classList.contains('radio')) {
+                       if(this.type == "radio") {
                          var sibs = siblings2(swatchelement);
                          sibs.forEach(element => element.classList.remove('active')); 
                        }
                      }else{
-
                      swatchelement.classList.remove('active');
-    
                      }
               });
          });  
@@ -483,4 +477,5 @@
 </div>
 <!-- End #Multiselect_product.id -->
 {% endif %}
+
 
