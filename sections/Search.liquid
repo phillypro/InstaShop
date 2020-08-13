@@ -1,0 +1,320 @@
+{% comment %}
+The search.liquid template is not a required template.
+That search.liquid template is included in the current theme to make it easier for you 
+to customize your /search page.
+Whether you are using your own template for the search page or not,
+the {{ content_for_header }} tag in theme.liquid will always output the following on the /search page:
+<link rel="stylesheet" href="//cdn.shopify.com/s/global/search.css" type="text/css" />
+So the /search page is always styled by a globally-hosted stylesheet called search.css.
+You may override and complement that CSS in your theme's stylesheet.
+We are using a div#searchresults below so that the styles defined in search.css get
+applied to the elements on this page; the 'searchresults' id is used in the CSS
+selectors inside search.css.
+{% endcomment %}
+
+  
+{% comment %}
+search.performed is false when accessing the /search page without a 'q' parameter set
+in the URL. A shop-owner can link to the /search page from one of his link lists.
+It is important to show a search form on that page if search.performed is false.
+{% endcomment %}
+
+
+<div class="searchpage">
+{% if search.performed %}
+  
+  {% paginate search.results by 10 %}
+  
+    {% comment %}
+    Common pitfall to avoid: search.results should never be accessed before the opening 
+    paginate tag. Move the opening and closing paginate tags to the very top and bottom of your
+    search.liquid template if you need to.
+    If you fail to do the above, the pagination of search results will be broken.
+    search.results_count is fine to access in or out of the paginate block.
+    {% endcomment %}
+
+    {% if search.results_count == 0 %}  
+      Your search for "{{ search.terms }}" did not yield any results.          
+    {% else %}
+  
+  <div class="row align-left searchresults">
+    <div class="column">
+      Your search for <b>"{{ search.terms }}"</b> found <b>{{ search.results_count }}</b> match.     
+    </div>
+  </div>
+      <ul  class="row align-center align-top">
+        {% for item in search.results %}
+          {% if item.object_type == 'product' %}
+            {% assign product = item %}    
+          
+        
+        
+        {% if product.type == "OPTIONS_HIDDEN_PRODUCT" %}{% continue %}{% endif %}
+{% comment %}Is this product on sale?{% endcomment %}
+{% assign on_sale = false %}
+{% if product.compare_at_price > product.price %}
+{% assign on_sale = true %}
+{% endif %}
+
+
+
+
+
+
+
+
+
+    <li itemscope itemtype="http://schema.org/Product" data-id="{{ product.id }}" class="text-center columns large-6 medium-6 small-6 product {% if product.type contains 'book' %}book{% endif %} {% unless product.available %} sold-out{% endunless %}{% if on_sale %} on-sale{% endif %}">
+         
+        
+      
+       <a href="{{ product.url | within: collection }}" {% if settings.disableproductajax %}rel="external"{% endif %}>
+         
+         
+              {% if product.type contains 'book' %}
+
+    <div class="book-size">
+     {% for image in product.images limit: 1 %}
+        <article class="v-book has-groove angle" data-index="0" style="opacity: 1; top: 0px;">
+          <canvas id="canvas-{{ product.id }}" width="200" height="100"></canvas> 
+          <section class="v-book__cover is-front" style="background-image: url({{ image | product_img_url: '1024x1024' }});"> 
+            <section></section> 
+          </section> 
+          <section class="v-book__spine"></section> 
+          <section class="v-book__cover is-back">  
+     
+          </section> 
+        </article>
+        
+        
+        {% endfor %}
+         </div>
+                      
+                      
+                      {% else %}
+         
+         
+           <div class="image {% if settings.imagehover and settings.product_image_size != 'none' and product.images.size > 1  %}imgswitch{% endif %}">
+         <div class="inner">
+         {% if product.featured_image %}<img class="{% unless settings.imagehover and settings.product_image_size != 'none' and product.images.size > 1  %}hvr-grow{% endunless %}" src="{{ product.featured_image | img_url: '1024x1024' }}" />{% endif %}
+         </div>
+         {% if settings.imagehover and settings.product_image_size != 'none' and product.images.size > 1  %}
+         <div class="inner">
+            <img src="{{ product.images[1] | product_img_url: 'large' }}" />
+         </div>
+         {% endif %}
+       </div>
+         
+         {% endif %}
+         
+         <h3>{{ product.title }}</h3>
+       
+         <p class="h1 medium-down--left">
+          {% if product.price_max > product.price %}
+        {% include 'price' with product.price_min %} 
+        {% else %}
+        {% include 'price' with product.price %}
+        {% endif %}
+            
+           
+            </p>
+
+          {% if on_sale %}
+          <div class="salew">
+            <span class="sale-tag medium-down--right{% if settings.product_reviews_enable %} has-reviews{% endif %}">
+              {% assign compare_price = product.compare_at_price %}
+              {% assign product_price = product.price %}
+              {% include 'price-sale' %}
+            </span>
+         </div>
+          {% endif %}
+       </a> 
+      
+      
+      
+      
+    
+       {% if product.price_max > product.price %}
+         {% assign totalprice = product.price_min %}   
+        {% else %}
+        {% assign totalprice = product.price %}      
+        {% endif %}
+     </li>
+
+
+
+
+
+
+        
+        
+        
+        
+        
+        
+        
+          {% elsif item.object_type == 'article' %}
+             {% assign article = item %}     
+              <a href="{{ article.url }}" class="{% if i == 0 %}large-12 article-big{% else %}large-4{% endif %} medium-6 small-12 columns article-wrap">
+                <div class="article-inner">
+                  <div class="top-image flex-content">
+                    <img src="{{ article.image.src | img_url: 'large' }}" alt="{{ article.title }}" />
+                  </div>
+                  <div class="bottom-content">
+                    <div class="bottom-inner">
+                      <title>{{ article.title }}</title>
+                      <tags>
+                      {% for tag in article.tags %}
+                        <span>{{ tag }}</span>
+                      {% endfor %}
+                      </tags>
+                    </div>
+                  </div>
+                </div>
+             </a>
+      
+          {% endif %}
+        {% endfor %}
+      </ul>
+    {% endif %}    
+    
+    {% if paginate.pages > 1 %}
+      {{ paginate | default_pagination }}
+    {% endif %}
+  
+  {% endpaginate %}    
+  
+{% endif %}  
+</div>
+
+{% schema %}
+  {
+    "name": "Search",
+    "settings": []
+  }
+{% endschema %}
+
+{% stylesheet 'scss' %}
+
+// responsive sizes
+@mixin bp($point) {
+  
+  $bp-small: "(max-width: 350px)";
+  $bp-mobile: "(max-width: 600px)";
+  $bp-mobileup: "(min-width: 600px)";
+  $bp-phablet: "(max-width: 1022px)";
+  $bp-phabletup: "(min-width: 1022px)";
+  $bp-tablet: "(max-width: 1280px)";
+  $bp-tabletup: "(min-width: 1280px)";
+  $bp-laptop: "(max-width: 1600px)";
+  $bp-desktop: "(min-width: 1600px)";
+  @if $point == desktop {
+    @media #{$bp-desktop}  { @content; }
+  }  
+  @else if $point == laptop {
+    @media #{$bp-laptop} { @content; }
+  }
+  @else if $point == tablet {
+    @media #{$bp-tablet} { @content; }
+  }
+  @else if $point == tabletup {
+    @media #{$bp-tabletup} { @content; }
+  }
+  @else if $point == phablet {
+    @media #{$bp-phablet} { @content; }
+  }
+  @else if $point == phabletup {
+    @media #{$bp-phabletup} { @content; }
+  }
+  @else if $point == mobile {
+    @media #{$bp-mobile}  { @content; }
+  }
+  @else if $point == mobileup {
+    @media #{$bp-mobileup} { @content; }
+  }
+  @else if $point == small {
+    @media #{$bp-small}  { @content; }
+  }
+
+}
+
+//color transition
+@mixin transition($attribute, $duration) {
+    -webkit-transition: $attribute $duration ease;
+    -moz-transition: $attribute $duration ease;
+    transition: $attribute $duration ease;
+}
+
+#shopify-section-Search {
+margin: 25px 0;
+& .article-wrap {
+    margin-bottom: 30px;
+   @include bp(phablet) {
+   padding:0;
+margin-bottom:0;
+  }
+  & .article-inner {
+    min-height: 100%;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+   @include bp(phablet) {
+    border:none;
+   }
+    & .top-image {
+     padding-bottom: 58.7%;
+     margin: 0;
+     overflow: hidden;
+     background: #F7F8FA;
+     position: relative;
+     height: 0;
+      & img {
+     	width: auto;
+   	    height: auto;
+        min-width: 100%;
+        min-height: 100%;
+        position: absolute;
+      }
+    }
+    & .bottom-content {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: bold;
+    padding: 30px 20px;
+    display: flex;
+    align-items: center;
+      & .bottom-inner {
+          width: 100%;
+        & title {
+            color: #000;
+    		display: block;
+  		    font-size: 18px;
+            margin-bottom: 10px;
+        }
+      }
+    }
+  }
+  &.article-big {
+    @include bp(phabletup) {
+    & .article-inner {
+     display:flex;
+      & .top-image {
+        padding-bottom: 32%;
+        width: 55%;
+      }
+      & .bottom-content {
+      width: 45%;
+  	  text-align: center;
+      padding: 30px 30px;
+        & title {
+            font-size: 30px;
+        }
+      }
+    }
+    }
+  }
+ }
+}
+
+{% endstylesheet %}
+
+{% javascript %}
+{% endjavascript %}    
