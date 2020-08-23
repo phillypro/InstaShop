@@ -128,7 +128,9 @@ var slider{{ section.id }} = new Swiper((container), options);
 slider{{ section.id }}.off('slideChangeTransitionStart');
 slider{{ section.id }}.on('slideChangeTransitionStart', function () {
   //if has video...restart it
+  if(slider{{ section.id }}) {
   var currentslide = slider{{ section.id }}.slides[slider{{ section.id }}.activeIndex];
+    if(currentslide) {
   var video = currentslide.querySelector('video');
   if(video) {
    var videoEl = video;
@@ -143,6 +145,8 @@ slider{{ section.id }}.on('slideChangeTransitionStart', function () {
      videosib.removeEventListener('ended',skip{{ section.id }});
     });
     videoEl.addEventListener('ended', skip{{ section.id }} );
+  }
+    }
   }
 });
 slider{{ section.id }}.on('init', function () {
