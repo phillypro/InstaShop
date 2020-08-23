@@ -125,6 +125,7 @@ function slider{{ section.id }}() {
 
   
 var slider{{ section.id }} = new Swiper((container), options);
+slider{{ section.id }}.off('slideChangeTransitionStart');
 slider{{ section.id }}.on('slideChangeTransitionStart', function () {
   //if has video...restart it
   var currentslide = slider{{ section.id }}.slides[slider{{ section.id }}.activeIndex];
