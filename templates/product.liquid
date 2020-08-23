@@ -162,20 +162,7 @@
   
   
   
-  
-  
-  
-  
-{% section 'More-Info' %}
  
-{% capture Product-FAQ %}{% section 'Product-FAQ' %}{% endcapture %}
-{% capture FAQ %}{% section 'FAQ' %}{% endcapture %}  
-{% assign FAQ = FAQ | split: 'class="popular-faq">' %}  
-{% assign FAQ = FAQ[1] | split: '</div></div></div>' %}    
-{% assign FAQ = FAQ[0] %}      
-{% assign Product-FAQ = Product-FAQ | replace: "%%FAQ%%", FAQ %}
-{{ Product-FAQ }}
-  
 {% if settings.yotpoappkey != blank %}
 <div class="row">
   <div class="column large-12">
@@ -218,7 +205,7 @@ data-product-type="{{product.type}}">
 <div id="looxReviews" data-product-id="{{product.id}}" class="loox-reviews-default">{{ product.metafields.loox.reviews }}</div>  
 {% endif %}  
   
-{% section 'Also-Like' %}
+
   
 
   
