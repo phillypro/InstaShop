@@ -151,7 +151,9 @@ slider{{ section.id }}.on('slideChangeTransitionStart', function () {
 });
 slider{{ section.id }}.on('init', function () {
   //if has video...restart it
+    if(slider{{ section.id }}) {
   var currentslide = slider{{ section.id }}.slides[slider{{ section.id }}.activeIndex];
+         if(currentslide) {
   var video = currentslide.querySelector('video');
   if(video) {
    var videoEl = video;
@@ -167,6 +169,8 @@ slider{{ section.id }}.on('init', function () {
     });
     videoEl.addEventListener('ended', skip{{ section.id }} );
   }
+         }
+    }
 });  
 slider{{ section.id }}.init();   
 }  
