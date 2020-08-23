@@ -12,6 +12,7 @@
 {% assign add_to_cart = 'Add to cart' %}
 {% assign sold_out = 'Sold Out' %}
 {% assign unavailable = 'Unavailable' %}
+
 <div id="{{ product.id }}" class="product-wrap" itemscope itemtype="http://schema.org/Product">
  <div class="product-top">  
   <meta itemprop="url" content="{{ shop.url }}{{ product.url }}" />
@@ -24,16 +25,16 @@
     <!-- Product thumb -->
          
                 <div class="row align-center">
-                    <div class="large-12 small-12 slide-inner">
-                      {% section 'Product-Video-Gallery' %}
+   <div class="large-12 small-12 slide-inner">
+     {% section 'Product-Video-Gallery' %}
                     </div>
                   
-            
-                       <div class="product-details">
+                      <div class="product-details">
                        
                        <h2>{{ product.title }}</h2>
-
-                            <div class="product-price-wrap" id="product-price-{{ product.id }}" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                        
+                          
+      <div class="product-price-wrap" id="product-price-{{ product.id }}" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
         <meta itemprop="priceCurrency" content="{{ shop.currency }}" />
         {% if product.available %}
         <link itemprop="availability" href="http://schema.org/InStock" />
@@ -47,8 +48,8 @@
           {% else %}
           <span class="product-price" itemprop="price">{{ variant.price | money }}</span>
           {% endif %}
-      </div>   
-                         
+      </div>
+                        
                          
                       {% if settings.stamped %}   
                       <span class="stamped-product-reviews-badge stamped-main-badge" data-id="{{ product.id }}" data-product-sku="{{ product.handle }}" data-product-type="{{product.type}}" data-product-title="{{product.title}}"  style="display: inline-block;">{{ product.metafields.stamped.badge }}</span>
@@ -63,14 +64,27 @@
 {% endif %}  
 {% endif %} 
                      
-
+                   {% if settings.yotpoappkey != blank %}           
+  <div class="yotpo bottomLine"
+    data-appkey="{{ settings.yotpoappkey }}"
+    data-domain="{{shop.permanent_domain | escape }}"
+    data-product-id="{{ product.id }}"
+    data-product-models="{{ product.id }}"
+    data-name="{{ product.title | escape }}"
+    data-url="{{ shop.url }}{{ product.url }}"
+    data-image-url="{{ product.featured_image | product_img_url: 'large' |replace: '?', '%3F' | replace: '&','%26'}}"
+    data-description="{{ product.description | escape }}"
+    data-bread-crumbs="{% for tag in product.tags %}{{ tag | escape }};{% endfor %}">
+</div>
+                    
+                   {% endif %} 
                     
                      
   {% form 'product', product, data-ajax: 'false', class: 'ajax product_form' %}        
                      
                      
                      
-      {% assign hide_default_title = false %}
+         {% assign hide_default_title = false %}
       {% if product.variants.size == 1 and product.variants.first.title contains 'Default' %}
         {% assign hide_default_title = true %}
       {% endif %}       
@@ -114,23 +128,21 @@
    
              
 
-     
+       
       <div class="product-add">
         <button id="add-{{ product.id }}" class="button shopify-payment-button__button add {% if settings.boldsubscriptions %}addtocart{% endif %}" type="submit">{{ add_to_cart | escape }}</button>
         {{ form | payment_button }}
       </div>
   {% endform %}
            
-{% unless product.description == blank %}                         
 <div class="details">
     {{ product.description | replace: '<iframe','<div class="flex-video widescreen youtube"><iframe' | replace: '</iframe>','</iframe></div>' }}
 </div>
-{% endunless %}
 
     
                      
                       </div>
-            
+                    </div>
                 </div>
          
        <!-- END Product thumb -->
@@ -154,8 +166,15 @@
   
   
   
-
-
+{% section 'More-Info' %}
+ 
+{% capture Product-FAQ %}{% section 'Product-FAQ' %}{% endcapture %}
+{% capture FAQ %}{% section 'FAQ' %}{% endcapture %}  
+{% assign FAQ = FAQ | split: 'class="popular-faq">' %}  
+{% assign FAQ = FAQ[1] | split: '</div></div></div>' %}    
+{% assign FAQ = FAQ[0] %}      
+{% assign Product-FAQ = Product-FAQ | replace: "%%FAQ%%", FAQ %}
+{{ Product-FAQ }}
   
 {% if settings.yotpoappkey != blank %}
 <div class="row">
@@ -199,7 +218,7 @@ data-product-type="{{product.type}}">
 <div id="looxReviews" data-product-id="{{product.id}}" class="loox-reviews-default">{{ product.metafields.loox.reviews }}</div>  
 {% endif %}  
   
-
+{% section 'Also-Like' %}
   
 
   
@@ -220,9 +239,33 @@ data-product-type="{{product.type}}">
 {% endcomment %}
 
 <script>
+  
 // activate Ajax Cart
+
+  
+var callbackAjaxifyCartProduct{{ product.id }} = function(){
+  // Handler when the DOM is fully loaded
+  if(!window.Shopify.AjaxifyCart) {
+    // add script
+    var script = document.createElement("script");
+    script.type = "text/javascript";   
+    script.src = '{{ 'ajaxify-cart.js' | asset_url }}';
+    document.getElementsByTagName("head")[0].appendChild(script);
+  }
+};
+
+if (
+    document.readyState === "complete" ||
+    (document.readyState !== "loading" && !document.documentElement.doScroll)
+) {
+  callbackAjaxifyCartProduct{{ product.id }}();
+} else {
+  document.addEventListener("DOMContentLoaded", callbackAjaxifyCartProduct{{ product.id }});
+} 
+  
+  
 function deferAjaxifyCart(methodAjaxifyCart) {
- if (window.Shopify.AjaxifyCart) {
+ if (window.jQuery && window.Shopify.AjaxifyCart) {
   methodAjaxifyCart();
  } else {
   setTimeout(function() {
@@ -393,8 +436,7 @@ var selectCallback = function(variant, selector) {
   var pricewrapEl = formEl.parentElement.querySelector('#product-price-{{ product.id }}');
   var priceEl = pricewrapEl.querySelector('.product-price');
   var backorderEl = formEl.querySelector('#backorder-{{ product.id }}');  
-  var addToCartButton = formEl.querySelector('#add-{{ product.id }}');                              
-                                         
+  var addToCartButton = formEl.querySelector('#add-{{ product.id }}');                                                                  
  if (variant) {
   //match swatch options  
     var swatchWrap = formEl.querySelector('#swatches_{{ product.id }}');
@@ -627,7 +669,7 @@ new Shopify.OptionSelectors('product-select-{{ product.id }}', {
 }); 
   
   
-  5
+  
 
 // Add label if only one product option and it isn't 'Title'.
 {% if product.options.size == 1 and product.options.first != 'Title' %}
@@ -670,3 +712,4 @@ var afterpay_js_snippet_version = '1.0.7';
 {% if settings.klarna %} 
   <script>window.KlarnaThemeGlobals={};{%case template.name%} {%when"product"%} window.KlarnaThemeGlobals.data_purchase_amount={{product.first_available_variant.price}};window.KlarnaThemeGlobals.productVariants={{product.variants|json}};window.KlarnaThemeGlobals.documentCopy=document.cloneNode(true);{%when"cart"%} window.KlarnaThemeGlobals.data_purchase_amount={{cart.total_price}};window.KlarnaThemeGlobals.documentCopy=document.cloneNode(true);{%endcase%}</script>
 {% endif %} 
+
