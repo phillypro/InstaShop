@@ -467,6 +467,7 @@ var selectCallback = function(variant, selector) {
        }
       });
     }
+
     
  
   for (var i = 0, length = variant.options.length; i < length; i++) {
@@ -475,7 +476,13 @@ var selectCallback = function(variant, selector) {
     radioButton.checked = true;
    }
   }
+
+
+
+
+
                                      
+
    if (addToCartButton !== null) {
     addToCartButton.classList.remove('disabled');
     addToCartButton.disabled = false;
@@ -487,6 +494,11 @@ var selectCallback = function(variant, selector) {
   if (variant.available) {
     
  
+
+
+
+
+
    // If item is backordered yet can still be ordered, we'll show special message.
    if (variant.inventory_management && variant.inventory_quantity <= 0) {
     var selectedVariant = formEl.querySelector('#selected-variant-{{ product.id }}');
@@ -501,6 +513,7 @@ var selectCallback = function(variant, selector) {
      backorderEl.classList.add('hidden');
     }
    }
+
   } else {
    // Variant is sold out.
    if (backorderEl !== null && backorderEl !== undefined) {
@@ -512,6 +525,8 @@ var selectCallback = function(variant, selector) {
     addToCartButton.disabled = true;
    }
   }
+
+
 var multiselect = formEl.querySelector('#Multiselect_{{ product.id }}');   
 if(!multiselect) { 
   
@@ -532,11 +547,14 @@ if(!multiselect) {
    
    }
    
+
   {% if settings.quadpay %} 
   {% assign new_money_format = shop.money_format | remove: '$' %}
   var quadpayWidget = formEl.querySelector('quadpay-widget');
   quadpayWidget.setAttribute('amount', Shopify.formatMoney(variant.price, "{{ new_money_format }}")); 
   {% endif %}
+
+
  } else {
                                                         
   // variant doesn't exist.
@@ -553,15 +571,14 @@ if(!multiselect) {
    addToCartButton.disabled = true;
   }
  }
+
 }; 
   
 Shopify.handleize = function (str) {
     return str.toLowerCase().replace(/[^\w\u00C0-\u024f]+/g, "-").replace(/^-+|-+$/g, "");
 };  
 
-  
-  
-  
+
 // run defer for option selector  
   
   var callbackProduct{{ product.id }} = function(){
@@ -609,7 +626,8 @@ new Shopify.OptionSelectors('product-select-{{ product.id }}', {
   
 }); 
   
-
+  
+  5
 
 // Add label if only one product option and it isn't 'Title'.
 {% if product.options.size == 1 and product.options.first != 'Title' %}
@@ -622,7 +640,6 @@ selectorwrapper.prepend(label);
 {% endif %}
 </script> 
 
-
 {% if settings.afterpay %}  
 <!-- Begin Shopify-Afterpay JavaScript Snippet (v1.0.7) -->
 <script type="text/javascript">
@@ -631,7 +648,7 @@ selectorwrapper.prepend(label);
 // var afterpay_max = 2000.00;         // As per your Afterpay contract.
 // var afterpay_cbt_enabled = false;   // As per your Afterpay contract; change to true to display Cross-Border Trade artwork (for AU/NZ).
 // var afterpay_logo_theme = 'colour'; // Can be 'colour', 'black' or 'white'.
-// var afterpay_product_selector = '#product-price-selector';
+var afterpay_product_selector = '#product-price-{{ product.id }}';
 // var afterpay_cart_integration_enabled = true;
 // var afterpay_cart_static_selector = '#cart-subtotal-selector';
 
@@ -649,3 +666,7 @@ var afterpay_js_snippet_version = '1.0.7';
 <script type="text/javascript" src="https://static.afterpay.com/shopify-afterpay-javascript.js"></script>
 <!-- End Shopify-Afterpay JavaScript Snippet (v1.0.7) -->
 {% endif %}
+
+{% if settings.klarna %} 
+  <script>window.KlarnaThemeGlobals={};{%case template.name%} {%when"product"%} window.KlarnaThemeGlobals.data_purchase_amount={{product.first_available_variant.price}};window.KlarnaThemeGlobals.productVariants={{product.variants|json}};window.KlarnaThemeGlobals.documentCopy=document.cloneNode(true);{%when"cart"%} window.KlarnaThemeGlobals.data_purchase_amount={{cart.total_price}};window.KlarnaThemeGlobals.documentCopy=document.cloneNode(true);{%endcase%}</script>
+{% endif %} 
