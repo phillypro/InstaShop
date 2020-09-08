@@ -90,7 +90,7 @@
       <div id="{{ product.handle }}-{{ value | remove: ' ' }}" data-value="{{ value | handle }}" class="swatch-element {% if settings.show_swatches and is_color %}color image {% endif %} value-{{ value | handle }} {% if variant.available %}available{% else %} {% if option_index == lastoption %}soldout{% endif %} {% endif %} {% if forloop.first %}active{% endif %} ">
          <!-- if product options only 1 lets give em all the options...if more lets make another wrapper -->
 
-         <input id="swatch-{{ option_index }}-{{ value | handle }}" data-value="{{ value | handle }}" type="radio" class="radio" name="id-{{ option_index }}" value="{{ variant.option1 }}" {% if forloop.first %} checked{% endif %} image="{% unless variant.image.src %}{{ product.featured_image | product_img_url: '1024x1024' }}{% else %}{{ variant.image.src | product_img_url: '1024x1024' }}{% endunless %}">
+         <input id="swatch-{{ option_index }}-{{ value | handle }}" data-value="{{ value | handle }}" type="radio" class="radio" name="id-{{ option_index }}" value="{{ variant.option1 | escape }}" {% if forloop.first %} checked{% endif %} image="{% unless variant.image.src %}{{ product.featured_image | product_img_url: '1024x1024' }}{% else %}{{ variant.image.src | product_img_url: '1024x1024' }}{% endunless %}">
         
         
      
@@ -193,7 +193,7 @@
       
          <div id="element-{{ product.handle }}-{{ value | handle }}-{{ value1 | handle }}" data-value="{{ value1 | handle }}" class="swatch-element {% if settings.show_swatches and is_color %}color image{% endif %} value-{{ value | handle }}-{{ value1 | handle }} {% if variant1.available %}available{% else %}{% if option_index == lastoption %}soldout{% endif %}{% endif %} {% if optionloop == 0 %}{% unless option_index == lastoption %}active{% endunless %}{% endif %}">
      
-            <input id="swatch-{{ product.handle }}-{{ value | handle }}-{{ value1 | handle }}" data-value="{{ value | handle }}-{{ value1 | handle }}" type="radio" class="checkbox" name="id-{{ value | handle }}-{{ option_index }}" value="{{ variant1.option2 }}" variant-price="{{ variant1.price }}" {% if product.selected_or_first_available_variant.option2 == variant1.option2 %} checked  {% endif %} image="{% unless variant1.image.src %}{{ product.featured_image | product_img_url: '1024x1024' }}{% else %}{{ variant1.image.src | product_img_url: '1024x1024' }}{% endunless %}">
+            <input id="swatch-{{ product.handle }}-{{ value | handle }}-{{ value1 | handle }}" data-value="{{ value | handle }}-{{ value1 | handle }}" type="radio" class="checkbox" name="id-{{ value | handle }}-{{ option_index }}" value="{{ variant1.option2  | escape }}" variant-price="{{ variant1.price }}" {% if product.selected_or_first_available_variant.option2 == variant1.option2 %} checked  {% endif %} image="{% unless variant1.image.src %}{{ product.featured_image | product_img_url: '1024x1024' }}{% else %}{{ variant1.image.src | product_img_url: '1024x1024' }}{% endunless %}">
        
          <label class="{% if settings.show_swatches and is_color %}color{% endif %}"  for="swatch-{{ product.handle }}-{{ value | handle }}-{{ value1 | handle }}">
            {% if settings.show_swatches and is_color %}
