@@ -52,9 +52,10 @@ function floatToString(t, e) {
     return i.length != this.options.length || Shopify.each(this.variants, function(t) {
        
         for (var e = !0, o = 0; o < i.length; o++) {
-            t["option" + (o + 1)].replace('"','').replace("'","") != i[o] && (e = !1);
+            t["option" + (o + 1)].replace('"','').replace("'","") != i[o].replace('"','').replace("'","") && (e = !1);
         }
         1 != e || (r = t);
+       
      
     }), r
 }, Shopify.Product.prototype.getVariantById = function(t) {
