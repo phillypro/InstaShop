@@ -164,7 +164,7 @@
       {% assign values = values | append: ',' | append: value %} 
       {% assign values = values | split: ',' %} 
        
-      <div id="{{ product.handle }}-{{ value | remove: ' ' }}" data-value="{{ value | handle }}" class="multi-swatch-element {% if is_color %}color image {% endif %} value-{{ value | handle }} {% if variant.available %}available{% else %} {% if option_index == lastoption %}soldout{% endif %} {% endif %} {% if forloop.first %}{% unless option_index == lastoption %}active{% endunless %}{% endif %} ">
+      <div id="{{ product.handle }}-{{ value | remove: ' ' }}" data-value="{{ value | handle | escape }}" class="multi-swatch-element {% if is_color %}color image {% endif %} value-{{ value | handle }} {% if variant.available %}available{% else %} {% if option_index == lastoption %}soldout{% endif %} {% endif %} {% if forloop.first %}{% unless option_index == lastoption %}active{% endunless %}{% endif %} ">
          <!-- if product options only 1 lets give em all the options...if more lets make another wrapper -->
          {% if variant.inventory_management != blank %}
          {% if variant.inventory_policy == 'continue' %}
@@ -176,7 +176,7 @@
          {% assign stock = 999 %}
          {% endif %}   
          {% if option_index == lastoption %} 
-         <input id="multi-swatch-{{ option_index }}-{{ value | handle }}" data-value="{{ value | handle }}" type="checkbox" name="id" value="{{ variant.id }}" inventory="{{ stock }}" quantity="1" variant-price="{{ variant.price }}"  {% unless variant.available %}disabled{% endunless %}>
+         <input id="multi-swatch-{{ option_index }}-{{ value | handle }}" data-value="{{ value | handle | escape }}" type="checkbox" name="id" value="{{ variant.id }}" inventory="{{ stock }}" quantity="1" variant-price="{{ variant.price }}"  {% unless variant.available %}disabled{% endunless %}>
         {% if block.settings.quantity %}
          <div class="quantity">
             <span>0</span>
@@ -186,7 +186,7 @@
  
          
          {% else %}
-         <input id="multi-swatch-{{ option_index }}-{{ value | handle }}" data-value="{{ value | handle }}" type="radio" name="id-{{ option_index }}" value="{{ variant.id }}" inventory="{{ stock }}" quantity="1" {% if forloop.first %} checked{% endif %} {% unless variant.available %}{% if option_index == lastoption %}disabled{% endif %}{% endunless %}>
+         <input id="multi-swatch-{{ option_index }}-{{ value | handle }}" data-value="{{ value | handle | escape }}" type="radio" name="id-{{ option_index }}" value="{{ variant.id }}" inventory="{{ stock }}" quantity="1" {% if forloop.first %} checked{% endif %} {% unless variant.available %}{% if option_index == lastoption %}disabled{% endif %}{% endunless %}>
          <label class="{% if is_color  %}color{% endif %}" for="multi-swatch-{{ option_index }}-{{ value | handle }}">
            {% if is_color  %} 
            <span class="image" {% unless block.settings.color-image %}style="background-color:{{ variant.option1 | handle }};"{% endunless %}>
@@ -345,9 +345,9 @@
          {% else %}
          {% assign stock = 999 %}
          {% endif %}    
-         <div id="element-{{ product.handle }}-{{ value | handle }}-{{ value1 | handle }}" data-value="{{ value | handle }}-{{ value1 | handle }}" class="multi-swatch-element {% if is_color %}color image{% endif %} value-{{ value | handle }}-{{ value1 | handle }} {% if variant1.available %}available{% else %}{% if option_index == lastoption %}soldout{% endif %}{% endif %} {% if optionloop == 0 %}{% unless option_index == lastoption %}active{% endunless %}{% endif %}">
+         <div id="element-{{ product.handle }}-{{ value | handle }}-{{ value1 | handle }}" data-value="{{ value | handle | escape }}-{{ value1 | handle }}" class="multi-swatch-element {% if is_color %}color image{% endif %} value-{{ value | handle }}-{{ value1 | handle }} {% if variant1.available %}available{% else %}{% if option_index == lastoption %}soldout{% endif %}{% endif %} {% if optionloop == 0 %}{% unless option_index == lastoption %}active{% endunless %}{% endif %}">
             {% if option_index == lastoption %} 
-            <input id="multi-swatch-{{ product.handle }}-{{ value | handle }}-{{ value1 | handle }}" data-value="{{ value | handle }}-{{ value1 | handle }}" type="checkbox" name="id" value="{{ variant1.id }}" inventory="{{ stock }}" quantity="1" variant-price="{{ variant1.price }}"  {% unless variant1.available %}disabled{% endunless %}>
+            <input id="multi-swatch-{{ product.handle }}-{{ value | handle }}-{{ value1 | handle }}" data-value="{{ value | handle | escape }}-{{ value1 | handle }}" type="checkbox" name="id" value="{{ variant1.id }}" inventory="{{ stock }}" quantity="1" variant-price="{{ variant1.price }}"  {% unless variant1.available %}disabled{% endunless %}>
            {% if block.settings.quantity %}
             <div class="quantity">
                <span>0</span>
@@ -368,7 +368,7 @@
             
             
             {% else %}
-            <input id="multi-swatch-{{ product.handle }}-{{ value | handle }}-{{ value1 | handle }}" data-value="{{ value | handle }}-{{ value1 | handle }}" type="radio" name="id-{{ option_index }}-{{ value | handle }}" value="{{ variant1.id }}" inventory="{{ stock }}" quantity="1" {% if optionloop == 0 %} checked{% endif %} >
+            <input id="multi-swatch-{{ product.handle }}-{{ value | handle }}-{{ value1 | handle }}" data-value="{{ value | handle | escape }}-{{ value1 | handle }}" type="radio" name="id-{{ option_index }}-{{ value | handle }}" value="{{ variant1.id }}" inventory="{{ stock }}" quantity="1" {% if optionloop == 0 %} checked{% endif %} >
             <label class="{% if is_color  %}color{% endif %}" for="multi-swatch-{{ product.handle }}-{{ value | handle }}-{{ value1 | handle }}">
            {% if is_color  %} 
            <span class="image" {% unless block.settings.color-image %}style="background-color:{{ variant1.option2 | handle }};"{% endunless %}>
@@ -417,16 +417,21 @@
              var checkboxes = form.querySelectorAll('.multi-swatch[data-option-index="0"] input');
              
          checkboxes.forEach(function(checkbox) {  
-      
+             
              checkbox.addEventListener( 'click', function() { 
+            
               if(this.checked) {
-               var el = document.querySelector('#option-{{ product.handle }}-{{ product.id }}-' + this.getAttribute('data-value')); 
+               var el = document.querySelector('.multiselect_wrap  #option-{{ product.handle }}-{{ product.id }}-' + this.getAttribute('data-value')); 
+                                               
               // Checkbox is checked..
                el.style.display = "flex";
+
+                
                                        
                var brothers_n_sisters = siblings(el);
                 // if last option lets clear all checkboxes
                {% if option_index == lastoption %}  
+                
                brothers_n_sisters.forEach(element => [element.style.display = "none",element.querySelectorAll('.multi-swatch-element').forEach(element2 => [element2.classList.remove('active'),element2.querySelector('input[type="checkbox"]').checked = false])]); 
                {% else %} 
                brothers_n_sisters.forEach(element => element.style.display = "none");
@@ -569,7 +574,7 @@
    {% endif %}
    <div id="element-{{ product.handle }}-{{ value2 | handle }}-{{ value3 | handle }}-{{ value4 | handle }}" class="multi-swatch-element {% if is_color %}color image {% endif %} value-{{ value | handle }}-{{ value1 | handle }} {% if variant1.available %}available{% else %}soldout{% endif %}">
 
-      <input id="multi-swatch-{{ product.handle }}-{{ value2 | handle }}-{{ value3 | handle }}-{{ value4 | handle }}" data-value="{{ value2 | handle }}-{{ value3 | handle }}-{{ value4 | handle }}" type="checkbox" name="id" value="{{ variant4.id }}" inventory="{{ stock }}" quantity="1" variant-price="{{ variant4.price }}"  {% unless variant4.available %}disabled{% endunless %}>
+      <input id="multi-swatch-{{ product.handle }}-{{ value2 | handle }}-{{ value3 | handle }}-{{ value4 | handle }}" data-value="{{ value2 | handle | escape }}-{{ value3 | handle }}-{{ value4 | handle }}" type="checkbox" name="id" value="{{ variant4.id }}" inventory="{{ stock }}" quantity="1" variant-price="{{ variant4.price }}"  {% unless variant4.available %}disabled{% endunless %}>
      {% if block.settings.quantity %}
       <div class="quantity">
          <span>0</span>
