@@ -18,24 +18,24 @@ margin:{{ section.settings.topposition }}px 0 {{ section.settings.bottomposition
 <script>
     autoplaycheck{{ section.id }}();  
   function autoplaycheck{{ section.id }}() {
-   var video = document.querySelector('#shopify-section-{{ section.id }} video');
+   var section = document.querySelector('#shopify-section-{{ section.id }}');
+   var video = section.querySelector('video');
    if(video) {
     var promise = video.play();
     if (promise !== undefined) {
     promise.then(_ => {
-
     }).catch(error => {
-   var frame = document.querySelector('#swiper_Frame');
-   frame.addEventListener("scroll", playIt{{ section.id }});
-      function playIt{{ section.id }}() {
-       video.play();
-      frame.removeEventListener("scroll", playIt{{ section.id }});
-      }
+    
+    video.remove();
+    var link = section.querySelector('a');
+    link.innerHTML = '<img src="{{ section.settings.backupgif | img_url: '1024x1024' }}" />';
 
  });
 }
   }else{
-  slider{{ section.id }}(); 
+
+    
+    
   }    
 }
 
@@ -52,6 +52,11 @@ margin:{{ section.settings.topposition }}px 0 {{ section.settings.bottomposition
        "id": "url",
        "type": "url",
        "label": "Link to"
+},
+{
+       "id": "backupgif",
+       "type": "image_picker",
+       "label": "Backup GIF (for low battery mode)"
 },
 {
    "type": "radio",
@@ -99,6 +104,10 @@ margin:{{ section.settings.topposition }}px 0 {{ section.settings.bottomposition
 {% stylesheet 'scss' %}
 
 .videoWrap {
+ & a {
+    display: block;
+    line-height: 0;
+ }
  & video {
   max-width: 100%;
  }
@@ -148,4 +157,4 @@ window['scroll'+sectionId] = undefined;
 }
 });   
 
-{% endjavascript %}             
+{% endjavascript %}                
