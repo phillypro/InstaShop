@@ -354,7 +354,7 @@
     "settings": [
       {
         "id": "gotocart",
-        "default": true,
+        "default": false,
         "label": "Enable Redirect to cart on Add",
         "type": "checkbox"
       },
