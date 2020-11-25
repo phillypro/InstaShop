@@ -34,7 +34,7 @@
                        <h2>{{ product.title }}</h2>
                         
                           
-      <div class="product-price-wrap" id="product-price-{{ product.id }}" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+      <div class="product-price-wrap  {% if product.compare_at_price > product.price %}onsale{% endif %}" id="product-price-{{ product.id }}" itemprop="offers" itemscope itemtype="http://schema.org/Offer">
         <meta itemprop="priceCurrency" content="{{ shop.currency }}" />
         {% if product.available %}
         <link itemprop="availability" href="http://schema.org/InStock" />
